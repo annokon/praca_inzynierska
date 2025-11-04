@@ -69,4 +69,16 @@ public class User
     public DateTime? DeleteDate { get; set; }
 
     public bool IsBlocked { get; set; } = false;
+    
+    //for Review
+    public ICollection<Review>? ReviewsWritten { get; set; }
+    public ICollection<Review>? ReviewsReceived { get; set; }
+    
+    //for SearchFilter
+    public ICollection<SearchFilter>? SearchFilters { get; set; }
+    
+    //for BlockedUser
+    public ICollection<BlockedUser>? BlockedUsers { get; set; } 
+    public ICollection<BlockedUser>? UsersBlockingThisUser { get; set; } 
+
 }
