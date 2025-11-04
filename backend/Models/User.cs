@@ -69,4 +69,39 @@ public class User
     public DateTime? DeleteDate { get; set; }
 
     public bool IsBlocked { get; set; } = false;
+    
+    //for Review
+    public ICollection<Review>? ReviewsWritten { get; set; }
+    public ICollection<Review>? ReviewsReceived { get; set; }
+    
+    //for SearchFilter
+    public ICollection<SearchFilter>? SearchFilters { get; set; }
+    
+    //for BlockedUser
+    public ICollection<BlockedUser>? BlockedUsers { get; set; } 
+    public ICollection<BlockedUser>? UsersBlockingThisUser { get; set; } 
+
+    // for UserSetings
+    public UserSettings? Settings { get; set; }
+
+    //for UserLanguage 
+    public ICollection<UserLanguage>? UserLanguages { get; set; }
+    
+    //for Favourite
+    public ICollection<Favourite>? FavouritesGiven { get; set; }         // user added others
+    public ICollection<Favourite>? FavouritesReceived { get; set; }      // others added user
+    
+    //for UserBadge
+    public ICollection<UserBadge>? UserBadges { get; set; }
+    
+    //for TripPhoto
+    public ICollection<TripPhoto>? TripPhotosUploaded { get; set; }
+    
+    //for TripInvitation
+    public ICollection<TripInvitation>? TripInvitationsSent { get; set; }
+    public ICollection<TripInvitation>? TripInvitationsReceived { get; set; }
+
+    //for UserChat
+    public ICollection<UserChat>? UserChats { get; set; }
+
 }
