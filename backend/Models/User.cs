@@ -107,7 +107,9 @@ public class User
     public ICollection<UserLanguage>? UserLanguages { get; set; }
     
     //for Favourite
+    [InverseProperty(nameof(Favourite.User))]
     public ICollection<Favourite>? FavouritesGiven { get; set; }         // user added others
+    [InverseProperty(nameof(Favourite.FavouriteUser))]
     public ICollection<Favourite>? FavouritesReceived { get; set; }      // others added user
     
     //for UserBadge
