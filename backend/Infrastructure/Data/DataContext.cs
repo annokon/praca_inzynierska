@@ -41,6 +41,7 @@ public class DataContext : DbContext
                 .HasForeignKey(b => b.IdUserBlocked)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+        
         modelBuilder.Entity<UserLanguage>(entity =>
         {
             entity.HasKey(ul => new { ul.IdLanguage, ul.IdUser });
@@ -55,6 +56,7 @@ public class DataContext : DbContext
                 .HasForeignKey(ul => ul.IdUser)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+        
         modelBuilder.Entity<UserBadge>(entity =>
         {
             entity.HasKey(ub => new { ub.IdUser, ub.IdBadge });
@@ -67,6 +69,21 @@ public class DataContext : DbContext
             entity.HasOne(ub => ub.Badge)
                 .WithMany(b => b.UserBadges)
                 .HasForeignKey(ub => ub.IdBadge)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        modelBuilder.Entity<UserChat>(entity =>
+        {
+            entity.HasKey(uc => new { uc.IdChat, uc.IdUser });
+
+            entity.HasOne(uc => uc.Chat)
+                .WithMany(c => c.UserChats)
+                .HasForeignKey(uc => uc.IdChat)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(uc => uc.User)
+                .WithMany(u => u.UserChats)
+                .HasForeignKey(uc => uc.IdUser)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }
