@@ -5,9 +5,9 @@ namespace backend.Models;
 
 public class UserTrip
 {
-    [MaxLength(20)]
+    [Required]
     [ForeignKey(nameof(User))]
-    public string UserUsername { get; set; } = null!;
+    public int IdUser { get; set; }
     public User User { get; set; } = null!;
 
     [ForeignKey(nameof(Trip))]

@@ -9,9 +9,8 @@ public class Notification
     public int IdNotification { get; set; }
 
     //user that got notification
-    [Required, MaxLength(20)]
     [ForeignKey(nameof(User))]
-    public string IdUser { get; set; } = null!;
+    public int? IdUser { get; set; }
     public User User { get; set; } = null!;
 
     public int? IdMessage { get; set; }      

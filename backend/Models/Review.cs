@@ -9,16 +9,12 @@ public class Review
     [Key]
     public int IdReview { get; set; }
 
-    [Required]
-    [MaxLength(20)]
     [ForeignKey(nameof(Reviewer))]
-    public string IdUserReviewer { get; set; } = null!;
+    public int? IdUserReviewer { get; set; }
     public User Reviewer { get; set; } = null!;
 
-    [Required]
-    [MaxLength(20)]
     [ForeignKey(nameof(ReviewedUser))]
-    public string IdUserReviewed { get; set; } = null!;
+    public int? IdUserReviewed { get; set; }
     public User ReviewedUser { get; set; } = null!;
 
     [Range(1, 10)]

@@ -5,12 +5,12 @@ namespace backend.Models;
 
 public class UserBadge
 {
-    [MaxLength(20)]
     [ForeignKey(nameof(User))]
-    public string UserUsername { get; set; } = null!;
+    public int? IdUser { get; set; }
     public User User { get; set; } = null!;
 
+    [Required]
     [ForeignKey(nameof(Badge))]
-    public int BadgeBadgeId { get; set; }
+    public int IdBadge { get; set; }
     public Badge Badge { get; set; } = null!;
 }

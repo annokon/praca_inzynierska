@@ -97,9 +97,6 @@ public class User
     public ICollection<BlockedUser>? BlockedUsers { get; set; } 
     public ICollection<BlockedUser>? UsersBlockingThisUser { get; set; } 
 
-    // for UserSetings
-    public UserSettings? Settings { get; set; }
-
     //for UserLanguage 
     public ICollection<UserLanguage>? UserLanguages { get; set; }
     

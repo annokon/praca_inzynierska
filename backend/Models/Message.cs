@@ -12,10 +12,8 @@ public class Message
     public int IdChat { get; set; }
     public Chat Chat { get; set; } = null!;
 
-    [Required]
-    [MaxLength(20)]
     [ForeignKey(nameof(Sender))]
-    public string IdUserSender { get; set; } = null!;
+    public int? IdUserSender { get; set; }
     public User Sender { get; set; } = null!;
 
     [MaxLength(1000)]

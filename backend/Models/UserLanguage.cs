@@ -5,13 +5,13 @@ namespace backend.Models;
 
 public class UserLanguage
 {
-    [MaxLength(20)]
-    [ForeignKey(nameof(User))]
-    public string UserUsername { get; set; } = null!;
-    public User User { get; set; } = null!;
-
-    [MaxLength(20)]
+    [Required]
     [ForeignKey(nameof(Language))]
-    public string LanguageName { get; set; } = null!;
+    public int IdLanguage { get; set; }
     public Language Language { get; set; } = null!;
+
+    [Required]
+    [ForeignKey(nameof(User))]
+    public int IdUser { get; set; }
+    public User User { get; set; } = null!;
 }

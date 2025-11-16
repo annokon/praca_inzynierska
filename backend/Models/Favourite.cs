@@ -9,16 +9,12 @@ public class Favourite
     public int IdFavourite { get; set; }
 
     // user adding to favourites
-    [Required]
-    [MaxLength(20)]
     [ForeignKey(nameof(User))]
-    public string IdUser { get; set; } = null!;
+    public int? IdUser { get; set; }
     public User User { get; set; } = null!;
 
     // user added to favourites
-    [Required]
-    [MaxLength(20)]
     [ForeignKey(nameof(FavouriteUser))]
-    public string IdUserFavourite { get; set; } = null!;
+    public int? IdUserFavourite { get; set; }
     public User FavouriteUser { get; set; } = null!;
 }

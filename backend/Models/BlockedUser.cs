@@ -5,16 +5,12 @@ namespace backend.Models;
 
 public class BlockedUser
 {
-    [Required]
-    [MaxLength(20)]
     [ForeignKey(nameof(Blocker))]
-    public string IdUserBlocker { get; set; } = null!;
+    public int? IdUserBlocker { get; set; }
     public User Blocker { get; set; } = null!;
 
-    [Required]
-    [MaxLength(20)]
     [ForeignKey(nameof(Blocked))]
-    public string IdUserBlocked { get; set; } = null!;
+    public int? IdUserBlocked { get; set; }
     public User Blocked { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

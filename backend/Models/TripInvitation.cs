@@ -14,15 +14,13 @@ public class TripInvitation
     public Trip Trip { get; set; } = null!;
 
     // user inviting
-    [Required, MaxLength(20)]
     [ForeignKey(nameof(InvitingUser))]
-    public string IdUserInviting { get; set; } = null!;
+    public int? IdUserInviting { get; set; }
     public User InvitingUser { get; set; } = null!;
 
     // user invited
-    [Required, MaxLength(20)]
     [ForeignKey(nameof(InvitedUser))]
-    public string IdUserInvited { get; set; } = null!;
+    public int? IdUserInvited { get; set; }
     public User InvitedUser { get; set; } = null!;
 
     [Required]
