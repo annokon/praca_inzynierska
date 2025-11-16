@@ -98,7 +98,9 @@ public class User
     public ICollection<SearchFilter>? SearchFilters { get; set; }
     
     //for BlockedUser
+    [InverseProperty(nameof(BlockedUser.Blocked))]
     public ICollection<BlockedUser>? BlockedUsers { get; set; } 
+    [InverseProperty(nameof(BlockedUser.Blocker))]
     public ICollection<BlockedUser>? UsersBlockingThisUser { get; set; } 
 
     //for UserLanguage 
@@ -115,7 +117,9 @@ public class User
     public ICollection<TripPhoto>? TripPhotosUploaded { get; set; }
     
     //for TripInvitation
+    [InverseProperty(nameof(TripInvitation.InvitingUser))]
     public ICollection<TripInvitation>? TripInvitationsSent { get; set; }
+    [InverseProperty(nameof(TripInvitation.InvitedUser))]
     public ICollection<TripInvitation>? TripInvitationsReceived { get; set; }
 
     //for UserChat

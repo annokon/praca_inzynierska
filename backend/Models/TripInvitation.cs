@@ -16,11 +16,14 @@ public class TripInvitation
     // user inviting
     [ForeignKey(nameof(InvitingUser))]
     public int? IdUserInviting { get; set; }
+    
+    [InverseProperty(nameof(User.TripInvitationsSent))]
     public User InvitingUser { get; set; } = null!;
 
     // user invited
     [ForeignKey(nameof(InvitedUser))]
     public int? IdUserInvited { get; set; }
+    [InverseProperty(nameof(User.TripInvitationsReceived))]
     public User InvitedUser { get; set; } = null!;
 
     [Required]
