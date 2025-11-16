@@ -41,7 +41,34 @@ public class DataContext : DbContext
                 .HasForeignKey(b => b.IdUserBlocked)
                 .OnDelete(DeleteBehavior.Cascade);
         });
-        
+        modelBuilder.Entity<UserLanguage>(entity =>
+        {
+            entity.HasKey(ul => new { ul.IdLanguage, ul.IdUser });
+
+            entity.HasOne(ul => ul.Language)
+                .WithMany(l => l.UserLanguages)
+                .HasForeignKey(ul => ul.IdLanguage)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ul => ul.User)
+                .WithMany(u => u.UserLanguages)
+                .HasForeignKey(ul => ul.IdUser)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<UserBadge>(entity =>
+        {
+            entity.HasKey(ub => new { ub.IdUser, ub.IdBadge });
+
+            entity.HasOne(ub => ub.User)
+                .WithMany(u => u.UserBadges)
+                .HasForeignKey(ub => ub.IdUser)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ub => ub.Badge)
+                .WithMany(b => b.UserBadges)
+                .HasForeignKey(ub => ub.IdBadge)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
     
 }

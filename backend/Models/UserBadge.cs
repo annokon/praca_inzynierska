@@ -5,8 +5,9 @@ namespace backend.Models;
 
 public class UserBadge
 {
+    [Required]
     [ForeignKey(nameof(User))]
-    public int? IdUser { get; set; }
+    public int IdUser { get; set; }
     public User User { get; set; } = null!;
 
     [Required]
