@@ -11,11 +11,13 @@ public class Badge
     [MaxLength(30)]
     public string Name { get; set; } = null!;
 
+    [Required] 
     [MaxLength(100)]
-    public string? Description { get; set; }
+    public string? Description { get; set; } = null!;
 
+    [Required] 
     [MaxLength(255)]
-    public string? IconPath { get; set; }
+    public string? IconPath { get; set; } = null!;
 
     public ICollection<UserBadge>? UserBadges { get; set; }
 }

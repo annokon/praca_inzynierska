@@ -5,8 +5,11 @@ namespace backend.Models;
 public class Language
 {
     [Key]
-    [MaxLength(20)]
-    public string Name { get; set; } = null!;
+    public int IdLanguage { get; set; }
+    
+    [Required]
+    [MaxLength(100)]
+    public string LanguageName { get; set; } = null!;
 
     public ICollection<UserLanguage>? UserLanguages { get; set; }
 }
