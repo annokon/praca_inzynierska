@@ -24,5 +24,4 @@ public class Message
 
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
-    public Notification? Notification { get; set; }
 }
