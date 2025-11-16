@@ -11,10 +11,17 @@ public class Review
 
     [ForeignKey(nameof(Reviewer))]
     public int? IdUserReviewer { get; set; }
+    
+    
+    [ForeignKey(nameof(IdUserReviewer))]
+    [InverseProperty(nameof(User.ReviewsWritten))]
     public User Reviewer { get; set; } = null!;
-
+    
     [ForeignKey(nameof(ReviewedUser))]
     public int? IdUserReviewed { get; set; }
+    
+    [ForeignKey(nameof(IdUserReviewed))]
+    [InverseProperty(nameof(User.ReviewsReceived))]
     public User ReviewedUser { get; set; } = null!;
 
     [Range(1, 10)]

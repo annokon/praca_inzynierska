@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models;
 
@@ -87,7 +88,10 @@ public class User
     public string? SystemLanguage { get; set; }
     
     //for Review
+    [InverseProperty(nameof(Review.Reviewer))]
     public ICollection<Review>? ReviewsWritten { get; set; }
+    
+    [InverseProperty(nameof(Review.ReviewedUser))]
     public ICollection<Review>? ReviewsReceived { get; set; }
     
     //for SearchFilter
