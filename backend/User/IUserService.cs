@@ -6,9 +6,9 @@ namespace backend.Interfaces;
 public interface IUserService
 {
     Task<IEnumerable<UserDTO>> GetAllAsync();
-    Task<UserDTO?> GetByUsernameAsync(string username);
+    Task<UserDTO?> GetByIdUserAsync(int idUser);
     Task<UserDTO> CreateAsync(CreateUserDTO dto);
-    Task<bool> UpdateAsync(string username, UpdateUserDTO dto);
-    Task<bool> AddAdditionalDataAsync(string username, AdditionalDataUserDTO dto);
-    Task<bool> DeleteAsync(string username);
+    Task<bool> UpdateAsync(int idUser, UpdateUserDTO dto);
+    Task<bool> AddAdditionalDataAsync(int idUser, AdditionalDataUserDTO dto);
+    Task<bool> DeleteAsync(int idUser);
 }

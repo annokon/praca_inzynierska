@@ -24,6 +24,7 @@ public class UserService : IUserService
         var users = await _userRepository.GetAllAsync();
         return users.Select(u => new UserDTO
         {
+            IdUser = u.IdUser,
             Username = u.Username,
             DisplayName = u.DisplayName,
             Email = u.Email,
@@ -39,13 +40,14 @@ public class UserService : IUserService
     }
 
     // get user by username
-    public async Task<UserDTO?> GetByUsernameAsync(string username)
+    public async Task<UserDTO?> GetByIdUserAsync(int idUser)
     {
-        var u = await _userRepository.GetByUsernameAsync(username);
+        var u = await _userRepository.GetByIdUserAsync(idUser);
         if (u == null) return null;
 
         return new UserDTO
         {
+            IdUser = u.IdUser,
             Username = u.Username,
             DisplayName = u.DisplayName,
             Email = u.Email,
@@ -69,6 +71,7 @@ public class UserService : IUserService
 
         var user = new User
         {
+            IdUser = dto.IdUser,
             Username = dto.Username,
             DisplayName = dto.DisplayName,
             Email = dto.Email,
@@ -84,6 +87,7 @@ public class UserService : IUserService
 
         return new UserDTO
         {
+            IdUser = user.IdUser,
             Username = user.Username,
             DisplayName = user.DisplayName,
             Email = user.Email,
@@ -94,9 +98,9 @@ public class UserService : IUserService
     }
 
     // adding optional data to user during registration
-    public async Task<bool> AddAdditionalDataAsync(string username, AdditionalDataUserDTO dto)
+    public async Task<bool> AddAdditionalDataAsync(int idUser, AdditionalDataUserDTO dto)
     {
-        var user = await _userRepository.GetByUsernameAsync(username);
+        var user = await _userRepository.GetByIdUserAsync(idUser);
         if (user == null) return false;
 
         user.Pronouns = dto.Pronouns;
@@ -113,9 +117,9 @@ public class UserService : IUserService
     }
 
     // update user data
-    public async Task<bool> UpdateAsync(string username, UpdateUserDTO dto)
+    public async Task<bool> UpdateAsync(int idUser, UpdateUserDTO dto)
     {
-        var user = await _userRepository.GetByUsernameAsync(username);
+        var user = await _userRepository.GetByIdUserAsync(idUser);
         if (user == null) return false;
 
         user.DisplayName = dto.DisplayName ?? user.DisplayName;
@@ -131,7 +135,7 @@ public class UserService : IUserService
     }
 
     // deleting user
-    public async Task<bool> DeleteAsync(string username)
+    public async Task<bool> DeleteAsync(int idUser)
     {
         //TODO
         return true;

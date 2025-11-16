@@ -6,6 +6,9 @@ public class CreateUserDTO
 {
     // required data
     [Required, MaxLength(20)]
+    public int IdUser { get; set; }
+    
+    [Required, MaxLength(20)]
     public string Username { get; set; } = null!;
 
     [Required, MaxLength(30)]

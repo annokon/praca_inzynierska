@@ -6,6 +6,9 @@ public class UpdateUserDTO
 {
     // required data
     [MaxLength(20)]
+    public int? IdUser { get; set; }
+    
+    [MaxLength(20)]
     public string? Username { get; set; }
     
     [MaxLength(30)]

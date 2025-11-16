@@ -11,7 +11,7 @@ public class BlockedUser
     
     [InverseProperty(nameof(User.UsersBlockingThisUser))]
     public User Blocker { get; set; } = null!;
-
+    
     [Required]
     [ForeignKey(nameof(Blocked))]
     public int IdUserBlocked { get; set; }

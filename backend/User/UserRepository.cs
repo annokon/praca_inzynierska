@@ -1,4 +1,4 @@
-﻿using backend.Data;
+﻿using backend.Infrastructure.Data;
 using backend.Interfaces;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -25,14 +25,14 @@ public class UserRepository : IUserRepository
         await _context.Users.AsNoTracking().ToListAsync();
 
     
-    // get user by username
-    Task<User?> IUserRepository.GetByUsernameAsync(string username)
+    // get user by id
+    Task<User?> IUserRepository.GetByIdUserAsync(int idUser)
     {
-        return GetByUsernameAsync(username);
+        return GetByIdUserAsync(idUser);
     }
     
-    public async Task<User?> GetByUsernameAsync(string username) =>
-        await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+    public async Task<User?> GetByIdUserAsync(int idUser) =>
+        await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUser);
 
     
     // add new user

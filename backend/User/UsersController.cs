@@ -25,11 +25,11 @@ public class UsersController : ControllerBase
     }
 
 
-    // get user by username
-    [HttpGet("{username}")]
-    public async Task<IActionResult> GetByUsername(string username)
+    // get user by id
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetByIdUser(int idUser)
     {
-        var user = await _userService.GetByUsernameAsync(username);
+        var user = await _userService.GetByIdUserAsync(idUser);
         if (user == null)
             return NotFound(new { message = "User not found." });
 
@@ -47,7 +47,7 @@ public class UsersController : ControllerBase
         try
         {
             var created = await _userService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetByUsername), new { username = created.Username }, created);
+            return CreatedAtAction(nameof(GetByIdUser), new { idUser = created.IdUser }, created);
         }
         catch (Exception ex)
         {
@@ -57,13 +57,13 @@ public class UsersController : ControllerBase
 
 
     // update user
-    [HttpPut("{username}")]
-    public async Task<IActionResult> Update(string username, [FromBody] UpdateUserDTO dto)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int idUser, [FromBody] UpdateUserDTO dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var updated = await _userService.UpdateAsync(username, dto);
+        var updated = await _userService.UpdateAsync(idUser, dto);
         if (!updated)
             return NotFound(new { message = "User not found." });
 
@@ -72,13 +72,13 @@ public class UsersController : ControllerBase
 
 
     // adding optional data to user during registration
-    [HttpPut("{username}/additional")]
-    public async Task<IActionResult> AddAdditionalData(string username, [FromBody] AdditionalDataUserDTO dto)
+    [HttpPut("{id}/additional")]
+    public async Task<IActionResult> AddAdditionalData(int idUser, [FromBody] AdditionalDataUserDTO dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var updated = await _userService.AddAdditionalDataAsync(username, dto);
+        var updated = await _userService.AddAdditionalDataAsync(idUser, dto);
         if (!updated)
             return NotFound(new { message = "User not found." });
 
@@ -87,10 +87,10 @@ public class UsersController : ControllerBase
 
 
     // delete user
-    [HttpDelete("{username}")]
-    public async Task<IActionResult> Delete(string username)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int idUser)
     {
-        var deleted = await _userService.DeleteAsync(username);
+        var deleted = await _userService.DeleteAsync(idUser);
         if (!deleted)
             return NotFound(new { message = "User not found." });
 
