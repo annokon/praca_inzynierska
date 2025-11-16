@@ -5,14 +5,16 @@ namespace backend.Models;
 
 public class BlockedUser
 {
+    [Required]
     [ForeignKey(nameof(Blocker))]
-    public int? IdUserBlocker { get; set; }
+    public int IdUserBlocker { get; set; }
     
     [InverseProperty(nameof(User.UsersBlockingThisUser))]
     public User Blocker { get; set; } = null!;
 
+    [Required]
     [ForeignKey(nameof(Blocked))]
-    public int? IdUserBlocked { get; set; }
+    public int IdUserBlocked { get; set; }
     
     [InverseProperty(nameof(User.BlockedUsers))]
     public User Blocked { get; set; } = null!;
