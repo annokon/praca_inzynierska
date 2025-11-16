@@ -13,6 +13,16 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //TODO
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasOne(n => n.TripInvitation)
+                .WithOne(ti => ti.Notification)
+                .HasForeignKey<Notification>(n => n.IdTripInvitation);
+            entity.HasOne(n => n.Message)
+                .WithMany(m => m.Notifications) 
+                .HasForeignKey(n => n.IdMessage)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
+
 }

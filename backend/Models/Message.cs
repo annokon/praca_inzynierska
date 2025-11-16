@@ -23,5 +23,6 @@ public class Message
     public string? MediaUrl { get; set; }
 
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-
+    
+    public ICollection<Notification>? Notifications { get; set; }
 }
