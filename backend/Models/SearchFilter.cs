@@ -6,18 +6,19 @@ namespace backend.Models;
 public class SearchFilter
 {
     [Key]
-    public int Id { get; set; }
+    public int IdSearchFilter { get; set; }
 
     [Required]
     [MaxLength(20)]
     [ForeignKey(nameof(User))]
-    public string UserUsername { get; set; } = null!;
+    public string IdUser { get; set; } = null!;
     public User User { get; set; } = null!;
 
     [Required]
     [MaxLength(20)]
     public string Name { get; set; } = null!;
 
+    [Required]
     [MaxLength(1000)]
     public string Criteria { get; set; } = null!;
 

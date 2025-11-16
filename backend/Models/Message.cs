@@ -6,16 +6,16 @@ namespace backend.Models;
 public class Message
 {
     [Key]
-    public int Id { get; set; }
+    public int IdMessage { get; set; }
 
     [ForeignKey(nameof(Chat))]
-    public int ChatId { get; set; }
+    public int IdChat { get; set; }
     public Chat Chat { get; set; } = null!;
 
     [Required]
     [MaxLength(20)]
     [ForeignKey(nameof(Sender))]
-    public string SenderUsername { get; set; } = null!;
+    public string IdUserSender { get; set; } = null!;
     public User Sender { get; set; } = null!;
 
     [MaxLength(1000)]
@@ -23,9 +23,6 @@ public class Message
 
     [MaxLength(255)]
     public string? MediaUrl { get; set; }
-
-    [MaxLength(255)]
-    public string? PhotoPath { get; set; }
 
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
