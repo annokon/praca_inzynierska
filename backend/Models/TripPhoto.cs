@@ -15,9 +15,8 @@ public class TripPhoto
 
     //user that added photo
     [Required]
-    [MaxLength(20)]
     [ForeignKey(nameof(UploadedByUser))]
-    public string UploadedBy { get; set; } = null!;
+    public int UploadedBy { get; set; }
     public User UploadedByUser { get; set; } = null!;
 
     [Required]
