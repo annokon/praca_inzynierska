@@ -6,11 +6,11 @@ namespace backend.Models;
 public class TripPhoto
 {
     [Key]
-    public int Id { get; set; }
+    public int IdTripPhoto { get; set; }
     
     [Required]
     [ForeignKey(nameof(Trip))]
-    public int TripId { get; set; }
+    public int IdTrip { get; set; }
     public Trip Trip { get; set; } = null!;
 
     //user that added photo

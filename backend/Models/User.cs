@@ -5,20 +5,27 @@ namespace backend.Models;
 public class User
 {
     [Key] 
-    [MaxLength(20)] 
+    public int IdUser { get; set; }
+    
+    [Required]
+    [MaxLength(100)] 
     public string Username { get; set; } = null!;
 
+    [Required]
     [MaxLength(30)] 
     public string DisplayName { get; set; } = null!;
 
+    [Required]
     [MaxLength(320)] 
     public string Email { get; set; } = null!;
 
+    [Required]
     [MaxLength(255)] 
     public string PasswordHash { get; set; } = null!;
 
     public DateOnly BirthDate { get; set; }
 
+    [Required]
     [MaxLength(20)] 
     public string? Gender { get; set; }
 
@@ -62,6 +69,7 @@ public class User
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+    [Required]
     [MaxLength(20)] 
     public string Role { get; set; } = "user";
 
@@ -69,6 +77,14 @@ public class User
     public DateTime? DeleteDate { get; set; }
 
     public bool IsBlocked { get; set; } = false;
+    
+    [Required]
+    [MaxLength(3)]
+    public string? Currency { get; set; }
+
+    [Required]
+    [MaxLength(100)]
+    public string? SystemLanguage { get; set; }
     
     //for Review
     public ICollection<Review>? ReviewsWritten { get; set; }

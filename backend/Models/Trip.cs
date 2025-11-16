@@ -5,12 +5,13 @@ namespace backend.Models;
 public class Trip
 {
     [Key]
-    public int Id { get; set; }
+    public int IdTrip { get; set; }
 
     [Required]
     [MaxLength(20)]  
     public string Title { get; set; } = null!;
 
+    [Required]
     [MaxLength(2000)]
     public string? Description { get; set; }
 
@@ -19,6 +20,7 @@ public class Trip
 
     public int? DurationDays { get; set; }
 
+    [Required]
     [MaxLength(20)]
     public string? Destination { get; set; }
 
@@ -34,6 +36,7 @@ public class Trip
 
     public bool IsReported { get; set; } = false;
 
+    [Required]
     [MaxLength(50)]
     public string? TravelType { get; set; }
 
