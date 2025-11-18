@@ -1,8 +1,10 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using backend.Infrastructure.Data;
+using backend.Repositories;
+using backend.Services;
+using backend.Interfaces;
+using backend.Security;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<PasswordHasher>();
 
 var app = builder.Build();
 
@@ -29,28 +35,38 @@ app.MapControllers();
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+// sample data
+using (var scope = app.Services.CreateScope())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    var hasher = scope.ServiceProvider.GetRequiredService<PasswordHasher>();
+    
+    if (!db.Users.Any())
     {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast");
+        db.Users.Add(new backend.Models.User
+        {
+            Username = "testuser",
+            DisplayName = "Test User",
+            Email = "test@example.com",
+            PasswordHash = hasher.HashPassword("Test123!"),
+            BirthDate = new DateOnly(2000, 1, 1),
+            Gender = "other",
+            IsActive = true,
+            Role = "user",
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            Currency = "PLN",
+            SystemLanguage = "pl"
+        });
+
+        db.SaveChanges();
+        Console.WriteLine("Seed data added to database.");
+    }
+    else
+    {
+        Console.WriteLine("Database already has users. Seed skipped.");
+    }
+}
+
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
