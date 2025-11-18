@@ -24,7 +24,7 @@ form.addEventListener('submit', async (event) => {
             statusEl.textContent = response.message || "Nieprawidłowy login lub hasło.";
             statusEl.classList.add("error");
         } else {
-            statusEl.textContent = "Zalogowano pomyślnie 🎉";
+            statusEl.textContent = "Zalogowano pomyślnie";
             statusEl.classList.add("success");
 
         }
@@ -36,7 +36,7 @@ form.addEventListener('submit', async (event) => {
 });
 
 async function loginUser(login, password) {
-    
+
     if (login === "admin" && password === "test123") {
         return {
             ok: true,
