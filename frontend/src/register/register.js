@@ -7,7 +7,7 @@ form.addEventListener('submit', async (event) => {
     const username = form.username.value.trim();
     const displayName = form.displayName.value.trim();
     const email = form.email.value.trim();
-    const birthDate = form.birthDate.value;
+    const birthDate = form.birthDate.value; // format yyyy-mm-dd
     const password = form.password.value;
     const confirmPassword = form.confirmPassword.value;
     const termsAccepted = form.terms.checked;
@@ -47,7 +47,8 @@ form.addEventListener('submit', async (event) => {
 
     try {
         statusEl.textContent = "Tworzenie konta...";
-        const response = await registerUser({
+
+        const result = await registerUser({
             username,
             displayName,
             email,
@@ -55,16 +56,16 @@ form.addEventListener('submit', async (event) => {
             password
         });
 
-        if (!response.ok) {
-            statusEl.textContent = response.message || "Nie udało się utworzyć konta.";
+        if (!result.ok) {
+            statusEl.textContent = result.message || "Nie udało się utworzyć konta.";
             statusEl.classList.add("error");
         } else {
-            statusEl.textContent = "Konto zostało utworzone. Możesz się teraz zalogować.";
+            statusEl.textContent = "Konto zostało utworzone. Przekierowuję do logowania...";
             statusEl.classList.add("success");
 
             setTimeout(() => {
-               window.location.href = "../login/login.html";
-               }, 1500);
+                window.location.href = "../login/login.html";
+            }, 1500);
         }
     } catch (e) {
         console.error(e);
@@ -79,11 +80,29 @@ function validateEmail(email) {
 }
 
 async function registerUser(data) {
-    console.log("Rejestracja (demo):", data);
+    const res = await fetch("http://localhost:5292/api/users", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: data.username,
+            displayName: data.displayName,
+            email: data.email,
+            birthDate: data.birthDate,
+            password: data.password
+        })
+    });
 
-    return {
-        ok: true,
-        message: "Utworzono konto (demo)."
-    };
+    if (!res.ok) {
+        let message = "Błąd rejestracji.";
+        try {
+            const err = await res.json();
+            if (err.message) message = err.message;
+        } catch (_) {}
+        return { ok: false, message };
+    }
 
+    const created = await res.json().catch(() => ({}));
+    return { ok: true, user: created };
 }
