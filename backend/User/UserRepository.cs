@@ -1,9 +1,7 @@
 ﻿using backend.Infrastructure.Data;
-using backend.Interfaces;
-using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Repositories;
+namespace backend.User;
 
 public class UserRepository : IUserRepository
 {
@@ -16,32 +14,32 @@ public class UserRepository : IUserRepository
 
     
     // get all users
-    Task<IEnumerable<User>> IUserRepository.GetAllAsync()
+    Task<IEnumerable<Models.User>> IUserRepository.GetAllAsync()
     {
         return GetAllAsync();
     }
     
-    public async Task<IEnumerable<User>> GetAllAsync() =>
+    public async Task<IEnumerable<Models.User>> GetAllAsync() =>
         await _context.Users.AsNoTracking().ToListAsync();
 
     
     // get user by id
-    Task<User?> IUserRepository.GetByIdUserAsync(int idUser)
+    Task<Models.User?> IUserRepository.GetByIdUserAsync(int idUser)
     {
         return GetByIdUserAsync(idUser);
     }
     
-    public async Task<User?> GetByIdUserAsync(int idUser) =>
+    public async Task<Models.User?> GetByIdUserAsync(int idUser) =>
         await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUser);
 
     
     // add new user
-    Task IUserRepository.AddAsync(User user)
+    Task IUserRepository.AddAsync(Models.User user)
     {
         return AddAsync(user);
     }
     
-    public async Task AddAsync(User user)
+    public async Task AddAsync(Models.User user)
     {
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -49,12 +47,12 @@ public class UserRepository : IUserRepository
 
     
     // update user
-    Task IUserRepository.UpdateAsync(User user)
+    Task IUserRepository.UpdateAsync(Models.User user)
     {
         return UpdateAsync(user);
     }
 
-    public async Task UpdateAsync(User user)
+    public async Task UpdateAsync(Models.User user)
     {
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
@@ -62,12 +60,12 @@ public class UserRepository : IUserRepository
     
     
     // delete user
-    Task IUserRepository.DeleteAsync(User user)
+    Task IUserRepository.DeleteAsync(Models.User user)
     {
         return DeleteAsync(user);
     }
     
-    public async Task DeleteAsync(User user)
+    public async Task DeleteAsync(Models.User user)
     {
         //TODO
     }

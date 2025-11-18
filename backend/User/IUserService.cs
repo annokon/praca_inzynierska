@@ -1,7 +1,7 @@
 ﻿using backend.DTOs;
 using backend.DTOs.UserDTOs;
 
-namespace backend.Interfaces;
+namespace backend.User;
 
 public interface IUserService
 {

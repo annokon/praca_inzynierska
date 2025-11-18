@@ -1,14 +1,12 @@
-﻿using backend.Models;
-
-namespace backend.Interfaces;
+﻿namespace backend.User;
 
 public interface IUserRepository
 {
-    Task<IEnumerable<User>> GetAllAsync();
-    Task<User?> GetByIdUserAsync(int idUser);
-    Task AddAsync(User user);
-    Task UpdateAsync(User user);
-    Task DeleteAsync(User user);
+    Task<IEnumerable<Models.User>> GetAllAsync();
+    Task<Models.User?> GetByIdUserAsync(int idUser);
+    Task AddAsync(Models.User user);
+    Task UpdateAsync(Models.User user);
+    Task DeleteAsync(Models.User user);
     Task<bool> ExistsByEmailAsync(string email);
     Task<bool> ExistsByUsernameAsync(string username);
 }

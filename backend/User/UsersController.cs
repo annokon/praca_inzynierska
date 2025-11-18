@@ -1,8 +1,9 @@
-﻿using backend.DTOs;
-using backend.Interfaces;
+﻿using System.Security.Claims;
+using backend.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Controllers;
+namespace backend.User;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -95,5 +96,25 @@ public class UsersController : ControllerBase
             return NotFound(new { message = "User not found." });
 
         return NoContent();
+    }
+    
+    // only admin
+    [Authorize(Roles = "admin")]
+    [HttpGet("admin-only")]
+    public IActionResult AdminAction() => Ok("Jesteś adminem");
+
+    // only mod and admin
+    [Authorize(Roles = "admin,mod")]
+    [HttpGet("staff")]
+    public IActionResult StaffAction() => Ok("Jesteś adminem albo moderatorem");
+
+    // only logged user
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMyData()
+    {
+        var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var user = await _userService.GetByIdUserAsync(id);
+        return Ok(user);
     }
 }

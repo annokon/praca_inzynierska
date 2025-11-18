@@ -1,8 +1,7 @@
 ﻿using backend.DTOs;
 using backend.DTOs.UserDTOs;
-using backend.Interfaces;
-using backend.Models;
 using backend.Security;
+using backend.User;
 
 namespace backend.Services;
 
@@ -69,7 +68,7 @@ public class UserService : IUserService
         if (await _userRepository.ExistsByUsernameAsync(dto.Username))
             throw new Exception("This username is already taken.");
 
-        var user = new User
+        var user = new backend.Models.User
         {
             IdUser = dto.IdUser,
             Username = dto.Username,
