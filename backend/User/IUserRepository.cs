@@ -9,4 +9,5 @@ public interface IUserRepository
     Task DeleteAsync(Models.User user);
     Task<bool> ExistsByEmailAsync(string email);
     Task<bool> ExistsByUsernameAsync(string username);
+    Task<Models.User?> GetByEmailAsync(string email);
 }

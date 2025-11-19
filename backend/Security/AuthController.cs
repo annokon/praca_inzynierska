@@ -23,8 +23,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginUserDTO dto)
     {
-        var user = (await _users.GetAllAsync())
-            .FirstOrDefault(u => u.Email == dto.Email);
+        var user = await _users.GetByEmailAsync(dto.Email);
 
         if (user == null || !_hasher.VerifyPassword(dto.Password, user.PasswordHash))
             return Unauthorized(new { message = "Invalid credentials" });

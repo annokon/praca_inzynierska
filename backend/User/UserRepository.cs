@@ -78,4 +78,8 @@ public class UserRepository : IUserRepository
     // does any user with this username already exist?
     public async Task<bool> ExistsByUsernameAsync(string username) =>
         await _context.Users.AnyAsync(u => u.Username == username);
+
+    
+    public async Task<Models.User?> GetByEmailAsync(string email) =>
+        await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 }
