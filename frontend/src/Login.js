@@ -29,21 +29,29 @@ export default function Login() {
     return (
         <div className="card">
             <h1>Logowanie</h1>
+            <p>Wpisz login i hasło, aby się zalogować.</p>
 
-            <form onSubmit={handleLogin}>
+            <form id="loginForm" onSubmit={handleLogin}>
                 <div className="field">
                     <label>Email</label>
-                    <input name="email" type="email" required />
+                    <input id="email" name="email" type="email" required/>
                 </div>
 
                 <div className="field">
                     <label>Hasło</label>
-                    <input name="password" type="password" required />
+                    <input id="password" name="password" type="password" required/>
                 </div>
 
-                <button className="button">Zaloguj się</button>
+                <button type="submit" className="button">Zaloguj się</button>
 
-                <div className="status">{status}</div>
+                <button
+                    type="button"
+                    className="button secondary"
+                    onClick="window.location.href='../register/register.html'">
+                    Nie masz konta? Stwórz nowe teraz
+                </button>
+
+                <div id="status" className="status">{status}</div>
             </form>
         </div>
     );
