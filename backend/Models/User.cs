@@ -34,7 +34,6 @@ public class User
     public DateOnly BirthDate { get; set; }
 
     [Column("gender")]
-    [Required]
     [MaxLength(20)] 
     public string? Gender { get; set; }
 
