@@ -7,8 +7,8 @@ public class CookieHelper
         response.Cookies.Append("access_token", token, new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            Secure = false,
+            SameSite = SameSiteMode.Lax,
             Expires = DateTime.UtcNow.AddMinutes(15)
         });
     }
@@ -18,8 +18,8 @@ public class CookieHelper
         response.Cookies.Append("refresh_token", token, new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            Secure = false,
+            SameSite = SameSiteMode.Lax,
             Expires = DateTime.UtcNow.AddDays(30)
         });
     }

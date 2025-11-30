@@ -1,8 +1,19 @@
 import React from "react";
 import "./Navbar.css";
 import logo from "../../assets/logo.png";
+import useAuth from "../../hooks/useAuth";
 
 export default function Navbar() {
+    const { user, loading } = useAuth();
+
+    const handleLogout = async () => {
+        await fetch("http://localhost:5292/api/users/logout", {
+            method: "POST",
+            credentials: "include"
+        });
+        window.location.reload();
+    };
+
     return (
         <nav className="navbar">
             <div className="navbar-left">
@@ -19,7 +30,19 @@ export default function Navbar() {
                     <button>&times;</button>
                 </div>
 
-                <a href="/login" className="nav-link">Zaloguj się</a>
+                {loading ? null : (
+                    <>
+                        {!user && (
+                            <a href="/login" className="nav-link">Zaloguj się</a>
+                        )}
+
+                        {user && (
+                            <button className="nav-link logout-btn" onClick={handleLogout}>
+                                Wyloguj się
+                            </button>
+                        )}
+                    </>
+                )}
             </div>
         </nav>
     );
