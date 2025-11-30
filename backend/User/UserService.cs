@@ -2,6 +2,8 @@
 using backend.DTOs.UserDTOs;
 using backend.Security;
 using backend.User;
+using backend.User.DTOs;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace backend.Services;
 
@@ -9,11 +11,13 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly PasswordHasher _passwordHasher;
+    private readonly JwtService _jwt;
 
-    public UserService(IUserRepository userRepository, PasswordHasher passwordHasher)
+    public UserService(IUserRepository userRepository, PasswordHasher passwordHasher, JwtService jwt)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _jwt = jwt;
     }
 
 
@@ -138,5 +142,84 @@ public class UserService : IUserService
     {
         //TODO
         return true;
+    }
+
+    public async Task<RegisterResult> RegisterAsync(RegisterUserDTO dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Email) ||
+            string.IsNullOrWhiteSpace(dto.Username) ||
+            string.IsNullOrWhiteSpace(dto.DisplayName) ||
+            string.IsNullOrWhiteSpace(dto.Password))
+            return RegisterResult.Fail("Wszystkie pola są wymagane.");
+
+        if (!dto.Email.Contains('@') || !dto.Email.Contains('.'))
+            return RegisterResult.Fail("Podaj poprawny adres email.");
+
+        if (await _userRepository.ExistsByEmailAsync(dto.Email))
+            return RegisterResult.Fail("Ten email jest już zajęty.");
+
+        if (await _userRepository.ExistsByUsernameAsync(dto.Username))
+            return RegisterResult.Fail("Ta nazwa użytkownika jest już zajęta.");
+
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        if (dto.BirthDate > today.AddYears(-16))
+            return RegisterResult.Fail("Musisz mieć co najmniej 16 lat.");
+
+        if (dto.Password.Length < 8)
+            return RegisterResult.Fail("Hasło musi mieć co najmniej 8 znaków.");
+
+        var user = new backend.Models.User
+        {
+            Username = dto.Username.Trim(),
+            DisplayName = dto.DisplayName.Trim(),
+            Email = dto.Email.Trim(),
+            BirthDate = dto.BirthDate,
+            PasswordHash = _passwordHasher.HashPassword(dto.Password),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            Role = "user",
+            Currency = "PLN",
+            SystemLanguage = "pl-PL",
+            IsActive = true
+        };
+
+        await _userRepository.AddAsync(user);
+
+        return RegisterResult.SuccessResult(user);
+    }
+
+
+    public async Task<LoginResult> LoginAsync(LoginUserDTO dto)
+    {
+        var user = await _userRepository.GetByEmailAsync(dto.Email);
+        if (user == null)
+            return LoginResult.Fail("Invalid credentials");
+
+        if (!_passwordHasher.VerifyPassword(dto.Password, user.PasswordHash))
+            return LoginResult.Fail("Invalid credentials");
+
+        return LoginResult.SuccessResult(
+            access: _jwt.GenerateAccessToken(user),
+            refresh: _jwt.GenerateRefreshToken(),
+            role: user.Role
+        );
+    }
+    
+    public async Task<UserDTO?> GetByIdAsync(int id)
+    {
+        var u = await _userRepository.GetByIdUserAsync(id);
+        if (u == null) return null;
+
+        return new UserDTO
+        {
+            IdUser = u.IdUser,
+            Username = u.Username,
+            DisplayName = u.DisplayName,
+            Email = u.Email,
+            Gender = u.Gender,
+            Location = u.Location,
+            ProfilePhotoPath = u.ProfilePhotoPath,
+            Role = u.Role
+        };
     }
 }

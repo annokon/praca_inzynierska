@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 import "./login/login.css";
 
 export default function Register() {
@@ -36,10 +36,10 @@ export default function Register() {
         try {
             setStatus("Tworzenie konta");
 
-            const res = await fetch("http://localhost:5292/api/auth/register", {
+            const res = await fetch("http://localhost:5292/api/users/register", {
                 method: "POST",
                 credentials: "include",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
                     username,
                     displayName,
@@ -61,100 +61,102 @@ export default function Register() {
     }
 
     return (
-        <div className="card">
-            <h1>Zarejestruj się</h1>
+        <div className="login-page">
+            <div className="card">
+                <h1>Zarejestruj się</h1>
 
-            <form id="registerForm" onSubmit={handleRegister}>
-                <div className="field">
-                    <label htmlFor="username">Nazwa użytkownika</label>
-                    <input
-                        id="username"
-                        name="username"
-                        type="text"
-                        required
-                    />
-                </div>
+                <form id="registerForm" onSubmit={handleRegister}>
+                    <div className="field">
+                        <label htmlFor="username">Nazwa użytkownika</label>
+                        <input
+                            id="username"
+                            name="username"
+                            type="text"
+                            required
+                        />
+                    </div>
 
-                <div className="field">
-                    <label htmlFor="displayName">Wyświetlana nazwa</label>
-                    <input
-                        id="displayName"
-                        name="displayName"
-                        type="text"
-                        required
-                    />
-                </div>
+                    <div className="field">
+                        <label htmlFor="displayName">Wyświetlana nazwa</label>
+                        <input
+                            id="displayName"
+                            name="displayName"
+                            type="text"
+                            required
+                        />
+                    </div>
 
-                <div className="field">
-                    <label htmlFor="email">Email</label>
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                    />
-                </div>
+                    <div className="field">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            required
+                        />
+                    </div>
 
-                <div className="field">
-                    <label htmlFor="birthDate">Data urodzenia</label>
-                    <input
-                        id="birthDate"
-                        name="birthDate"
-                        type="date"
-                        required
-                    />
-                </div>
+                    <div className="field">
+                        <label htmlFor="birthDate">Data urodzenia</label>
+                        <input
+                            id="birthDate"
+                            name="birthDate"
+                            type="date"
+                            required
+                        />
+                    </div>
 
-                <div className="field">
-                    <label htmlFor="password">Hasło</label>
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        required
-                    />
-                    <small>Hasło musi składać się z co najmniej 8 znaków.</small>
-                </div>
+                    <div className="field">
+                        <label htmlFor="password">Hasło</label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            required
+                        />
+                        <small>Hasło musi składać się z co najmniej 8 znaków.</small>
+                    </div>
 
-                <div className="field">
-                    <label htmlFor="confirmPassword">Powtórz hasło</label>
-                    <input
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type="password"
-                        required
-                    />
-                </div>
+                    <div className="field">
+                        <label htmlFor="confirmPassword">Powtórz hasło</label>
+                        <input
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            type="password"
+                            required
+                        />
+                    </div>
 
-                <div className="field checkbox-field">
-                    <input
-                        id="terms"
-                        name="terms"
-                        type="checkbox"
-                        required
-                    />
-                    <label htmlFor="terms">
-                        Akceptuję regulamin aplikacji, zasady użytkowania i
-                        potwierdzam, że mam ukończone 16 lat.
-                    </label>
-                </div>
+                    <div className="field checkbox-field">
+                        <input
+                            id="terms"
+                            name="terms"
+                            type="checkbox"
+                            required
+                        />
+                        <label htmlFor="terms">
+                            Akceptuję regulamin aplikacji, zasady użytkowania i
+                            potwierdzam, że mam ukończone 16 lat.
+                        </label>
+                    </div>
 
-                <button type="submit" className="button">
-                    Stwórz konto
-                </button>
+                    <button type="submit" className="button">
+                        Stwórz konto
+                    </button>
 
-                <button
-                    type="button"
-                    className="button secondary"
-                    onClick={() => (window.location.href = "/login")}
-                >
-                    Posiadasz już konto? Zaloguj się
-                </button>
+                    <button
+                        type="button"
+                        className="button secondary"
+                        onClick={() => (window.location.href = "/login")}
+                    >
+                        Posiadasz już konto? Zaloguj się
+                    </button>
 
-                <div id="status" className="status">
-                    {status}
-                </div>
-            </form>
+                    <div id="status" className="status">
+                        {status}
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }

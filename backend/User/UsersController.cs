@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
 using backend.DTOs;
+using backend.Security;
+using backend.User.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -97,24 +99,65 @@ public class UsersController : ControllerBase
 
         return NoContent();
     }
+
     
-    // only admin
-    [Authorize(Roles = "admin")]
-    [HttpGet("admin-only")]
-    public IActionResult AdminAction() => Ok("Jesteś adminem");
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(RegisterUserDTO dto)
+    {
+        var result = await _userService.RegisterAsync(dto);
 
-    // only mod and admin
-    [Authorize(Roles = "admin,mod")]
-    [HttpGet("staff")]
-    public IActionResult StaffAction() => Ok("Jesteś adminem albo moderatorem");
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
 
-    // only logged user
+        return Ok(new
+        {
+            message = "New user created",
+            id = result.User!.IdUser,
+            username = result.User.Username
+        });
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginUserDTO dto)
+    {
+        var result = await _userService.LoginAsync(dto);
+
+        if (!result.Success)
+            return Unauthorized(new { message = result.Error });
+
+        CookieHelper.SetAccessToken(Response, result.AccessToken!);
+        CookieHelper.SetRefreshToken(Response, result.RefreshToken!);
+
+        return Ok(new { message = "Logged in", role = result.Role });
+    }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        CookieHelper.ClearTokens(Response);
+        return Ok(new { message = "Logged out" });
+    }
+
+    
+    // my data
     [Authorize]
     [HttpGet("me")]
-    public async Task<IActionResult> GetMyData()
+    public async Task<IActionResult> GetMe()
     {
-        var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var user = await _userService.GetByIdUserAsync(id);
+        var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var user = await _userService.GetByIdAsync(id);
+
         return Ok(user);
     }
+
+    // admin
+    [Authorize(Roles = "admin")]
+    [HttpGet("admin-only")]
+    public IActionResult Admin() => Ok("You are an admin only");
+
+    // mod
+    [Authorize(Roles = "admin,mod")]
+    [HttpGet("staff")]
+    public IActionResult Staff() => Ok("You are an admin or moderator");
 }

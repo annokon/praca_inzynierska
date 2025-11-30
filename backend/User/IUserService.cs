@@ -1,5 +1,6 @@
 ﻿using backend.DTOs;
 using backend.DTOs.UserDTOs;
+using backend.User.DTOs;
 
 namespace backend.User;
 
@@ -11,4 +12,7 @@ public interface IUserService
     Task<bool> UpdateAsync(int idUser, UpdateUserDTO dto);
     Task<bool> AddAdditionalDataAsync(int idUser, AdditionalDataUserDTO dto);
     Task<bool> DeleteAsync(int idUser);
+    Task<RegisterResult> RegisterAsync(RegisterUserDTO dto);
+    Task<LoginResult> LoginAsync(LoginUserDTO dto);
+    Task<UserDTO?> GetByIdAsync(int id);
 }
