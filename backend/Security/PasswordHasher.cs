@@ -10,9 +10,9 @@ public class PasswordHasher
 {
     private const int SaltSize = 16; // 128 bits
     private const int HashSize = 32; // 256 bits
-    private const int DegreeOfParallelism = 8; // Number of threads to use
-    private const int Iterations = 4; // Number of iterations
-    private const int MemorySize = 1024 * 1024; // 1 GB
+    private const int DegreeOfParallelism = 1; // Number of threads to use
+    private const int Iterations = 3; // Number of iterations
+    private const int MemorySize = 64 * 1024; // 1 GB
 
     public string HashPassword(string password)
     {
