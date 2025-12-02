@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using backend.Infrastructure.Data;
-using backend.Services;
-using backend.Security;
 using backend.User;
+using backend.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -21,6 +20,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<PasswordHasher>();
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<JwtService>();
 
@@ -88,6 +89,10 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DataContext>();
     var hasher = scope.ServiceProvider.GetRequiredService<PasswordHasher>();
+    var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+    
+    await userService.SeedLanguagesAsync();
+    Console.WriteLine("Languages seeded from external API.");
     
     if (!db.Users.Any())
     {
@@ -108,7 +113,7 @@ using (var scope = app.Services.CreateScope())
         });
 
         db.SaveChanges();
-        Console.WriteLine("Seed data added to database.");
+        Console.WriteLine("Seed user added to database.");
     }
     else
     {

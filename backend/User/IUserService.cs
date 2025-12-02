@@ -1,5 +1,6 @@
 ﻿using backend.DTOs;
 using backend.DTOs.UserDTOs;
+using backend.Models;
 using backend.User.DTOs;
 
 namespace backend.User;
@@ -15,4 +16,10 @@ public interface IUserService
     Task<RegisterResult> RegisterAsync(RegisterUserDTO dto);
     Task<LoginResult> LoginAsync(LoginUserDTO dto);
     Task<UserDTO?> GetByIdAsync(int id);
+    Task<IEnumerable<Language>> GetAllLanguagesAsync();
+    Task<IEnumerable<Language>> GetUserLanguagesAsync(int userId);
+    Task<bool> UpdateUserLanguagesAsync(int userId, List<int> languageIds);
+    Task<IEnumerable<Language>> FetchLanguagesFromExternalApiAsync();
+    Task SeedLanguagesAsync();
+
 }

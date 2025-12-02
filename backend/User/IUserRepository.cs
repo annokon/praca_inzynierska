@@ -1,4 +1,6 @@
-﻿namespace backend.User;
+﻿using backend.Models;
+
+namespace backend.User;
 
 public interface IUserRepository
 {
@@ -10,4 +12,9 @@ public interface IUserRepository
     Task<bool> ExistsByEmailAsync(string email);
     Task<bool> ExistsByUsernameAsync(string username);
     Task<Models.User?> GetByEmailAsync(string email);
+    Task<IEnumerable<Language>> GetAllLanguagesAsync();
+    Task<IEnumerable<Language>> GetUserLanguagesAsync(int userId);
+    Task<bool> UpdateUserLanguagesAsync(int userId, List<int> languageIds);
+    Task AddLanguageAsync(Language language);
+
 }

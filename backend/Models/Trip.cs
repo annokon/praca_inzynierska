@@ -18,7 +18,7 @@ public class Trip
     [Column("description")]
     [Required]
     [MaxLength(2000)]
-    public string? Description { get; set; }
+    public string Description { get; set; } = null!;
 
     [Column("start_date")]
     public DateOnly? StartDate { get; set; }
@@ -27,7 +27,8 @@ public class Trip
     public DateOnly? EndDate { get; set; }
 
     [Column("duration_days")]
-    public int? DurationDays { get; set; }
+    [Required]
+    public int DurationDays { get; set; }
 
     [Column("destination")]
     [Required]
@@ -35,20 +36,23 @@ public class Trip
     public string? Destination { get; set; }
 
     [Column("budget_amount")]
-    public decimal? BudgetAmount { get; set; }
+    [Required]
+    public decimal BudgetAmount { get; set; }
 
     [Column("budget_currency")]
+    [Required]
     [MaxLength(3)]
-    public string? BudgetCurrency { get; set; }
+    public string BudgetCurrency { get; set; }
 
     [Column("is_archived")]
     public bool IsArchived { get; set; } = false;
 
     [Column("created_at")]
+    [Required]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     [Column("updated_at")]
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
 
     [Column("is_reported")]
     public bool IsReported { get; set; } = false;
@@ -56,7 +60,7 @@ public class Trip
     [Column("travel_type")]
     [Required]
     [MaxLength(50)]
-    public string? TravelType { get; set; }
+    public string TravelType { get; set; } = null!;
 
     //for TripPhoto
     public ICollection<TripPhoto>? Photos { get; set; }

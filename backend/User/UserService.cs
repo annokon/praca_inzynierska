@@ -1,23 +1,33 @@
-﻿using backend.DTOs;
+﻿using System.Text.Json;
+using backend.DTOs;
 using backend.DTOs.UserDTOs;
+using backend.Models;
 using backend.Security;
 using backend.User;
 using backend.User.DTOs;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace backend.Services;
+namespace backend.User;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly PasswordHasher _passwordHasher;
     private readonly JwtService _jwt;
+    private readonly HttpClient _httpClient;
+    private readonly string _apiUrl;
+    private readonly string _apiKey;
 
-    public UserService(IUserRepository userRepository, PasswordHasher passwordHasher, JwtService jwt)
+    public UserService(IUserRepository userRepository, PasswordHasher passwordHasher, 
+        JwtService jwt, HttpClient httpClient, IConfiguration configuration)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
         _jwt = jwt;
+        _httpClient = httpClient;
+        
+        _apiUrl = configuration["ExternalApi:LanguagesApiUrl"]!;
+        _apiKey = configuration["ExternalApi:ApiKey"]!;
     }
 
 
@@ -222,4 +232,65 @@ public class UserService : IUserService
             Role = u.Role
         };
     }
+    
+    
+    public async Task<IEnumerable<Language>> GetAllLanguagesAsync()
+    {
+        return await _userRepository.GetAllLanguagesAsync();
+    }
+
+    public async Task<IEnumerable<Language>> GetUserLanguagesAsync(int userId)
+    {
+        return await _userRepository.GetUserLanguagesAsync(userId);
+    }
+
+    public async Task<bool> UpdateUserLanguagesAsync(int userId, List<int> languageIds)
+    {
+        return await _userRepository.UpdateUserLanguagesAsync(userId, languageIds);
+    }
+    
+
+    public async Task<IEnumerable<Language>> FetchLanguagesFromExternalApiAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, _apiUrl);
+        if (!string.IsNullOrEmpty(_apiKey))
+        {
+            request.Headers.Add("Authorization", $"Bearer {_apiKey}");
+        }
+        
+        var response = await _httpClient.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Failed to fetch languages from external API. Status code: {response.StatusCode}");
+
+        var json = await response.Content.ReadAsStringAsync();
+        
+        var externalLanguages = JsonSerializer.Deserialize<List<ExternalLanguageDTO>>(json, 
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        if (externalLanguages == null)
+            return new List<Language>();
+        
+        return externalLanguages.Select(l => new Language
+            {
+                IdLanguage = l.Id,
+                LanguageName = l.Name
+            }).ToList();
+
+    }
+
+    public async Task SeedLanguagesAsync()
+    {
+        var existingLanguages = await _userRepository.GetAllLanguagesAsync();
+        if (existingLanguages.Any())
+            return;
+        
+        var languages = await FetchLanguagesFromExternalApiAsync();
+        foreach (var lang in languages)
+        {
+            await _userRepository.AddLanguageAsync(lang);
+        }
+
+    }
+
 }

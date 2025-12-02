@@ -1,4 +1,5 @@
 ﻿using backend.Infrastructure.Data;
+using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.User;
@@ -82,4 +83,50 @@ public class UserRepository : IUserRepository
     
     public async Task<Models.User?> GetByEmailAsync(string email) =>
         await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+    
+    
+    public async Task<IEnumerable<Language>> GetAllLanguagesAsync()
+    {
+        return await _context.Languages
+            .OrderBy(l => l.LanguageName)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Language>> GetUserLanguagesAsync(int userId)
+    {
+        return await _context.UserLanguages
+            .Where(ul => ul.IdUser == userId)
+            .Include(ul => ul.Language)
+            .Select(ul => ul.Language)
+            .ToListAsync();
+    }
+
+    public async Task<bool> UpdateUserLanguagesAsync(int userId, List<int> languageIds)
+    {
+        var userExists = await _context.Users.AnyAsync(u => u.IdUser == userId);
+        if (!userExists) return false;
+
+        var old = _context.UserLanguages.Where(ul => ul.IdUser == userId);
+        _context.UserLanguages.RemoveRange(old);
+
+        foreach (var idLang in languageIds)
+        {
+            _context.UserLanguages.Add(new UserLanguage
+            {
+                IdUser = userId,
+                IdLanguage = idLang
+            });
+        }
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
+    
+    public async Task AddLanguageAsync(Language language)
+    {
+        await _context.Languages.AddAsync(language);
+        await _context.SaveChangesAsync();
+    }
+
+
 }
