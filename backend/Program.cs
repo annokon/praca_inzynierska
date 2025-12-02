@@ -5,6 +5,7 @@ using backend.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using backend.Language;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
+builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<PasswordHasher>();
 
 builder.Services.AddHttpClient();
@@ -89,10 +92,10 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DataContext>();
     var hasher = scope.ServiceProvider.GetRequiredService<PasswordHasher>();
-    var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+    var languageService = scope.ServiceProvider.GetRequiredService<ILanguageService>();
     
-    await userService.SeedLanguagesAsync();
-    Console.WriteLine("Languages seeded from external API.");
+    await languageService.SeedLanguagesAsync();
+    Console.WriteLine("Languages imported from CLDR JSON files.");
     
     if (!db.Users.Any())
     {

@@ -138,11 +138,17 @@ namespace backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdLanguage"));
 
-                    b.Property<string>("LanguageName")
+                    b.Property<string>("LanguageNameEN")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("language_name");
+                        .HasColumnName("language_name_en");
+
+                    b.Property<string>("LanguageNamePL")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("language_name_pl");
 
                     b.HasKey("IdLanguage");
 
@@ -336,11 +342,12 @@ namespace backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTrip"));
 
-                    b.Property<decimal?>("BudgetAmount")
+                    b.Property<decimal>("BudgetAmount")
                         .HasColumnType("numeric")
                         .HasColumnName("budget_amount");
 
                     b.Property<string>("BudgetCurrency")
+                        .IsRequired()
                         .HasMaxLength(3)
                         .HasColumnType("character varying(3)")
                         .HasColumnName("budget_currency");
@@ -361,7 +368,7 @@ namespace backend.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("destination");
 
-                    b.Property<int?>("DurationDays")
+                    b.Property<int>("DurationDays")
                         .HasColumnType("integer")
                         .HasColumnName("duration_days");
 
@@ -393,7 +400,7 @@ namespace backend.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("travel_type");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 

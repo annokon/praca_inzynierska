@@ -10,7 +10,7 @@ public class DataContext : DbContext
     }
     
     public DbSet<Models.User> Users => Set<Models.User>();
-    public DbSet<Language> Languages => Set<Language>();
+    public DbSet<Models.Language> Languages => Set<Models.Language>();
     public DbSet<UserLanguage> UserLanguages => Set<UserLanguage>();
 
 

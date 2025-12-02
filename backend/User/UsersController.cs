@@ -163,29 +163,29 @@ public class UsersController : ControllerBase
     
     
     
-    [Authorize]
-    [HttpGet("{id}/languages")]
-    public async Task<IActionResult> GetUserLanguages(int id)
-    {
-        var langs = await _userService.GetUserLanguagesAsync(id);
-        return Ok(langs);
-    }
-
-    [Authorize]
-    [HttpPut("{id}/languages")]
-    public async Task<IActionResult> UpdateUserLanguages(int id, [FromBody] List<int> languageIds)
-    {
-        bool updated = await _userService.UpdateUserLanguagesAsync(id, languageIds);
-        if (!updated) return NotFound();
-
-        return Ok(new { message = "Languages updated." });
-    }
-
-    [HttpGet("languages")]
-    public async Task<IActionResult> GetAllLanguages()
-    {
-        var langs = await _userService.GetAllLanguagesAsync();
-        return Ok(langs);
-    }
+    // [Authorize]
+    // [HttpGet("{id}/languages")]
+    // public async Task<IActionResult> GetUserLanguages(int id)
+    // {
+    //     var langs = await _userService.GetUserLanguagesAsync(id);
+    //     return Ok(langs);
+    // }
+    //
+    // [Authorize]
+    // [HttpPut("{id}/languages")]
+    // public async Task<IActionResult> UpdateUserLanguages(int id, [FromBody] List<int> languageIds)
+    // {
+    //     bool updated = await _userService.UpdateUserLanguagesAsync(id, languageIds);
+    //     if (!updated) return NotFound();
+    //
+    //     return Ok(new { message = "Languages updated." });
+    // }
+    //
+    // [HttpGet("languages")]
+    // public async Task<IActionResult> GetAllLanguages()
+    // {
+    //     var langs = await _userService.GetAllLanguagesAsync();
+    //     return Ok(langs);
+    // }
 
 }

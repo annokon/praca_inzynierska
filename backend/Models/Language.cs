@@ -10,10 +10,15 @@ public class Language
     [Key]
     public int IdLanguage { get; set; }
     
-    [Column("language_name")]
+    [Column("language_name_pl")]
     [Required]
     [MaxLength(100)]
-    public string LanguageName { get; set; } = null!;
-
+    public string LanguageNamePL { get; set; } = null!;
+    
+    [Column("language_name_en")]
+    [Required]
+    [MaxLength(100)]
+    public string LanguageNameEN { get; set; } = null!;
+    
     public ICollection<UserLanguage>? UserLanguages { get; set; }
 }

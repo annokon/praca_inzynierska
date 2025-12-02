@@ -1,4 +1,4 @@
-﻿namespace backend.User.DTOs;
+﻿namespace backend.Language.DTOs;
 
 public class UserLanguagesDTO
 {
