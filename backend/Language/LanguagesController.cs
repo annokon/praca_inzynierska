@@ -38,4 +38,18 @@ public class LanguagesController : ControllerBase
         var langs = await _languageService.GetAllLanguagesAsync();
         return Ok(langs);
     }
+    
+    [HttpGet("languages/pl")]
+    public async Task<IActionResult> GetAllLanguagesPL()
+    {
+        var langs = await _languageService.GetAllLanguagesPlAsync();
+        return Ok(langs);
+    }
+
+    [HttpGet("languages/en")]
+    public async Task<IActionResult> GetAllLanguagesEN()
+    {
+        var langs = await _languageService.GetAllLanguagesEnAsync();
+        return Ok(langs);
+    }
 }

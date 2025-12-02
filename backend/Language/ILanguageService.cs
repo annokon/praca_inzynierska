@@ -6,4 +6,6 @@ public interface ILanguageService
     Task<IEnumerable<Models.Language>> GetUserLanguagesAsync(int userId);
     Task<bool> UpdateUserLanguagesAsync(int userId, List<int> languageIds);
     Task SeedLanguagesAsync();
+    Task<IEnumerable<string>> GetAllLanguagesPlAsync();
+    Task<IEnumerable<string>> GetAllLanguagesEnAsync();
 }

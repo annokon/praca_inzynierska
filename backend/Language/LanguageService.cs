@@ -47,4 +47,16 @@ public class LanguageService : ILanguageService
             await _languageRepository.AddLanguageAsync(lang);
         }
     }
+    
+    public async Task<IEnumerable<string>> GetAllLanguagesPlAsync()
+    {
+        var langs = await _languageRepository.GetAllLanguagesAsync();
+        return langs.Select(l => l.LanguageNamePL).OrderBy(l => l);
+    }
+
+    public async Task<IEnumerable<string>> GetAllLanguagesEnAsync()
+    {
+        var langs = await _languageRepository.GetAllLanguagesAsync();
+        return langs.Select(l => l.LanguageNameEN).OrderBy(l => l);
+    }
 }
