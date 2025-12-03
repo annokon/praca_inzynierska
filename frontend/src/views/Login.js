@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../login/login.css";
+import "../css/login_register.css";
 import useAuth from "../hooks/useAuth";
 
 export default function Login() {
@@ -48,35 +48,43 @@ export default function Login() {
     };
 
     return (
-        <div className="login-page">
-            <div className="card">
-                <h1>Logowanie</h1>
-                <p>Wpisz email i hasło, aby się zalogować.</p>
+        <div className="auth">
+            <div className="auth__page">
+                <div className="auth__card">
+                    <h1 className="auth__title">Logowanie</h1>
+                    <p className="auth__subtitle">
+                        Wpisz email i hasło, aby się zalogować.
+                    </p>
 
                 <form id="loginForm" onSubmit={handleLogin}>
-                    <div className="field">
-                        <label>Email</label>
-                        <input id="email" name="email" type="email" required />
+                    <div className="form-field">
+                        <label className="form-label" htmlFor="email">
+                            Email
+                        </label>
+                        <input id="email" name="email" type="email" className="form-input" required />
                     </div>
 
-                    <div className="field">
-                        <label>Hasło</label>
-                        <input id="password" name="password" type="password" required />
+                    <div className="form-field">
+                        <label className="form-label" htmlFor="password">
+                            Hasło
+                        </label>
+                        <input id="password" name="password" type="password" className="form-input" required />
                     </div>
 
-                    <button type="submit" className="button">Zaloguj się</button>
+                    <button type="submit" className="btn btn--primary">Zaloguj się</button>
 
                     <button
                         type="button"
-                        className="button secondary"
+                        className="btn btn--primary"
                         onClick={() => (window.location.href = "/register")}
                     >
                         Nie masz konta? Stwórz nowe teraz
                     </button>
 
-                    <div id="status" className="status">{status}</div>
+                    <div id="status" className="form-status">{status}</div>
                 </form>
             </div>
+        </div>
         </div>
     );
 }

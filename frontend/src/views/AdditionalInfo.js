@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import "../login/login.css";
+import "../css/login_register.css";
 
 export default function AdditionalInfo() {
     const [step, setStep] = useState(1);
@@ -325,23 +325,25 @@ export default function AdditionalInfo() {
     }
 
     return (
-        <div className="login-page">
-            <div className="card">
-                <h1 className="text-center">
+        <div className="auth">
+            <div className="auth__page">
+                <div className="auth__card">
+                    <h1 className="auth__title auth__title--center">
                     Podaj więcej informacji o sobie<br />
                     aby ulepszyć wyszukiwania
                 </h1>
 
                 {step === 1 && (
                     <>
-                        <div className="field">
-                            <label htmlFor="languageSearch">
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="languageSearch">
                                 Jakimi językami się posługujesz?
                             </label>
                             <input
                                 id="languageSearch"
                                 type="text"
                                 placeholder="Search"
+                                className="form-input"
                                 value={languageSearch}
                                 onChange={(e) =>
                                     setLanguageSearch(e.target.value)
@@ -349,15 +351,15 @@ export default function AdditionalInfo() {
                             />
                         </div>
 
-                        <div className="languages-list">
+                        <div className="pill-group">
                             {filteredLanguages.map((lang) => (
                                 <button
                                     key={lang}
                                     type="button"
                                     className={
-                                        "pill-button" +
+                                        "pill pill--selectable" +
                                         (selectedLanguages.includes(lang)
-                                            ? " pill-button--selected"
+                                            ? " pill--selected"
                                             : "")
                                     }
                                     onClick={() => toggleLanguage(lang)}
@@ -372,10 +374,10 @@ export default function AdditionalInfo() {
                             )}
                         </div>
 
-                        <div className="footer">
+                        <div className="form-footer">
                             <button
                                 type="button"
-                                className="button"
+                                className="btn btn--primary"
                                 onClick={handleNextFromLanguages}
                                 disabled={selectedLanguages.length === 0}
                             >
@@ -384,7 +386,7 @@ export default function AdditionalInfo() {
 
                             <button
                                 type="button"
-                                className="link-button"
+                                className="btn btn--secondary"
                                 onClick={handleSkipLanguages}
                             >
                                 Pomiń
@@ -395,11 +397,12 @@ export default function AdditionalInfo() {
 
                 {step === 2 && (
                     <>
-                        <div className="field">
-                            <label htmlFor="gender">Jakiej jesteś płci?</label>
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="gender">Jakiej jesteś płci?</label>
                             <select
                                 id="gender"
                                 value={gender}
+                                className="form-input"
                                 onChange={(e) => setGender(e.target.value)}
                             >
                                 <option value="">Select</option>
@@ -410,13 +413,14 @@ export default function AdditionalInfo() {
                             </select>
                         </div>
 
-                        <div className="field">
-                            <label htmlFor="pronouns">
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="pronouns">
                                 Jakie masz zaimki?
                             </label>
                             <select
                                 id="pronouns"
                                 value={pronouns}
+                                className="form-input"
                                 onChange={(e) => setPronouns(e.target.value)}
                             >
                                 <option value="">Select</option>
@@ -428,11 +432,11 @@ export default function AdditionalInfo() {
                             </select>
                         </div>
 
-                        <div className="footer">
+                        <div className="form-footer">
                             <div className="button-row">
                                 <button
                                     type="button"
-                                    className="button secondary"
+                                    className="btn btn--secondary"
                                     onClick={handleBackToStep1}
                                 >
                                     &lt; Wróć
@@ -440,7 +444,7 @@ export default function AdditionalInfo() {
 
                                 <button
                                     type="button"
-                                    className="button"
+                                    className="btn btn--primary"
                                     onClick={handleNextFromGender}
                                     disabled={gender === "" && pronouns === ""}
                                 >
@@ -450,7 +454,7 @@ export default function AdditionalInfo() {
 
                             <button
                                 type="button"
-                                className="link-button"
+                                className="btn btn--secondary"
                                 onClick={handleSkipGenderPronouns}
                             >
                                 Pomiń
@@ -460,13 +464,14 @@ export default function AdditionalInfo() {
                 )}
                 {step === 3 && (
                     <>
-                        <div className="field">
-                            <label htmlFor="personalityType">
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="personalityType">
                                 Jaki masz typ osobowości?
                             </label>
                             <select
                                 id="personalityType"
                                 value={personalityType}
+                                className="form-input"
                                 onChange={(e) =>
                                     setPersonalityType(e.target.value)
                                 }
@@ -478,11 +483,11 @@ export default function AdditionalInfo() {
                             </select>
                         </div>
 
-                        <div className="footer">
+                        <div className="form-footer">
                             <div className="button-row">
                                 <button
                                     type="button"
-                                    className="button secondary"
+                                    className="btn btn--secondary"
                                     onClick={handleBackToStep2}
                                 >
                                     &lt; Wróć
@@ -490,7 +495,7 @@ export default function AdditionalInfo() {
 
                                 <button
                                     type="button"
-                                    className="button"
+                                    className="btn btn--primary"
                                     onClick={handleNextFromPersonality}
                                     disabled={personalityType === ""}
                                 >
@@ -500,7 +505,7 @@ export default function AdditionalInfo() {
 
                             <button
                                 type="button"
-                                className="link-button"
+                                className="btn btn--secondary"
                                 onClick={handleSkipPersonality}
                             >
                                 Pomiń
@@ -510,13 +515,14 @@ export default function AdditionalInfo() {
                 )}
                 {step === 4 && (
                     <>
-                        <div className="field">
-                            <label htmlFor="alcoholAttitude">
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="alcoholAttitude">
                                 Jaki masz stosunek do alkoholu?
                             </label>
                             <select
                                 id="alcoholAttitude"
                                 value={alcoholAttitude}
+                                className="form-input"
                                 onChange={(e) => setAlcoholAttitude(e.target.value)}
                             >
                                 <option value="">Select</option>
@@ -527,13 +533,14 @@ export default function AdditionalInfo() {
                             </select>
                         </div>
 
-                        <div className="field">
-                            <label htmlFor="smokingAttitude">
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="smokingAttitude">
                                 Jaki masz stosunek do papierosów?
                             </label>
                             <select
                                 id="smokingAttitude"
                                 value={smokingAttitude}
+                                className="form-input"
                                 onChange={(e) => setSmokingAttitude(e.target.value)}
                             >
                                 <option value="">Select</option>
@@ -544,11 +551,11 @@ export default function AdditionalInfo() {
                             </select>
                         </div>
 
-                        <div className="footer">
+                        <div className="form-footer">
                             <div className="button-row">
                                 <button
                                     type="button"
-                                    className="button secondary"
+                                    className="btn btn--secondary"
                                     onClick={handleBackToStep3}
                                 >
                                     &lt; Wróć
@@ -556,7 +563,7 @@ export default function AdditionalInfo() {
 
                                 <button
                                     type="button"
-                                    className="button"
+                                    className="btn btn--primary"
                                     onClick={handleNextFromSubstances}
                                     disabled={alcoholAttitude === "" && smokingAttitude === ""}
                                 >
@@ -566,7 +573,7 @@ export default function AdditionalInfo() {
 
                             <button
                                 type="button"
-                                className="link-button"
+                                className="btn btn--secondary"
                                 onClick={handleSkipSubstances}
                             >
                                 Pomiń
@@ -576,13 +583,14 @@ export default function AdditionalInfo() {
                 )}
                 {step === 5 && (
                     <>
-                        <div className="field">
-                            <label htmlFor="hasDrivingLicense">
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="hasDrivingLicense">
                                 Czy posiadasz prawo jazdy?
                             </label>
                             <select
                                 id="hasDrivingLicense"
                                 value={hasDrivingLicense}
+                                className="form-input"
                                 onChange={(e) => setHasDrivingLicense(e.target.value)}
                             >
                                 <option value="">Select</option>
@@ -592,11 +600,11 @@ export default function AdditionalInfo() {
                             </select>
                         </div>
 
-                        <div className="footer">
+                        <div className="form-footer">
                             <div className="button-row">
                                 <button
                                     type="button"
-                                    className="button secondary"
+                                    className="btn btn--secondary"
                                     onClick={handleBackToStep4}
                                 >
                                     &lt; Wróć
@@ -604,7 +612,7 @@ export default function AdditionalInfo() {
 
                                 <button
                                     type="button"
-                                    className="button"
+                                    className="btn btn--primary"
                                     onClick={handleNextFromDrivingLicense}
                                     disabled={hasDrivingLicense === ""}
                                 >
@@ -614,7 +622,7 @@ export default function AdditionalInfo() {
 
                             <button
                                 type="button"
-                                className="link-button"
+                                className="btn btn--secondary"
                                 onClick={handleSkipDrivingLicense}
                             >
                                 Pomiń
@@ -624,24 +632,25 @@ export default function AdditionalInfo() {
                 )}
                 {step === 6 && (
                     <>
-                        <div className="field">
-                            <label htmlFor="locationSearch">
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="locationSearch">
                                 Skąd jesteś?
                             </label>
                             <input
                                 id="locationSearch"
                                 type="text"
                                 placeholder="Search"
+                                className="form-input"
                                 value={locationSearch}
                                 onChange={(e) => setLocationSearch(e.target.value)}
                             />
                         </div>
 
-                        <div className="footer">
+                        <div className="form-footer">
                             <div className="button-row">
                                 <button
                                     type="button"
-                                    className="button secondary"
+                                    className="btn btn--secondary"
                                     onClick={handleBackToStep5}
                                 >
                                     &lt; Wróć
@@ -649,7 +658,7 @@ export default function AdditionalInfo() {
 
                                 <button
                                     type="button"
-                                    className="button"
+                                    className="btn btn--primary"
                                     onClick={handleNextFromLocation}
                                     disabled={locationSearch.trim() === ""}
                                 >
@@ -659,7 +668,7 @@ export default function AdditionalInfo() {
 
                             <button
                                 type="button"
-                                className="link-button"
+                                className="btn btn--secondary"
                                 onClick={handleSkipLocation}
                             >
                                 Pomiń
@@ -669,20 +678,20 @@ export default function AdditionalInfo() {
                 )}
                 {step === 7 && (
                     <>
-                        <div className="field">
-                            <label>
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="travelStyle">
                                 Jaki styl podróżowania preferujesz?
                             </label>
 
-                            <div className="travel-style-options">
+                            <div className="pill-group">
                                 {travelStyleOptions.map((option) => (
                                     <button
                                         key={option.value}
                                         type="button"
                                         className={
-                                            "pill-button" +
+                                            "pill pill--selectable" +
                                             (travelStyle === option.value
-                                                ? " pill-button--selected"
+                                                ? " pill--selected"
                                                 : "")
                                         }
                                         onClick={() => setTravelStyle(option.value)}
@@ -693,11 +702,11 @@ export default function AdditionalInfo() {
                             </div>
                         </div>
 
-                        <div className="footer">
+                        <div className="form-footer">
                             <div className="button-row">
                                 <button
                                     type="button"
-                                    className="button secondary"
+                                    className="btn btn--secondary"
                                     onClick={handleBackToStep6}
                                 >
                                     &lt; Wróć
@@ -705,7 +714,7 @@ export default function AdditionalInfo() {
 
                                 <button
                                     type="button"
-                                    className="button"
+                                    className="btn btn--primary"
                                     onClick={handleNextFromTravelStyle}
                                     disabled={travelStyle === ""}
                                 >
@@ -715,7 +724,7 @@ export default function AdditionalInfo() {
 
                             <button
                                 type="button"
-                                className="link-button"
+                                className="btn btn--secondary"
                                 onClick={handleSkipTravelStyle}
                             >
                                 Pomiń
@@ -725,13 +734,14 @@ export default function AdditionalInfo() {
                 )}
                 {step === 8 && (
                     <>
-                        <div className="field">
-                            <label htmlFor="travelExperience">
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="travelExperience">
                                 Jakie masz doświadczenie w podróżach?
                             </label>
                             <select
                                 id="travelExperience"
                                 value={travelExperience}
+                                className="form-input"
                                 onChange={(e) => setTravelExperience(e.target.value)}
                             >
                                 <option value="">Select</option>
@@ -740,11 +750,11 @@ export default function AdditionalInfo() {
                             </select>
                         </div>
 
-                        <div className="footer">
+                        <div className="form-footer">
                             <div className="button-row">
                                 <button
                                     type="button"
-                                    className="button secondary"
+                                    className="btn btn--secondary"
                                     onClick={handleBackToStep7}
                                 >
                                     &lt; Wróć
@@ -752,7 +762,7 @@ export default function AdditionalInfo() {
 
                                 <button
                                     type="button"
-                                    className="button"
+                                    className="btn btn--primary"
                                     onClick={handleNextFromTravelExperience}
                                     disabled={travelExperience === ""}
                                 >
@@ -762,7 +772,7 @@ export default function AdditionalInfo() {
 
                             <button
                                 type="button"
-                                className="link-button"
+                                className="btn btn--secondary"
                                 onClick={handleSkipTravelExperience}
                             >
                                 Pomiń
@@ -772,28 +782,29 @@ export default function AdditionalInfo() {
                 )}
                 {step === 9 && (
                     <>
-                        <div className="field">
-                            <label htmlFor="interestsSearch">
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="interestsSearch">
                                 Jakie są twoje zainteresowania?
                             </label>
                             <input
                                 id="interestsSearch"
                                 type="text"
                                 placeholder="Search"
+                                className="form-input"
                                 value={interestsSearch}
                                 onChange={(e) => setInterestsSearch(e.target.value)}
                             />
                         </div>
 
-                        <div className="languages-list">
+                        <div className="pill-group">
                             {filteredInterests.map((interest) => (
                                 <button
                                     key={interest}
                                     type="button"
                                     className={
-                                        "pill-button" +
+                                        "pill pill--selectable" +
                                         (selectedInterests.includes(interest)
-                                            ? " pill-button--selected"
+                                            ? " pill--selected"
                                             : "")
                                     }
                                     onClick={() => toggleInterest(interest)}
@@ -809,11 +820,11 @@ export default function AdditionalInfo() {
                             )}
                         </div>
 
-                        <div className="footer">
+                        <div className="form-footer">
                             <div className="button-row">
                                 <button
                                     type="button"
-                                    className="button secondary"
+                                    className="btn btn--secondary"
                                     onClick={handleBackToStep8}
                                 >
                                     &lt; Wróć
@@ -821,7 +832,7 @@ export default function AdditionalInfo() {
 
                                 <button
                                     type="button"
-                                    className="button"
+                                    className="btn btn--primary"
                                     onClick={handleNextFromInterests}
                                     disabled={selectedInterests.length === 0}
                                 >
@@ -831,7 +842,7 @@ export default function AdditionalInfo() {
 
                             <button
                                 type="button"
-                                className="link-button"
+                                className="btn btn--secondary"
                                 onClick={handleSkipInterests}
                             >
                                 Pomiń
@@ -841,20 +852,20 @@ export default function AdditionalInfo() {
                 )}
                 {step === 10 && (
                     <>
-                        <div className="field">
-                            <label>
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="preferredTransport">
                                 Jakie środki transportu preferujesz?
                             </label>
 
-                            <div className="travel-style-options">
+                            <div className="pill-group">
                                 {transportOptions.map((option) => (
                                     <button
                                         key={option.value}
                                         type="button"
                                         className={
-                                            "pill-button" +
+                                            "pill pill--selectable" +
                                             (selectedTransport.includes(option.value)
-                                                ? " pill-button--selected"
+                                                ? " pill--selected"
                                                 : "")
                                         }
                                         onClick={() => toggleTransport(option.value)}
@@ -865,11 +876,11 @@ export default function AdditionalInfo() {
                             </div>
                         </div>
 
-                        <div className="footer">
+                        <div className="form-footer">
                             <div className="button-row">
                                 <button
                                     type="button"
-                                    className="button secondary"
+                                    className="btn btn--secondary"
                                     onClick={handleBackToStep9}
                                 >
                                     &lt; Wróć
@@ -877,7 +888,7 @@ export default function AdditionalInfo() {
 
                                 <button
                                     type="button"
-                                    className="button"
+                                    className="btn btn--primary"
                                     onClick={handleFinish}
                                     disabled={selectedTransport.length === 0}
                                 >
@@ -887,7 +898,7 @@ export default function AdditionalInfo() {
 
                             <button
                                 type="button"
-                                className="link-button"
+                                className="btn btn--secondary"
                                 onClick={handleSkipTransport}
                             >
                                 Pomiń
@@ -897,6 +908,7 @@ export default function AdditionalInfo() {
                 )}
 
             </div>
+        </div>
         </div>
     );
 }

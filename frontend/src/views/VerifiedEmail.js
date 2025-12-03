@@ -1,4 +1,4 @@
-import "../login/login.css";
+import "../css/login_register.css";
 
 export default function VerifiedEmail() {
 
@@ -7,22 +7,24 @@ export default function VerifiedEmail() {
     }
 
     return (
-        <div className="login-page">
-            <div className="card">
-                <h1 className="text-center">
+        <div className="auth">
+            <div className="auth__page">
+                <div className="auth__card">
+                    <h1 className="auth__title auth__title--center">
                     Weryfikacja maila<br />przeszła pomyślnie
                 </h1>
 
                 <div className="text-center">
                     <button
                         type="button"
-                        className="button"
+                        className="btn btn--primary"
                         onClick={handleContinue}
                     >
                         Kontynuuj rejestrację
                     </button>
                 </div>
             </div>
+        </div>
         </div>
     );
 }

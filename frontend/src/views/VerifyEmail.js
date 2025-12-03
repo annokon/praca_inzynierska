@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../login/login.css";
+import "../css/login_register.css";
 
 export default function VerifyEmail() {
     const [code, setCode] = useState("");
@@ -18,37 +18,42 @@ export default function VerifyEmail() {
     }
 
     return (
-        <div className="login-page">
-            <div className="card">
-                <h1>Weryfikacja maila</h1>
+        <div className="auth">
+            <div className="auth__page">
+                <div className="auth__card">
+                <h1 className="auth__title" >Weryfikacja maila</h1>
 
-                <p className="text-center">
+                <p className="auth__subtitle auth__subtitle--center">
                     Na adres <strong>twojego adresu e-mail</strong> został
                     wysłany mail z kodem do weryfikacji.
                 </p>
 
                 <form onSubmit={handleVerify}>
-                    <div className="field">
-                        <label htmlFor="code">Wprowadź kod</label>
+                    <div className="form-group">
+                        <label className="form-field" htmlFor="code">
+                            Wprowadź kod
+                        </label>
                         <input
                             id="code"
                             name="code"
                             type="text"
+                            className="form-input"
                             value={code}
                             onChange={(e) => setCode(e.target.value)}
                             required
                         />
                     </div>
 
-                    <button type="submit" className="button">
+                    <button type="submit" className="btn btn-primary">
                         Potwierdź
                     </button>
 
-                    <div className="status">
+                    <div className="form-status">
                         {status}
                     </div>
                 </form>
             </div>
+        </div>
         </div>
     );
 }

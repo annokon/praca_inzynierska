@@ -1,5 +1,5 @@
 import {useState} from "react";
-import "../login/login.css";
+import "../css/login_register.css";
 
 export default function Register() {
     const [status, setStatus] = useState("");
@@ -61,102 +61,126 @@ export default function Register() {
     }
 
     return (
-        <div className="login-page">
-            <div className="card">
-                <h1>Zarejestruj się</h1>
+        <div className="auth">
+            <div className="auth__page">
+                <div className="auth__card">
+                    <h1 className="auth__title">Zarejestruj się</h1>
 
                 <form id="registerForm" onSubmit={handleRegister}>
-                    <div className="field">
-                        <label htmlFor="username">Nazwa użytkownika</label>
+                    <div className="form-field">
+                        <label className="form-label" htmlFor="username">
+                            Nazwa użytkownika
+                        </label>
                         <input
                             id="username"
                             name="username"
                             type="text"
+                            className="form-input"
                             required
                         />
                     </div>
 
-                    <div className="field">
-                        <label htmlFor="displayName">Wyświetlana nazwa</label>
+                    <div className="form-field">
+                        <label className="form-label" htmlFor="displayName">
+                            Wyświetlana nazwa
+                        </label>
                         <input
                             id="displayName"
                             name="displayName"
                             type="text"
+                            className="form-input"
                             required
                         />
                     </div>
 
-                    <div className="field">
-                        <label htmlFor="email">Email</label>
+                    <div className="form-field">
+                        <label className="form-label" htmlFor="email">
+                            Email
+                        </label>
                         <input
                             id="email"
                             name="email"
                             type="email"
+                            className="form-input"
                             required
                         />
                     </div>
 
-                    <div className="field">
-                        <label htmlFor="birthDate">Data urodzenia</label>
+                    <div className="form-field">
+                        <label className="form-label" htmlFor="birthDate">
+                            Data urodzenia
+                        </label>
                         <input
                             id="birthDate"
                             name="birthDate"
                             type="date"
+                            className="form-input"
                             required
                         />
                     </div>
 
-                    <div className="field">
-                        <label htmlFor="password">Hasło</label>
+                    <div className="form-field">
+                        <label className="form-label" htmlFor="password">
+                            Hasło
+                        </label>
                         <input
                             id="password"
                             name="password"
                             type="password"
+                            className="form-input"
                             required
                         />
-                        <small>Hasło musi składać się z co najmniej 8 znaków.</small>
+                        <div className="helper-text">
+                            Hasło musi składać się z co najmniej 8 znaków.
+                        </div>
                     </div>
 
-                    <div className="field">
-                        <label htmlFor="confirmPassword">Powtórz hasło</label>
+                    <div className="form-field">
+                        <label className="form-label" htmlFor="confirmPassword">
+                            Powtórz hasło
+                        </label>
                         <input
                             id="confirmPassword"
                             name="confirmPassword"
                             type="password"
+                            className="form-input"
                             required
                         />
                     </div>
 
-                    <div className="field checkbox-field">
+                    <div className="form-field checkbox-field">
+                        <label className="checkbox-label" htmlFor="terms">
                         <input
                             id="terms"
                             name="terms"
                             type="checkbox"
                             required
                         />
-                        <label htmlFor="terms">
+                        <span>
                             Akceptuję regulamin aplikacji, zasady użytkowania i
                             potwierdzam, że mam ukończone 16 lat.
-                        </label>
+                        </span>
+                    </label>
                     </div>
 
-                    <button type="submit" className="button">
+                    <button type="submit" className="btn btn-primary">
                         Stwórz konto
                     </button>
 
                     <button
                         type="button"
-                        className="button secondary"
+                        className="btn btn-primary"
                         onClick={() => (window.location.href = "/login")}
                     >
                         Posiadasz już konto? Zaloguj się
                     </button>
 
-                    <div id="status" className="status">
+                    <div id="status" className="form-field">
                         {status}
                     </div>
                 </form>
             </div>
+        </div>
         </div>
     );
 }
