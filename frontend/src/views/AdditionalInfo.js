@@ -24,6 +24,56 @@ export default function AdditionalInfo() {
     const [smokingAttitude, setSmokingAttitude] = useState("");
     const [skipSubstances, setSkipSubstances] = useState(false);
 
+    //prawo jazdy
+    const [hasDrivingLicense, setHasDrivingLicense] = useState("");
+    const [skipDrivingLicense, setSkipDrivingLicense] = useState(false);
+
+    //lokalizacja
+    const [locationSearch, setLocationSearch] = useState("");
+    const [allLocations, setAllLocations] = useState([]);
+    const [skipLocation, setSkipLocation] = useState(false);
+
+    //styl
+    const [travelStyle, setTravelStyle] = useState("");
+    const [skipTravelStyle, setSkipTravelStyle] = useState(false);
+
+    //doświadczenie
+    const [travelExperience, setTravelExperience] = useState("");
+    const [skipTravelExperience, setSkipTravelExperience] = useState(false);
+
+    //zainteresowania
+    const [allInterests, setAllInterests] = useState([]);
+    const [interestsSearch, setInterestsSearch] = useState("");
+    const [selectedInterests, setSelectedInterests] = useState([]);
+    const [skipInterests, setSkipInterests] = useState(false);
+
+    //transport
+    const [selectedTransport, setSelectedTransport] = useState([]);
+    const [skipTransport, setSkipTransport] = useState(false);
+
+    const travelStyleOptions = [
+        { value: "spontaniczny", label: "spontaniczny" },
+        { value: "troche_zaplanowany", label: "trochę zaplanowany" },
+        { value: "szczegolowo_zaplanowany", label: "szczegółowo zaplanowany" },
+    ];
+    const transportOptions = [
+        { value: "samochod", label: "samochód" },
+        { value: "samolot", label: "samolot" },
+        { value: "pieszo", label: "pieszo" },
+        { value: "pociag", label: "pociąg" },
+        { value: "statek", label: "statek" },
+        { value: "autostop", label: "autostop" },
+        { value: "autobus", label: "autobus" },
+        { value: "obojetnie", label: "obojętnie" },
+    ];
+
+    function toggleTransport(option) {
+        setSelectedTransport((prev) =>
+            prev.includes(option)
+                ? prev.filter((o) => o !== option)
+                : [...prev, option]
+        );
+    }
 
     useEffect(() => {
         const loadLanguages = async () => {
@@ -49,6 +99,7 @@ export default function AdditionalInfo() {
     }, []);
 
 
+
     const filteredLanguages = allLanguages.filter((lang) =>
         lang.toLowerCase().includes(languageSearch.toLowerCase())
     );
@@ -58,6 +109,53 @@ export default function AdditionalInfo() {
             prev.includes(lang)
                 ? prev.filter((l) => l !== lang)
                 : [...prev, lang]
+        );
+    }
+
+    useEffect(() => {
+        const loadLocations = async () => {
+            try {
+                // TODO: api
+            } catch (e) {
+                console.error("Błąd ładowania lokalizacji", e);
+            }
+        };
+
+        void loadLocations();
+    }, []);
+
+    useEffect(() => {
+        const loadInterests = async () => {
+            try {
+                // TODO: api
+
+                const interestOptions = [
+                    "sport",
+                    "książki",
+                    "sztuka",
+                    "fotografia",
+                    "pisanie",
+                    "muzyka",
+                    "hodowla pszczół",
+                ];
+                setAllInterests(interestOptions);
+            } catch (e) {
+                console.error("Błąd ładowania zainteresowań", e);
+            }
+        };
+
+        void loadInterests();
+    }, []);
+
+    const filteredInterests = allInterests.filter((interest) =>
+        interest.toLowerCase().includes(interestsSearch.toLowerCase())
+    );
+
+    function toggleInterest(interest) {
+        setSelectedInterests((prev) =>
+            prev.includes(interest)
+                ? prev.filter((i) => i !== interest)
+                : [...prev, interest]
         );
     }
 
@@ -108,9 +206,91 @@ export default function AdditionalInfo() {
         setSkipSubstances(true);
         setAlcoholAttitude("");
         setSmokingAttitude("");
-        handleFinish();
+        setStep(5);
     }
 
+    function handleNextFromSubstances() {
+        setStep(5);
+    }
+
+    function handleBackToStep4() {
+        setStep(4);
+    }
+
+    function handleSkipDrivingLicense() {
+        setSkipDrivingLicense(true);
+        setHasDrivingLicense("");
+        setStep(6);
+    }
+
+    function handleNextFromDrivingLicense() {
+        setStep(6);
+    }
+
+    function handleBackToStep5() {
+        setStep(5);
+    }
+
+    function handleSkipLocation() {
+        setSkipLocation(true);
+        setLocationSearch("");
+        setStep(7);
+    }
+
+    function handleNextFromLocation() {
+        setStep(7);
+    }
+
+    function handleBackToStep6() {
+        setStep(6);
+    }
+
+    function handleSkipTravelStyle() {
+        setSkipTravelStyle(true);
+        setTravelStyle("");
+        setStep(8)
+    }
+
+    function handleNextFromTravelStyle() {
+        setStep(8);
+    }
+
+    function handleBackToStep7() {
+        setStep(7);
+    }
+
+    function handleSkipTravelExperience() {
+        setSkipTravelExperience(true);
+        setTravelExperience("");
+        setStep(9)
+    }
+
+    function handleNextFromTravelExperience() {
+        setStep(9);
+    }
+    function handleBackToStep8() {
+        setStep(8);
+    }
+
+    function handleSkipInterests() {
+        setSkipInterests(true);
+        setSelectedInterests([]);
+        setStep(10)
+    }
+
+    function handleNextFromInterests() {
+        setStep(10);
+    }
+
+    function handleBackToStep9() {
+        setStep(9);
+    }
+
+    function handleSkipTransport() {
+        setSkipTransport(true);
+        setSelectedTransport([]);
+        handleFinish();
+    }
 
     function handleFinish() {
         const payload = {
@@ -124,6 +304,20 @@ export default function AdditionalInfo() {
             personalityType: skipPersonality ? null : personalityType || null,
             alcoholAttitude: skipSubstances ? null : alcoholAttitude || null,
             smokingAttitude: skipSubstances ? null : smokingAttitude || null,
+            hasDrivingLicense: skipDrivingLicense ? null : hasDrivingLicense || null,
+            homeLocation: skipLocation ? null : (locationSearch || null),
+            travelStyle: skipTravelStyle ? null : (travelStyle || null),
+            travelExperience: skipTravelExperience ? null : (travelExperience || null),
+            interests: skipInterests
+                ? null
+                : selectedInterests.length > 0
+                    ? selectedInterests
+                    : null,
+            preferredTransport: skipTransport
+                ? null
+                : selectedTransport.length > 0
+                    ? selectedTransport
+                    : null,
         };
 
         console.log("Dane do wysłania do backendu:", payload);
@@ -183,6 +377,7 @@ export default function AdditionalInfo() {
                                 type="button"
                                 className="button"
                                 onClick={handleNextFromLanguages}
+                                disabled={selectedLanguages.length === 0}
                             >
                                 Dalej &gt;
                             </button>
@@ -247,6 +442,7 @@ export default function AdditionalInfo() {
                                     type="button"
                                     className="button"
                                     onClick={handleNextFromGender}
+                                    disabled={gender === "" && pronouns === ""}
                                 >
                                     Dalej &gt;
                                 </button>
@@ -296,6 +492,7 @@ export default function AdditionalInfo() {
                                     type="button"
                                     className="button"
                                     onClick={handleNextFromPersonality}
+                                    disabled={personalityType === ""}
                                 >
                                     Dalej &gt;
                                 </button>
@@ -360,7 +557,8 @@ export default function AdditionalInfo() {
                                 <button
                                     type="button"
                                     className="button"
-                                    onClick={handleFinish}
+                                    onClick={handleNextFromSubstances}
+                                    disabled={alcoholAttitude === "" && smokingAttitude === ""}
                                 >
                                     Dalej &gt;
                                 </button>
@@ -376,6 +574,328 @@ export default function AdditionalInfo() {
                         </div>
                     </>
                 )}
+                {step === 5 && (
+                    <>
+                        <div className="field">
+                            <label htmlFor="hasDrivingLicense">
+                                Czy posiadasz prawo jazdy?
+                            </label>
+                            <select
+                                id="hasDrivingLicense"
+                                value={hasDrivingLicense}
+                                onChange={(e) => setHasDrivingLicense(e.target.value)}
+                            >
+                                <option value="">Select</option>
+                                <option value="national">Posiadam międzynarodowe</option>
+                                <option value="no">Nie posiadam</option>
+                                <option value="different">Inne</option>
+                            </select>
+                        </div>
+
+                        <div className="footer">
+                            <div className="button-row">
+                                <button
+                                    type="button"
+                                    className="button secondary"
+                                    onClick={handleBackToStep4}
+                                >
+                                    &lt; Wróć
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="button"
+                                    onClick={handleNextFromDrivingLicense}
+                                    disabled={hasDrivingLicense === ""}
+                                >
+                                    Dalej &gt;
+                                </button>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="link-button"
+                                onClick={handleSkipDrivingLicense}
+                            >
+                                Pomiń
+                            </button>
+                        </div>
+                    </>
+                )}
+                {step === 6 && (
+                    <>
+                        <div className="field">
+                            <label htmlFor="locationSearch">
+                                Skąd jesteś?
+                            </label>
+                            <input
+                                id="locationSearch"
+                                type="text"
+                                placeholder="Search"
+                                value={locationSearch}
+                                onChange={(e) => setLocationSearch(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="footer">
+                            <div className="button-row">
+                                <button
+                                    type="button"
+                                    className="button secondary"
+                                    onClick={handleBackToStep5}
+                                >
+                                    &lt; Wróć
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="button"
+                                    onClick={handleNextFromLocation}
+                                    disabled={locationSearch.trim() === ""}
+                                >
+                                    Dalej &gt;
+                                </button>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="link-button"
+                                onClick={handleSkipLocation}
+                            >
+                                Pomiń
+                            </button>
+                        </div>
+                    </>
+                )}
+                {step === 7 && (
+                    <>
+                        <div className="field">
+                            <label>
+                                Jaki styl podróżowania preferujesz?
+                            </label>
+
+                            <div className="travel-style-options">
+                                {travelStyleOptions.map((option) => (
+                                    <button
+                                        key={option.value}
+                                        type="button"
+                                        className={
+                                            "pill-button" +
+                                            (travelStyle === option.value
+                                                ? " pill-button--selected"
+                                                : "")
+                                        }
+                                        onClick={() => setTravelStyle(option.value)}
+                                    >
+                                        {option.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="footer">
+                            <div className="button-row">
+                                <button
+                                    type="button"
+                                    className="button secondary"
+                                    onClick={handleBackToStep6}
+                                >
+                                    &lt; Wróć
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="button"
+                                    onClick={handleNextFromTravelStyle}
+                                    disabled={travelStyle === ""}
+                                >
+                                    Dalej &gt;
+                                </button>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="link-button"
+                                onClick={handleSkipTravelStyle}
+                            >
+                                Pomiń
+                            </button>
+                        </div>
+                    </>
+                )}
+                {step === 8 && (
+                    <>
+                        <div className="field">
+                            <label htmlFor="travelExperience">
+                                Jakie masz doświadczenie w podróżach?
+                            </label>
+                            <select
+                                id="travelExperience"
+                                value={travelExperience}
+                                onChange={(e) => setTravelExperience(e.target.value)}
+                            >
+                                <option value="">Select</option>
+                                <option value="beginner">Początkujący</option>
+                                <option value="experienced">Doświadczony podróżnik</option>
+                            </select>
+                        </div>
+
+                        <div className="footer">
+                            <div className="button-row">
+                                <button
+                                    type="button"
+                                    className="button secondary"
+                                    onClick={handleBackToStep7}
+                                >
+                                    &lt; Wróć
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="button"
+                                    onClick={handleNextFromTravelExperience}
+                                    disabled={travelExperience === ""}
+                                >
+                                    Dalej &gt;
+                                </button>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="link-button"
+                                onClick={handleSkipTravelExperience}
+                            >
+                                Pomiń
+                            </button>
+                        </div>
+                    </>
+                )}
+                {step === 9 && (
+                    <>
+                        <div className="field">
+                            <label htmlFor="interestsSearch">
+                                Jakie są twoje zainteresowania?
+                            </label>
+                            <input
+                                id="interestsSearch"
+                                type="text"
+                                placeholder="Search"
+                                value={interestsSearch}
+                                onChange={(e) => setInterestsSearch(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="languages-list">
+                            {filteredInterests.map((interest) => (
+                                <button
+                                    key={interest}
+                                    type="button"
+                                    className={
+                                        "pill-button" +
+                                        (selectedInterests.includes(interest)
+                                            ? " pill-button--selected"
+                                            : "")
+                                    }
+                                    onClick={() => toggleInterest(interest)}
+                                >
+                                    {interest}
+                                </button>
+                            ))}
+
+                            {filteredInterests.length === 0 && (
+                                <p className="text-center">
+                                    Brak wyników dla podanego wyszukiwania.
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="footer">
+                            <div className="button-row">
+                                <button
+                                    type="button"
+                                    className="button secondary"
+                                    onClick={handleBackToStep8}
+                                >
+                                    &lt; Wróć
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="button"
+                                    onClick={handleNextFromInterests}
+                                    disabled={selectedInterests.length === 0}
+                                >
+                                    Dalej &gt;
+                                </button>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="link-button"
+                                onClick={handleSkipInterests}
+                            >
+                                Pomiń
+                            </button>
+                        </div>
+                    </>
+                )}
+                {step === 10 && (
+                    <>
+                        <div className="field">
+                            <label>
+                                Jakie środki transportu preferujesz?
+                            </label>
+
+                            <div className="travel-style-options">
+                                {transportOptions.map((option) => (
+                                    <button
+                                        key={option.value}
+                                        type="button"
+                                        className={
+                                            "pill-button" +
+                                            (selectedTransport.includes(option.value)
+                                                ? " pill-button--selected"
+                                                : "")
+                                        }
+                                        onClick={() => toggleTransport(option.value)}
+                                    >
+                                        {option.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="footer">
+                            <div className="button-row">
+                                <button
+                                    type="button"
+                                    className="button secondary"
+                                    onClick={handleBackToStep9}
+                                >
+                                    &lt; Wróć
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="button"
+                                    onClick={handleFinish}
+                                    disabled={selectedTransport.length === 0}
+                                >
+                                    Zakończ
+                                </button>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="link-button"
+                                onClick={handleSkipTransport}
+                            >
+                                Pomiń
+                            </button>
+                        </div>
+                    </>
+                )}
+
             </div>
         </div>
     );
