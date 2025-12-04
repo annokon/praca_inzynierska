@@ -78,31 +78,37 @@ export default function AdditionalInfo() {
     useEffect(() => {
         const loadLanguages = async () => {
             try {
-                // TODO: api
+                const response = await fetch("http://localhost:5292/api/languages/languages/pl", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                });
 
-                const languageOptions = [
-                    "Polski",
-                    "Angielski",
-                    "Włoski",
-                    "Hiszpański",
-                    "Niemiecki",
-                    "Niderlandzki",
-                    "Francuski",
-                ];
-                setAllLanguages(languageOptions);
+                const text = await response.text();
+
+                if (!response.ok) {
+                    throw new Error("Błąd HTTP " + response.status);
+                }
+
+                const data = JSON.parse(text);
+
+                setAllLanguages(data);
             } catch (e) {
                 console.error("Błąd ładowania języków", e);
             }
         };
 
-        void loadLanguages();
+        loadLanguages();
     }, []);
-
 
 
     const filteredLanguages = allLanguages.filter((lang) =>
         lang.toLowerCase().includes(languageSearch.toLowerCase())
     );
+
+    const visibleLanguages = filteredLanguages.slice(0, 6);
 
     function toggleLanguage(lang) {
         setSelectedLanguages((prev) =>
@@ -352,7 +358,7 @@ export default function AdditionalInfo() {
                         </div>
 
                         <div className="pill-group">
-                            {filteredLanguages.map((lang) => (
+                            {visibleLanguages.map((lang) => (
                                 <button
                                     key={lang}
                                     type="button"
