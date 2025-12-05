@@ -51,12 +51,65 @@ public class LanguageService : ILanguageService
     public async Task<IEnumerable<string>> GetAllLanguagesPlAsync()
     {
         var langs = await _languageRepository.GetAllLanguagesAsync();
-        return langs.Select(l => l.LanguageNamePL).OrderBy(l => l);
+
+        var all = langs
+            .Select(l => l.LanguageNamePL)
+            .Where(l => !string.IsNullOrWhiteSpace(l))
+            .ToList();
+
+        var popular = new List<string>
+        {
+            "polski",
+            "angielski",
+            "ukraiński",
+            "włoski",
+            "niemiecki",
+            "francuski"
+        };
+        
+        var popularFirst = all
+            .Where(l => popular.Contains(l, StringComparer.OrdinalIgnoreCase))
+            .OrderBy(l => popular.IndexOf(l.ToLower()))
+            .ToList();
+        
+        var others = all
+            .Where(l => !popular.Contains(l, StringComparer.OrdinalIgnoreCase))
+            .OrderBy(l => l)
+            .ToList();
+
+        return popularFirst.Concat(others);
     }
 
     public async Task<IEnumerable<string>> GetAllLanguagesEnAsync()
     {
         var langs = await _languageRepository.GetAllLanguagesAsync();
-        return langs.Select(l => l.LanguageNameEN).OrderBy(l => l);
+
+        var all = langs
+            .Select(l => l.LanguageNameEN)
+            .Where(l => !string.IsNullOrWhiteSpace(l))
+            .ToList();
+
+        var popular = new List<string>
+        {
+            "polish",
+            "english",
+            "ukrainian",
+            "italian",
+            "german",
+            "french"
+        };
+
+        var popularFirst = all
+            .Where(l => popular.Contains(l, StringComparer.OrdinalIgnoreCase))
+            .OrderBy(l => popular.IndexOf(l.ToLower()))
+            .ToList();
+
+        var others = all
+            .Where(l => !popular.Contains(l, StringComparer.OrdinalIgnoreCase))
+            .OrderBy(l => l)
+            .ToList();
+
+        return popularFirst.Concat(others);
     }
+
 }
