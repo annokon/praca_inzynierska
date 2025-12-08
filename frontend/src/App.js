@@ -7,6 +7,7 @@ import { AuthProvider } from "./context/AuthContext";
 import VerifyEmail from "./views/VerifyEmail";
 import AdditionalInfo from "./views/AdditionalInfo";
 import VerifiedEmail from "./views/VerifiedEmail";
+import ForgotPassword from "./views/ForgotPassword";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/verified-email" element={<VerifiedEmail />} />
                     <Route path="/additional-info" element={<AdditionalInfo />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>

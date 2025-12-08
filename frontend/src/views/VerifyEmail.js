@@ -21,14 +21,14 @@ export default function VerifyEmail() {
         <div className="auth">
             <div className="auth__page">
                 <div className="auth__card">
-                <h1 className="auth__title" >Weryfikacja maila</h1>
+                <h1 className="auth__title auth__title--center" >Weryfikacja maila</h1>
 
                 <p className="auth__subtitle auth__subtitle--center">
                     Na adres <strong>twojego adresu e-mail</strong> został
                     wysłany mail z kodem do weryfikacji.
                 </p>
 
-                <form onSubmit={handleVerify}>
+                <form onSubmit={handleVerify} className="auth__form">
                     <div className="form-group">
                         <label className="form-field" htmlFor="code">
                             Wprowadź kod
@@ -44,12 +44,14 @@ export default function VerifyEmail() {
                         />
                     </div>
 
+                    <div className="form-footer">
                     <button type="submit" className="btn btn--primary" disabled={!code.trim()}>
                         Potwierdź
                     </button>
 
                     <div className="form-status">
                         {status}
+                    </div>
                     </div>
                 </form>
             </div>

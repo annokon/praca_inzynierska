@@ -14,18 +14,19 @@ export default function VerifiedEmail() {
                     Weryfikacja maila<br />przeszła pomyślnie
                 </h1>
 
-                            <div className="text-center">
-                                <button
-                                    type="button"
-                                    className="btn btn--primary"
-                                    onClick={handleContinue}
-                                >
-                                    Kontynuuj rejestrację
-                    </button>
-                </div>
+                    <div className="form-field">
+                        <div className="form-footer">
+                        <button
+                            type="button"
+                            className="btn btn--primary"
+                            onClick={handleContinue}
+                        >
+                            Kontynuuj rejestrację
+                        </button>
+                    </div>
             </div>
         </div>
         </div>
-
+        </div>
     );
 }

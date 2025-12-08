@@ -64,7 +64,7 @@ export default function Register() {
         <div className="auth">
             <div className="auth__page">
                 <div className="auth__card">
-                    <h1 className="auth__title">Zarejestruj się</h1>
+                    <h1 className="auth__title auth__title--center">Zarejestruj się</h1>
 
                 <form id="registerForm" onSubmit={handleRegister}>
                     <div className="form-field">

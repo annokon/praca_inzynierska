@@ -44,7 +44,7 @@ body {
 
 .auth__card {
     width: clamp(300px, 25vw, 480px);
-    min-height: clamp(320px, 40vh, 520px);
+    min-height: clamp(325px, 45vh, 525px);
     background: var(--color-surface);
     padding: 24px 24px 20px;
     border-radius: var(--radius-lg);
@@ -54,7 +54,7 @@ body {
 }
 
 .auth__title {
-    margin: 0 0 4px;
+    margin: 0 0 30px;
     font-size: 22px;
 }
 
@@ -69,6 +69,11 @@ body {
     text-align: center;
 }
 
+.auth__form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
 /* formy */
 
 .form-field {
@@ -254,5 +259,23 @@ body {
 }
 
 .auth__footer-text a:hover {
+    text-decoration: underline;
+}
+
+/*button do odzyskania hasła*/
+.auth__link-forgot {
+    margin-top: 4px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.auth__link-forgot:hover {
+    color: var(--color-primary);
     text-decoration: underline;
 }
