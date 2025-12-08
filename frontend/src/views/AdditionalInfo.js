@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import "../css/login_register.css";
+import SuccessPopup from "../components/Popup/SuccessPopup";
 
 export default function AdditionalInfo() {
     const [step, setStep] = useState(1);
@@ -50,6 +51,9 @@ export default function AdditionalInfo() {
     //transport
     const [selectedTransport, setSelectedTransport] = useState([]);
     const [skipTransport, setSkipTransport] = useState(false);
+
+    //popup
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     const travelStyleOptions = [
         { value: "spontaniczny", label: "spontaniczny" },
@@ -327,7 +331,11 @@ export default function AdditionalInfo() {
         };
 
         console.log("Dane do wysłania do backendu:", payload);
-        window.location.href = "/";
+        setIsPopupOpen(true);
+    }
+    function handlePopupClose() {
+        setIsPopupOpen(false);
+        window.location.href = "/login";
     }
 
     return (
@@ -915,6 +923,12 @@ export default function AdditionalInfo() {
 
             </div>
         </div>
+            <SuccessPopup
+                open={isPopupOpen}
+                title="Rejestracja zakończona pomyślnie"
+                buttonLabel="Okej"
+                onClose={handlePopupClose}
+            />
         </div>
     );
 }
