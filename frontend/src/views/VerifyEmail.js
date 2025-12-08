@@ -44,7 +44,7 @@ export default function VerifyEmail() {
                         />
                     </div>
 
-                    <button type="submit" className="btn btn-primary">
+                    <button type="submit" className="btn btn--primary" disabled={!code.trim()}>
                         Potwierdź
                     </button>
 

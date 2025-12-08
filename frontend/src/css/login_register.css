@@ -3,11 +3,7 @@ body {
     margin: 0;
     padding: 0;
 }
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
+
 body {
     background: var(--color-bg);
 }
@@ -47,12 +43,14 @@ body {
 }
 
 .auth__card {
-    width: 100%;
-    max-width: 360px;
+    width: clamp(300px, 25vw, 480px);
+    min-height: clamp(320px, 40vh, 520px);
     background: var(--color-surface);
     padding: 24px 24px 20px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
 }
 
 .auth__title {
@@ -99,7 +97,7 @@ body {
     box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.18);
 }
 .form-footer {
-    margin-top: 16px;
+    margin-top: auto;
     display: flex;
     flex-direction: column;
     gap: 8px;

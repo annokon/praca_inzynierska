@@ -163,6 +163,7 @@ export default function Register() {
                     </label>
                     </div>
 
+                    <div className="form-footer">
                     <button type="submit" className="btn btn-primary">
                         Stwórz konto
                     </button>
@@ -177,6 +178,7 @@ export default function Register() {
 
                     <div id="status" className="form-field">
                         {status}
+                    </div>
                     </div>
                 </form>
             </div>

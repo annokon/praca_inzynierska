@@ -71,6 +71,7 @@ export default function Login() {
                         <input id="password" name="password" type="password" className="form-input" required />
                     </div>
 
+                    <div className="form-footer">
                     <button type="submit" className="btn btn--primary">Zaloguj się</button>
 
                     <button
@@ -82,6 +83,7 @@ export default function Login() {
                     </button>
 
                     <div id="status" className="form-status">{status}</div>
+                    </div>
                 </form>
             </div>
         </div>
