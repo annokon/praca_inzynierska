@@ -51,8 +51,8 @@ export default function Login() {
         <div className="auth">
             <div className="auth__page">
                 <div className="auth__card">
-                    <h1 className="auth__title">Logowanie</h1>
-                    <p className="auth__subtitle">
+                    <h1 className="auth__title auth__title--center">Logowanie</h1>
+                    <p className="auth__subtitle auth__subtitle--center">
                         Wpisz email i hasło, aby się zalogować.
                     </p>
 
@@ -69,6 +69,13 @@ export default function Login() {
                             Hasło
                         </label>
                         <input id="password" name="password" type="password" className="form-input" required />
+                        <button
+                            type="button"
+                            className="auth__link-forgot"
+                            onClick={() => (window.location.href = "/forgot-password")}
+                        >
+                            Nie pamiętasz hasła?
+                        </button>
                     </div>
 
                     <div className="form-footer">
@@ -76,7 +83,7 @@ export default function Login() {
 
                     <button
                         type="button"
-                        className="btn btn--primary"
+                        className="btn btn--secondary"
                         onClick={() => (window.location.href = "/register")}
                     >
                         Nie masz konta? Stwórz nowe teraz
