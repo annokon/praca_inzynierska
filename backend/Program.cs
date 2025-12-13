@@ -23,6 +23,11 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
 builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<PasswordHasher>();
+builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
+builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("Email"));
+builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddHttpClient();
 

@@ -12,9 +12,4 @@ public interface IUserRepository
     Task<bool> ExistsByEmailAsync(string email);
     Task<bool> ExistsByUsernameAsync(string username);
     Task<Models.User?> GetByEmailAsync(string email);
-    // Task<IEnumerable<Models.Language>> GetAllLanguagesAsync();
-    // Task<IEnumerable<Models.Language>> GetUserLanguagesAsync(int userId);
-    // Task<bool> UpdateUserLanguagesAsync(int userId, List<int> languageIds);
-    // Task AddLanguageAsync(Models.Language language);
-
 }

@@ -89,6 +89,16 @@ public class User
 
     [Column("email_verified")]
     public bool EmailVerified { get; set; } = false;
+    
+    [Column("email_verification_code_hash")]
+    [MaxLength(255)]
+    public string? EmailVerificationCodeHash { get; set; }
+
+    [Column("email_verification_expires_at")]
+    public DateTime? EmailVerificationExpiresAt { get; set; }
+
+    [Column("email_verification_attempts")]
+    public int EmailVerificationAttempts { get; set; } = 0;
 
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

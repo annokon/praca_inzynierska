@@ -49,10 +49,20 @@ export default function Register() {
                 })
             });
 
+            const data = await res.json();
+
             if (!res.ok) {
-                setStatus("Nie udało się utworzyć konta.");
+                setStatus(data.message || "Nie udało się utworzyć konta.");
                 return;
             }
+
+            localStorage.setItem("verifyEmail", email);
+
+            await fetch("http://localhost:5292/api/email/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
 
             window.location.href = "/verify-email";
         } catch (err) {
