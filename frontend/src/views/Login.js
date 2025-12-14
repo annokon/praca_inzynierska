@@ -37,7 +37,17 @@ export default function Login() {
             return;
         }
 
+        //TODO if email verified
         const userData = await me.json();
+
+        const emailVerified = userData.emailVerified ?? userData.isEmailVerified ?? userData.isVerified;
+
+        if (!emailVerified) {
+            setUser(userData);
+            setStatus("Musisz zweryfikować email.");
+            window.location.href = "/verify-email";
+            return;
+        }
 
         setUser(userData);
 

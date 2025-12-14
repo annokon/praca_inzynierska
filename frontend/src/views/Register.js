@@ -174,13 +174,13 @@ export default function Register() {
                     </div>
 
                     <div className="form-footer">
-                    <button type="submit" className="btn btn-primary">
+                    <button type="submit" className="btn btn--primary">
                         Stwórz konto
                     </button>
 
                     <button
                         type="button"
-                        className="btn btn-primary"
+                        className="btn btn--secondary"
                         onClick={() => (window.location.href = "/login")}
                     >
                         Posiadasz już konto? Zaloguj się
