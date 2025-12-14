@@ -1,7 +1,7 @@
 import "../css/login_register.css";
+import {useState} from "react";
 
 export default function VerifiedEmail() {
-
     function handleContinue() {
         window.location.href = "/additional-info";
     }
@@ -14,7 +14,6 @@ export default function VerifiedEmail() {
                     Weryfikacja maila<br />przeszła pomyślnie
                 </h1>
 
-                    <div className="form-field">
                         <div className="form-footer">
                         <button
                             type="button"
@@ -23,9 +22,10 @@ export default function VerifiedEmail() {
                         >
                             Kontynuuj rejestrację
                         </button>
+                            <div className="form-status">
+                            </div>
                     </div>
             </div>
-        </div>
         </div>
         </div>
     );
