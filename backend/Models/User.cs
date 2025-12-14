@@ -162,5 +162,11 @@ public class User
     
     //for Notification
     public ICollection<Notification>? Notifications { get; set; }
+    
+    //for interest
+    public ICollection<UserInterest>? UserInterests { get; set; }
+
+    //for transport mode
+    public ICollection<UserTransportMode>? UserTransportModes { get; set; }
 
 }

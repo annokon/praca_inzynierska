@@ -87,5 +87,36 @@ public class DataContext : DbContext
                 .HasForeignKey(uc => uc.IdUser)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+        
+        modelBuilder.Entity<UserInterest>(entity =>
+        {
+            entity.HasKey(ui => new { ui.IdInterest, ui.IdUser });
+
+            entity.HasOne(ui => ui.Interest)
+                .WithMany(i => i.UserInterests)
+                .HasForeignKey(ui => ui.IdInterest)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ui => ui.User)
+                .WithMany(u => u.UserInterests)
+                .HasForeignKey(ui => ui.IdUser)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<UserTransportMode>(entity =>
+        {
+            entity.HasKey(utm => new { utm.IdTransportMode, utm.IdUser });
+
+            entity.HasOne(utm => utm.TransportMode)
+                .WithMany(tm => tm.UserTransportModes)
+                .HasForeignKey(utm => utm.IdTransportMode)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(utm => utm.User)
+                .WithMany(u => u.UserTransportModes)
+                .HasForeignKey(utm => utm.IdUser)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
     }
 }
