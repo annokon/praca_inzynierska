@@ -1,19 +1,78 @@
-import {useEffect, useState} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "../css/login_register.css";
 
 export default function VerifyEmail() {
-    const [code, setCode] = useState("");
+    const CODE_LEN = 6;
+
+    const [digits, setDigits] = useState(Array(CODE_LEN).fill(""));
     const [status, setStatus] = useState("");
     const [email, setEmail] = useState("");
 
+    const inputsRef = useRef([]);
+    const code = useMemo(() => digits.join(""), [digits]);
+
     useEffect(() => {
         const storedEmail = localStorage.getItem("verifyEmail");
-        if (!storedEmail) {
-            window.location.href = "/register";
-            return;
-        }
+
         setEmail(storedEmail);
     }, []);
+    const focusIndex = (i) => inputsRef.current[i]?.focus();
+
+    const handleDigitChange = (i, raw) => {
+        const v = raw.replace(/\D/g, "");
+
+        if (v.length > 1) {
+            const next = [...digits];
+            let idx = i;
+            for (const ch of v) {
+                if (idx >= CODE_LEN) break;
+                next[idx] = ch;
+                idx++;
+            }
+            setDigits(next);
+            focusIndex(Math.min(idx, CODE_LEN - 1));
+            return;
+        }
+
+        const next = [...digits];
+        next[i] = v;
+        setDigits(next);
+
+        if (v && i < CODE_LEN - 1) focusIndex(i + 1);
+    };
+
+    const handleDigitKeyDown = (i, e) => {
+        if (e.key === "Backspace") {
+            if (!digits[i] && i > 0) {
+                const next = [...digits];
+                next[i - 1] = "";
+                setDigits(next);
+                focusIndex(i - 1);
+                e.preventDefault();
+            } else {
+                const next = [...digits];
+                next[i] = "";
+                setDigits(next);
+                e.preventDefault();
+            }
+        }
+
+        if (e.key === "ArrowLeft" && i > 0) focusIndex(i - 1);
+        if (e.key === "ArrowRight" && i < CODE_LEN - 1) focusIndex(i + 1);
+    };
+
+    const handleDigitsPaste = (e) => {
+        const text = e.clipboardData.getData("text").replace(/\D/g, "");
+        if (!text) return;
+
+        const next = Array(CODE_LEN).fill("");
+        for (let i = 0; i < CODE_LEN; i++) next[i] = text[i] ?? "";
+        setDigits(next);
+
+        const last = Math.min(text.length, CODE_LEN) - 1;
+        focusIndex(Math.max(last, 0));
+        e.preventDefault();
+    };
 
     async function handleVerify(e) {
         e.preventDefault();
@@ -24,7 +83,10 @@ export default function VerifyEmail() {
             setStatus("Brak emaila do weryfikacji.");
             return;
         }
-
+        if (code.length !== CODE_LEN) {
+            setStatus("Wpisz pełny kod.");
+            return;
+        }
         try {
             const res = await fetch("http://localhost:5292/api/email/verify", {
                 method: "POST",
@@ -62,16 +124,26 @@ export default function VerifyEmail() {
                     <form onSubmit={handleVerify} className="auth__form">
                         <div className="form-field">
                             <label className="form-label" htmlFor="code">Wprowadź kod</label>
-                            <input
-                                id="code"
-                                name="code"
-                                type="text"
-                                maxLength={6}
-                                className="form-input"
-                                value={code}
-                                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                                required
-                            />
+                            <div className="otp-fields" onPaste={handleDigitsPaste}>
+                                {digits.map((d, i) => (
+                                    <input
+                                        key={i}
+                                        id={`code-${i}`}
+                                        ref={(el) => {(inputsRef.current[i] = el)}}
+                                        type="tel"
+                                        inputMode="numeric"
+                                        pattern="[0-9]"
+                                        maxLength={1}
+                                        className="otp-input"
+                                        placeholder="•"
+                                        value={d}
+                                        onChange={(e) => handleDigitChange(i, e.target.value)}
+                                        onKeyDown={(e) => handleDigitKeyDown(i, e)}
+                                        aria-label={`Cyfra ${i + 1} kodu`}
+                                        required
+                                    />
+                                ))}
+                            </div>
                         </div>
 
                         <div className="form-status">{status}</div>
