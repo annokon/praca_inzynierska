@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../css/login_register.css";
+import "../../css/login_register.css";
 
 export default function ForgotPassword() {
     const [status, setStatus] = useState("");

@@ -1,4 +1,4 @@
-import "../css/login_register.css";
+import "../../css/login_register.css";
 import {useState} from "react";
 
 export default function VerifiedEmail() {

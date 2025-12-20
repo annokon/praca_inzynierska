@@ -1,0 +1,155 @@
+
+.ph-wrap {
+    background: #ededed;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.ph-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.ph-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+.ph-avatar {
+    width: 74px;
+    height: 74px;
+    border-radius: 999px;
+    background: #111;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+}
+
+.ph-meta {
+    min-width: 0;
+}
+
+.ph-nameRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ph-name {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.1;
+}
+
+.ph-username {
+    margin-top: 6px;
+    font-weight: 700;
+    color: rgba(0,0,0,0.6);
+}
+
+.ph-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+}
+
+.ph-iconBtn {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.15);
+    background: transparent;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    color: #111;
+}
+
+.ph-iconBtn:hover {
+    background: rgba(0,0,0,0.04);
+}
+
+@media (max-width: 680px) {
+    .ph-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ph-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .ph-name {
+        font-size: 20px;
+    }
+}
+.ph-actionBox {
+    width: 44px;
+    height: 44px;
+    border: 2px solid #111;
+    background: transparent;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    padding: 0;
+}
+
+.ph-actionBox:hover {
+    background: rgba(0,0,0,0.04);
+}
+
+.ph-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ph-rating__text {
+    font-weight: 900;
+    font-size: 12px;
+    line-height: 1;
+}
+.ph-right {
+    position: relative;
+    min-width: 260px;
+}
+.ph-actionsTop {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 10px;
+}
+.ph-actionMini {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: #111;
+    opacity: 0.9;
+}
+.ph-actionMini:hover {
+    opacity: 1;
+}
+
+.ph-actionsBottom {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 48px;
+}

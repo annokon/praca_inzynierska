@@ -1,5 +1,5 @@
 import {useState} from "react";
-import "../css/login_register.css";
+import "../../css/login_register.css";
 
 export default function Register() {
     const [status, setStatus] = useState("");

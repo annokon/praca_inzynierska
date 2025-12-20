@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import "../css/login_register.css";
+import "../../css/login_register.css";
 
 export default function VerifyEmail() {
     const CODE_LEN = 6;

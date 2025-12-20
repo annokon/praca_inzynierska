@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
-import "../css/login_register.css";
-import SuccessPopup from "../components/Popup/SuccessPopup";
+import "../../css/login_register.css";
+import SuccessPopup from "../../components/Popup/SuccessPopup";
 
 export default function AdditionalInfo() {
     const [step, setStep] = useState(1);

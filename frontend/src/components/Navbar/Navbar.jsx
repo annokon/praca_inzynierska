@@ -2,6 +2,7 @@ import React from "react";
 import "./Navbar.css";
 import logo from "../../assets/logo.png";
 import useAuth from "../../hooks/useAuth";
+import {Link} from "react-router-dom";
 
 export default function Navbar() {
     const { user, loading } = useAuth();
@@ -22,6 +23,10 @@ export default function Navbar() {
                 <a href="/public" className="nav-link">Strona Główna</a>
                 <a href="/trips" className="nav-link">Ogłoszenia Podróży</a>
                 <a href="/add-trip" className="nav-link">Dodaj Nowe Ogłoszenie</a>
+
+                {!loading && user && (
+                    <Link to="/profile" className="nav-link">Mój profil</Link>
+                )}
             </div>
 
             <div className="navbar-right">
