@@ -1,0 +1,88 @@
+.profile-tabs-bar {
+    --pt-maxw: clamp(62rem, 92vw, 78rem);
+    --pt-pad-y: clamp(0.6rem, 1.2vw, 0.9rem);
+    --pt-pad-x: clamp(0.9rem, 1.6vw, 1.2rem);
+
+    --pt-gap: clamp(0.35rem, 0.8vw, 0.6rem);
+
+    --pt-bg: #fff;
+    --pt-border: 1px solid rgba(0, 0, 0, 0.06);
+
+    background: var(--pt-bg);
+    border-bottom: var(--pt-border);
+}
+
+.tabs {
+    max-width: var(--pt-maxw);
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+
+    background: #eee;
+    border-radius: clamp(0.6rem, 1vw, 0.9rem);
+    box-shadow: 0 0 0 clamp(1px, 0.15vw, 2px) rgba(0, 0, 0, 0.06);
+
+    padding: clamp(0.2rem, 0.6vw, 0.35rem);
+    justify-content: center;
+}
+
+.tab {
+    flex: 1 1 auto;
+    text-align: center;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+
+    border-radius: clamp(0.55rem, 0.95vw, 0.85rem);
+    padding: clamp(0.45rem, 0.9vw, 0.6rem) clamp(0.7rem, 1.3vw, 0.95rem);
+
+    color: rgba(51, 65, 85, 0.85);
+    background: transparent;
+
+    font-weight: 800;
+    font-size: clamp(0.82rem, 0.95vw, 0.95rem);
+    line-height: 1;
+
+    opacity: 0.85;
+    transition: background 140ms ease, box-shadow 140ms ease, transform 140ms ease, opacity 140ms ease, color 140ms ease;
+}
+
+.tab:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.55);
+    color: rgba(51, 65, 85, 1);
+}
+
+.tab:active {
+    transform: translateY(1px);
+}
+
+.tab:focus-visible {
+    outline: clamp(2px, 0.25vw, 3px) solid rgba(0, 0, 0, 0.18);
+    outline-offset: clamp(2px, 0.35vw, 4px);
+    opacity: 1;
+}
+
+.tab.is-active {
+    background: #fff;
+    opacity: 1;
+    color: rgba(51, 65, 85, 1);
+    font-weight: 900;
+
+    box-shadow:
+            0 0 0 clamp(1px, 0.15vw, 2px) rgba(0, 0, 0, 0.06),
+            0 clamp(0.2rem, 0.5vw, 0.35rem) clamp(0.6rem, 1vw, 0.9rem) rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 42.5rem) {
+    .tabs {
+        justify-content: stretch;
+    }
+    .tab {
+        flex: 1 1 9rem;
+    }
+}
