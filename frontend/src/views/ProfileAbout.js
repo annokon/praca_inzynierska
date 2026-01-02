@@ -49,7 +49,7 @@ export default function ProfileAbout() {
     return (
         <div className="profile-layout">
             <aside className="profile-menu">
-                <div className="profile-menu__title">O mnie</div>
+                <div className="profile-menu__title"></div>
 
                 <div className="profile-menu__items">
                     {menuSections.map((s) => (
