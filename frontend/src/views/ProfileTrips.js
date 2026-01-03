@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import "../css/profile_trips.css";
 import {useOutletContext} from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import ConfirmPopup from "../components/Popup/ConfirmPopup";
+import ProfileTripsAddParticipant from "./ProfileTripsAddParticipant";
+import ReviewPopup from "../components/Popup/ReviewPopup";
+import SuccessPopup from "../components/Popup/SuccessPopup";
+
 
 const sampleTrips = [
     {
@@ -65,12 +70,34 @@ export default function ProfileTrips() {
     const { user } = useAuth();
     const { profile, isMe } = useOutletContext();
     const [expandedId, setExpandedId] = useState(null);
+    const [trips, setTrips] = useState(sampleTrips);
+
     const [innerTabByTrip, setInnerTabByTrip] = useState({
         t1: "details",
         t2: "details",
         t3: "details",
     });
 
+    const [addModal, setAddModal] = useState({
+        open: false,
+        tripId: null,
+    });
+
+    const [removePopup, setRemovePopup] = useState({
+        open: false,
+        tripId: null,
+        participantId: null,
+        participantName: "",
+    });
+
+    const [reviewPopup, setReviewPopup] = useState({
+        open: false,
+        tripId: null,
+        targetUserId: null,
+        targetName: "",
+    });
+
+    const [reviewSuccessOpen, setReviewSuccessOpen] = useState(false);
 
     //
     const viewerId = user?.idUser ?? user?.id ?? user?.IdUser;
@@ -87,26 +114,67 @@ export default function ProfileTrips() {
     const toggleExpanded = (id) => setExpandedId((prev) => (prev === id ? null : id));
     const setInnerTab = (tripId, tab) => setInnerTabByTrip((prev) => ({ ...prev, [tripId]: tab }));
 
-    const handleReviewClick = (tripId, participantId) => {
-
+    const handleReviewClick = (tripId, participantId, participantName) => {
+        setReviewPopup({
+            open: true,
+            tripId,
+            targetUserId: participantId,
+            targetName: participantName,
+        });
     };
+
 
     const handleAddPhoto = (tripId) => {
 
     };
     const handleAddParticipant = (tripId) => {
-
+        setAddModal({ open: true, tripId });
     };
+
+    const handleAddUserToTrip = (user) => {
+        const tripId = addModal.tripId;
+
+        setTrips((prev) =>
+            prev.map((t) => {
+                if (t.id !== tripId) return t;
+
+                const exists = t.participants.some((p) => String(p.id) === String(user.id));
+                if (exists) return t;
+
+                return {
+                    ...t,
+                    participants: [
+                        ...t.participants,
+                        { id: user.id, name: user.fullName, isCreator: false },
+                    ],
+                };
+            })
+        );
+    };
+
 
     const handleRemoveParticipant = (tripId, participantId) => {
-
+        setTrips((prev) =>
+            prev.map((t) => {
+                if (t.id !== tripId) return t;
+                return {
+                    ...t,
+                    participants: t.participants.filter(
+                        (pp) => String(pp.id) !== String(participantId)
+                    ),
+                };
+            })
+        );
     };
+
+    const activeTrip = trips.find((t) => t.id === addModal.tripId);
+    const existingIds = new Set((activeTrip?.participants ?? []).map((p) => String(p.id)));
 
 
     return (
         <div className="trips">
             <div className="trips__list">
-                {sampleTrips.map((trip) => {
+                {trips.map((trip) => {
                     const isExpanded = expandedId === trip.id;
                     const innerTab = innerTabByTrip[trip.id] ?? "details";
 
@@ -252,7 +320,7 @@ export default function ProfileTrips() {
                                                                             className="iconBtn iconBtn--star"
                                                                             title="Wystaw opinię"
                                                                             aria-label="Wystaw opinię"
-                                                                            onClick={() => handleReviewClick(trip.id, p.id)}
+                                                                            onClick={() => handleReviewClick(trip.id, p.id, p.name)}
                                                                         >
                                                                             <IconStar />
                                                                         </button>
@@ -265,7 +333,14 @@ export default function ProfileTrips() {
                                                                             className="iconBtn iconBtn--remove"
                                                                             title="Usuń uczestnika"
                                                                             aria-label="Usuń uczestnika"
-                                                                            onClick={() => handleRemoveParticipant(trip.id, p.id)}
+                                                                            onClick={() =>
+                                                                                setRemovePopup({
+                                                                                    open: true,
+                                                                                    tripId: trip.id,
+                                                                                    participantId: p.id,
+                                                                                    participantName: p.name,
+                                                                                })
+                                                                            }
                                                                         >
                                                                             <IconX />
                                                                         </button>
@@ -314,8 +389,74 @@ export default function ProfileTrips() {
                     );
                 })}
             </div>
+            <ConfirmPopup
+                open={removePopup.open}
+                title="Czy na pewno chcesz usunąć tego użytkownika z podróży?"
+                cancelLabel="Anuluj"
+                confirmLabel="Usuń"
+                onClose={() =>
+                    setRemovePopup({
+                        open: false,
+                        tripId: null,
+                        participantId: null,
+                        participantName: "",
+                    })
+                }
+                onConfirm={() => {
+                    handleRemoveParticipant(removePopup.tripId, removePopup.participantId);
+                    setRemovePopup({
+                        open: false,
+                        tripId: null,
+                        participantId: null,
+                        participantName: "",
+                    });
+                }}
+            />
+
+            <ProfileTripsAddParticipant
+                open={addModal.open}
+                trip={activeTrip}
+                existingParticipantIds={existingIds}
+                onClose={() => setAddModal({ open: false, tripId: null })}
+                onAddUser={(user) => handleAddUserToTrip(user)}
+            />
+
+            <ReviewPopup
+                open={reviewPopup.open}
+                targetName={reviewPopup.targetName}
+                onClose={() =>
+                    setReviewPopup({
+                        open: false,
+                        tripId: null,
+                        targetUserId: null,
+                        targetName: "",
+                    })
+                }
+                onSave={({ rating, text }) => {
+
+                    setReviewPopup({
+                        open: false,
+                        tripId: null,
+                        targetUserId: null,
+                        targetName: "",
+                    });
+
+                    setReviewSuccessOpen(true);
+                }}
+            />
+
+            <SuccessPopup
+                open={reviewSuccessOpen}
+                title="Opinia została wystawiona"
+                buttonLabel="Okej"
+                onClose={() => setReviewSuccessOpen(false)}
+            />
+
+
         </div>
+
     );
+
 }
 
 function InfoItem({ label, icon, value, pill }) {

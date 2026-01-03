@@ -10,12 +10,12 @@
 
 .popup {
     background: #fff;
-    padding: 24px 32px;
-    border-radius: 16px;
-    min-width: 260px;
-    max-width: 360px;
+    padding: clamp(1.1rem, 2.2vw, 1.6rem) clamp(1.3rem, 3vw, 2rem);
+    border-radius: clamp(0.8rem, 1.6vw, 1.1rem);
+    min-width: min(clamp(16rem, 60vw, 20rem), 92vw);
+    max-width: min(clamp(18rem, 60vw, 22.5rem), 92vw);
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 clamp(0.6rem, 1.2vw, 1.9rem) clamp(1.4rem, 2.8vw, 3rem) rgba(0, 0, 0, 0.25);
 }
 
 .popup__title {
@@ -25,4 +25,98 @@
 
 .popup__button {
     margin-top: 8px;
+}
+
+.popup--review {
+    width: min(clamp(22rem, 70vw, 34rem), 92vw);
+    max-width: none;
+}
+
+.popup__divider {
+    height: clamp(0.12rem, 0.25vw, 0.16rem);
+    background: rgba(0, 0, 0, 0.85);
+    margin: clamp(0.7rem, 1.2vw, 0.95rem) 0 clamp(0.9rem, 1.6vw, 1.2rem);
+}
+
+.review__subtitle {
+    font-weight: 900;
+    font-size: clamp(1.15rem, 2vw, 1.55rem);
+    margin: 0 0 clamp(0.5rem, 1vw, 0.75rem);
+}
+
+.review__textarea {
+    width: min(100%, clamp(18rem, 68vw, 30rem));
+    min-height: clamp(7rem, 18vh, 9.5rem);
+    resize: none;
+
+    border: clamp(0.12rem, 0.25vw, 0.16rem) solid rgba(0, 0, 0, 0.85);
+    border-radius: clamp(0.7rem, 1.2vw, 0.9rem);
+    padding: clamp(0.7rem, 1.4vw, 0.95rem);
+
+    outline: none;
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+    margin: clamp(0.8rem, 1.4vw, 1.05rem) 0 clamp(0.9rem, 1.6vw, 1.2rem);
+}
+
+.popup__actions {
+    display: flex;
+    justify-content: center;
+    gap: clamp(0.9rem, 2vw, 1.4rem);
+}
+
+.stars-picker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.6rem, 1.5vw, 0.9rem);
+}
+
+.stars-picker__stars {
+    display: flex;
+    justify-content: center;
+    gap: clamp(0.15rem, 0.5vw, 0.3rem);
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.stars-picker__star {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 0.1rem;
+    line-height: 1;
+    font-size: clamp(1.1rem, 2vw, 1.7rem);
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.stars-picker__star:focus-visible {
+    outline: 2px solid rgba(0, 0, 0, 0.35);
+    outline-offset: 2px;
+    border-radius: 0.4rem;
+}
+
+.stars-picker__count {
+    font-weight: 900;
+    min-width: 3.5rem;
+    text-align: right;
+}
+
+.btn {
+    min-width: clamp(8.5rem, 20vw, 10.5rem);
+    height: clamp(2.6rem, 4.2vw, 2.9rem);
+    border-radius: clamp(0.55rem, 1vw, 0.7rem);
+    font-weight: 850;
+    cursor: pointer;
+}
+
+.btn--primary {
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    border: clamp(0.12rem, 0.25vw, 0.16rem) solid rgba(0, 0, 0, 0.9);
+}
+
+.btn--outline {
+    background: #fff;
+    color: rgba(0, 0, 0, 0.9);
+    border: clamp(0.12rem, 0.25vw, 0.16rem) solid rgba(0, 0, 0, 0.9);
 }

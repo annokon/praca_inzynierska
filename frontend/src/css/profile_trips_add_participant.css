@@ -1,0 +1,128 @@
+.apm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 3000;
+
+    display: grid;
+    place-items: center;
+    padding: var(--space-3);
+}
+
+.apm-panel {
+    width: min(34rem, 100%);
+    max-height: min(86vh, 52rem);
+    overflow: hidden;
+
+    display: grid;
+    grid-template-rows: auto auto auto 1fr auto;
+    gap: var(--space-2);
+}
+
+.apm-sectionTitle {
+    font-weight: 900;
+    font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+    padding-bottom: var(--space-1);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.85);
+}
+
+.apm-search {
+    position: relative;
+}
+
+.apm-search__field {
+    border: 2px solid rgba(0, 0, 0, 0.85);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    overflow: hidden;
+}
+
+.apm-search__icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.apm-search__input {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+
+    width: 100%;
+    height: clamp(2.6rem, 4vw, 2.95rem);
+    padding-left: 2.6rem;
+    padding-right: 2.6rem;
+}
+
+.apm-search__clear {
+    position: absolute;
+    right: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 2.1rem;
+    height: 2.1rem;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.apm-list {
+    overflow: auto;
+    border-top: 2px solid rgba(0, 0, 0, 0.85);
+}
+
+.apm-row {
+    display: grid;
+    grid-template-columns: var(--avatar) minmax(0, 1fr) auto;
+    gap: var(--space-2);
+    align-items: center;
+
+    padding: var(--space-2) var(--space-1);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.85);
+}
+
+.apm-user {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.apm-user__name {
+    font-weight: 900;
+    font-size: clamp(0.9rem, 1.1vw, 1rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.apm-user__nick {
+    font-weight: 750;
+    font-size: clamp(0.78rem, 0.95vw, 0.88rem);
+    color: var(--muted);
+}
+
+.apm-footer {
+    display: grid;
+    place-items: center;
+}
+
+@media (max-width: 32rem) {
+    .apm-overlay {
+        place-items: stretch;
+        padding: var(--space-2);
+    }
+
+    .apm-panel {
+        width: 100%;
+        max-height: 92vh;
+    }
+}
