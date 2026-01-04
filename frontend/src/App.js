@@ -12,6 +12,7 @@ import ProfileLayout from "./views/ProfileLayout";
 import ProfileAbout from "./views/ProfileAbout";
 import ProfileReview from "./views/ProfileReview";
 import ProfileTrips from "./views/ProfileTrips";
+import ProfileAchievements from "./views/ProfileAchievements";
 
 function App() {
     return (
@@ -31,7 +32,7 @@ function App() {
                         <Route path="o-uzytkowniku" element={<ProfileAbout />} />
                         {<Route path="podroze" element={<ProfileTrips />} />}
                         <Route path="opinie" element={<ProfileReview />} />
-                        {/*<Route path="osiagniecia" element={<ProfileAchievements />} />*/}
+                        <Route path="osiagniecia" element={<ProfileAchievements />} />
                         {/*<Route path="filtry" element={<ProfileFilters />} />*/}
                     </Route>
                 </Routes>

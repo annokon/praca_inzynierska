@@ -1,0 +1,117 @@
+.achievement-share {
+    display: grid;
+    justify-items: end;
+    gap: clamp(0.25rem, 0.7vw, 0.35rem);
+}
+
+.achievement-share__value {
+    font-weight: 900;
+    font-size: clamp(0.78rem, 0.95vw, 0.9rem);
+    color: rgba(0, 0, 0, 0.9);
+    white-space: nowrap;
+}
+
+.achievement-share__label {
+    font-weight: 850;
+    font-size: clamp(0.72rem, 0.9vw, 0.82rem);
+    color: var(--muted);
+    white-space: nowrap;
+    margin-top: clamp(-0.15rem, -0.2vw, -0.05rem);
+}
+
+.achievement-share__track {
+    width: clamp(6.5rem, 14vw, 9.5rem);
+    height: clamp(0.35rem, 0.7vw, 0.5rem);
+    border-radius: 999rem;
+    background: rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.achievement-share__fill {
+    display: block;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 999rem;
+}
+
+.achievement-icon {
+    display: grid;
+    place-items: center;
+    width: clamp(2.1rem, 3vw, 2.6rem);
+    height: clamp(2.1rem, 3vw, 2.6rem);
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.achievement-icon__svg {
+    width: clamp(1.5rem, 2.2vw, 1.9rem);
+    height: clamp(1.5rem, 2.2vw, 1.9rem);
+    display: block;
+}
+
+.achievement-icon svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.achievements-list {
+    display: grid;
+}
+
+.achievement-row {
+    display: grid;
+    grid-template-columns: clamp(2.1rem, 3vw, 2.6rem) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.achievement-row:last-child {
+    border-bottom: 0;
+}
+
+.achievement-main {
+    min-width: 0;
+    display: grid;
+    gap: clamp(0.2rem, 0.6vw, 0.35rem);
+}
+
+.achievement-title {
+    font-weight: 900;
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+    line-height: 1.15;
+}
+
+.achievement-desc {
+    font-weight: 650;
+    font-size: clamp(0.78rem, 0.95vw, 0.9rem);
+    color: var(--muted);
+    line-height: 1.25;
+}
+
+.achievement-meta {
+    display: grid;
+    justify-items: end;
+    gap: clamp(0.25rem, 0.7vw, 0.4rem);
+}
+
+.achievement-date {
+    font-weight: 850;
+    font-size: clamp(0.78rem, 0.95vw, 0.9rem);
+    color: rgba(0, 0, 0, 0.7);
+    white-space: nowrap;
+}
+
+@media (max-width: 40rem) {
+    .achievement-share__track {
+        width: clamp(10rem, 55vw, 18rem);
+    }
+
+    .achievement-meta {
+        justify-items: start;
+    }
+
+    .achievement-share {
+        justify-items: start;
+    }
+}

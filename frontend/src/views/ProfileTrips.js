@@ -284,7 +284,7 @@ export default function ProfileTrips() {
                                             <div className="participants">
                                                 {trip.participants.map((p) => (
                                                     <div key={p.id} className="participant">
-                                                        <div className="ph-avatar" aria-hidden="true">
+                                                        <div className="ph-trip-avatar" aria-hidden="true">
                                                             <svg
                                                                 viewBox="0 0 24 24"
                                                                 width="34"

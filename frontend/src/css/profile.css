@@ -35,7 +35,7 @@
     display: grid;
     grid-template-columns: clamp(14rem, 18vw, 18rem) minmax(0, 1fr);
     gap: var(--space-3);
-    padding: var(--space-3);
+    padding: clamp(0.9rem, 1.6vw, 1.2rem);
     max-width: 62rem;
     margin: 0 auto;
 }

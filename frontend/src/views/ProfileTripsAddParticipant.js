@@ -85,7 +85,7 @@ export default function ProfileTripsAddParticipant({
 
                         return (
                             <div key={u.id} className="apm-row">
-                                <div className="ph-avatar" aria-hidden="true">
+                                <div className="ph-trip-avatar" aria-hidden="true">
                                     <IconUser />
                                 </div>
 
