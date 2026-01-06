@@ -11,7 +11,7 @@ import SuccessPopup from "../components/Popup/SuccessPopup";
 const sampleTrips = [
     {
         id: "t1",
-        ownerUserId: 2,
+        ownerUserId: 8,
         title: "Londyn wrzesień 2025",
         status: "Zarchiwizowana",
         destination: "Londyn, Anglia",

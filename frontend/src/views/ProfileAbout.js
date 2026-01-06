@@ -1,5 +1,4 @@
-import React from "react";
-import { useOutletContext } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import "../css/profile.css";
 
 function Pill({ children }) {
@@ -31,12 +30,34 @@ function InfoGroup({ title, items = [] }) {
 }
 
 export default function ProfileAbout() {
-    const { profile } = useOutletContext();
+    const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        fetch("http://localhost:5292/api/users/me", {
+            credentials: "include"
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("Brak autoryzacji");
+                }
+                return res.json();
+            })
+            .then((data) => {
+                setProfile(data);
+                setLoading(false);
+            })
+            .catch(() => {
+                setError("Nie udało się pobrać profilu.");
+                setLoading(false);
+            });
+    }, []);
 
     const menuSections = [
         { id: "about", label: "O mnie" },
         { id: "languages", label: "Języki" },
-        { id: "additional", label: "Dodatkowe Informacje" },
+        { id: "additional", label: "Dodatkowe informacje" },
     ];
 
     const scrollTo = (id) => {
@@ -46,11 +67,19 @@ export default function ProfileAbout() {
         });
     };
 
+    if (loading) {
+        return <div className="profile-layout">Ładowanie profilu...</div>;
+    }
+
+    if (error) {
+        return <div className="profile-layout error">{error}</div>;
+    }
+
+    if (!profile) return null;
+
     return (
         <div className="profile-layout">
             <aside className="profile-menu">
-                <div className="profile-menu__title"></div>
-
                 <div className="profile-menu__items">
                     {menuSections.map((s) => (
                         <button
@@ -66,8 +95,9 @@ export default function ProfileAbout() {
             </aside>
 
             <main className="profile-content">
+                {/* O MNIE */}
                 <section id="about" className="card">
-                    <h2 className="section-title">O Mnie</h2>
+                    <h2 className="section-title">O mnie</h2>
 
                     <InfoLine title="Płeć" value={profile.gender} />
                     <InfoLine title="Zaimki" value={profile.pronouns} />
@@ -77,9 +107,10 @@ export default function ProfileAbout() {
                     <div className="spacer" />
 
                     <h3 className="section-subtitle">Opis</h3>
-                    <div className="desc-box">{profile.description}</div>
+                    <div className="desc-box">{profile.bio}</div>
                 </section>
 
+                {/* JĘZYKI */}
                 <section id="languages" className="card">
                     <h2 className="section-title">Języki</h2>
                     <div className="pill-wrap">
@@ -89,16 +120,17 @@ export default function ProfileAbout() {
                     </div>
                 </section>
 
+                {/* DODATKOWE */}
                 <section id="additional" className="card">
-                    <h2 className="section-title">Dodatkowe Informacje</h2>
+                    <h2 className="section-title">Dodatkowe informacje</h2>
 
                     <InfoGroup title="Zainteresowania" items={profile.additional?.interests} />
-                    <InfoGroup title="Preferowane środki transportu" items={profile.additional?.transport} />
-                    <InfoGroup title="Preferowany styl podróżowania" items={profile.additional?.travelStyle} />
-                    <InfoGroup title="Poziom doświadczenia w podróżach" items={profile.additional?.experience} />
+                    <InfoGroup title="Transport" items={profile.additional?.transport} />
+                    <InfoGroup title="Styl podróżowania" items={profile.additional?.travelStyle} />
+                    <InfoGroup title="Doświadczenie" items={profile.additional?.experience} />
                     <InfoGroup title="Prawo jazdy" items={profile.additional?.drivingLicense} />
-                    <InfoGroup title="Stosunek do alkoholu" items={profile.additional?.alcohol} />
-                    <InfoGroup title="Stosunek do papierosów" items={profile.additional?.smoking} />
+                    <InfoGroup title="Alkohol" items={profile.additional?.alcohol} />
+                    <InfoGroup title="Papierosy" items={profile.additional?.smoking} />
                 </section>
             </main>
         </div>

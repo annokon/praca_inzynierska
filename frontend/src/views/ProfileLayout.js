@@ -1,26 +1,85 @@
-import { Outlet, useParams } from "react-router-dom";
-import { useLayoutEffect, useRef } from "react";
-import useAuth from "../hooks/useAuth";
+import { Outlet } from "react-router-dom";
+import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import ProfileHeader from "./ProfileHeader";
 import ProfileTabs from "./ProfileTabs";
 
-export default function ProfileLayout() {
-    const { username } = useParams();
-    const { user, loading } = useAuth();
+function calculateAge(birthDate) {
+    if (!birthDate) return null;
 
-    const isMe = !!user && user.username === username;
+    const birth = new Date(birthDate);
+    const today = new Date();
+
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+        age--;
+    }
+
+    return age;
+}
+
+export default function ProfileLayout() {
+    const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const topRef = useRef(null);
 
+    useEffect(() => {
+        async function loadProfile() {
+            try {
+                const res = await fetch("http://localhost:5292/api/users/me", {
+                    credentials: "include",
+                });
+
+                if (!res.ok) {
+                    setProfile(null);
+                    return;
+                }
+
+                const data = await res.json();
+
+                setProfile({
+                    name: data.displayName,
+                    username: data.username,
+                    email: data.email,
+
+                    birthDate: data.birthDate,
+                    age: calculateAge(data.birthDate),
+
+                    gender: data.gender,
+                    pronouns: data.pronouns,
+                    personality: data.personality,
+                    location: data.location,
+                    description: data.bio,
+                    languages: data.languages ?? [],
+                    additional: data.additional ?? {},
+                });
+
+            } catch (e) {
+                console.error("Błąd pobierania profilu", e);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        loadProfile();
+    }, []);
+
     useLayoutEffect(() => {
-        if (loading) return;
+        if (!topRef.current) return;
 
         const el = topRef.current;
-        if (!el) return;
 
         const update = () => {
             const h = el.getBoundingClientRect().height;
-            document.documentElement.style.setProperty("--profile-sticky-h", `${h}px`);
+            document.documentElement.style.setProperty(
+                "--profile-sticky-h",
+                `${h}px`
+            );
         };
 
         update();
@@ -35,34 +94,11 @@ export default function ProfileLayout() {
             ro.disconnect();
             window.removeEventListener("resize", update);
         };
-    }, [loading]);
+    }, []);
 
-    if (loading) return null;
+    if (loading || !profile) return null;
 
-
-    const profile = {
-        name: "Anna Nowak",
-        age: 28,
-        username,
-        rating: 4.8,
-        gender: "kobieta",
-        pronouns: "on/jej",
-        personality: "ekstrawertyk",
-        location: "Warszawa, Polska",
-        description: "Opis użytkownika",
-        languages: ["polski", "angielski", "hiszpański"],
-        additional: {
-            interests: ["Zainteresowanie 1", "Zainteresowanie 2", "Zainteresowanie 3"],
-            transport: ["samolot", "samochód"],
-            travelStyle: ["spontaniczny"],
-            experience: ["doświadczony podróżnik"],
-            drivingLicense: ["posiadam międzynarodowe"],
-            alcohol: ["piję okazjonalnie"],
-            smoking: ["nie palę i nie przeszkadza mi"],
-        },
-    };
-
-    if (loading) return null;
+    const isMe = true;
 
     return (
         <div className="profile-page">
@@ -72,7 +108,7 @@ export default function ProfileLayout() {
                     age={profile.age}
                     username={profile.username}
                     isMe={isMe}
-                    rating={profile.rating}
+                    rating={4.8}    //TODO
                 />
                 <ProfileTabs isMe={isMe} />
             </div>

@@ -14,15 +14,15 @@ const IconButton = ({ title, children, onClick, className = "ph-iconBtn" }) => (
 );
 
 export default function ProfileHeader({
-                                          name = "Anna Nowak",
-                                          age = 28,
-                                          username = "a_nowak",
-                                          isMe = false,
+                                          name,
+                                          age,
+                                          username,
+                                          isMe,
 
                                           liked = false,
                                           onLikeClick,
 
-                                          rating = "8,3",
+                                          rating,
                                           onGalleryClick,
                                           onRatingClick,
                                           onTrophyClick,
@@ -63,7 +63,8 @@ export default function ProfileHeader({
                     <div className="ph-meta">
                         <div className="ph-nameRow">
                             <h1 className="ph-name">
-                                {name}, {age} lat
+                                {name}
+                                {age !== null && <> , {age} lat</>}
                             </h1>
                             {!isMe && (
                                 <IconButton title="Polub profil" onClick={onLikeClick}>
