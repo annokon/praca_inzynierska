@@ -114,7 +114,7 @@ export default function ProfileTripsAddParticipant({
 
                 <div className="apm-footer">
                     <button type="button" className="btn btn--primary" onClick={onClose}>
-                        Wróć
+                        Gotowe
                     </button>
                 </div>
             </div>
