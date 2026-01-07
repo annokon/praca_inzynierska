@@ -1,17 +1,33 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../../css/profile_trips_add_participant.css";
 
 export default function ProfileTripsAddParticipant({
-                                                open,
-                                                trip,
-                                                existingParticipantIds,
-                                                onClose,
-                                                onAddUser,
-                                            }) {
+                                                       open,
+                                                       trip,
+                                                       existingParticipantIds,
+                                                       onClose,
+                                                       onAddUser,
+                                                   }) {
     const [query, setQuery] = useState("");
+    const listRef = useRef(null);
 
     useEffect(() => {
-        if (!open) setQuery("");
+        if (!open) {
+            setQuery("");
+            return;
+        }
+
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+
+        const rafId = requestAnimationFrame(() => {
+            listRef.current?.focus();
+        });
+
+        return () => {
+            cancelAnimationFrame(rafId);
+            document.body.style.overflow = prevOverflow;
+        };
     }, [open]);
 
     const sampleUsers = useMemo(
@@ -78,8 +94,7 @@ export default function ProfileTripsAddParticipant({
                     </div>
                 </div>
 
-
-                <div className="apm-list">
+                <div className="apm-list" ref={listRef} tabIndex={0}>
                     {filtered.map((u) => {
                         const isAlready = existingParticipantIds.has(String(u.id));
 

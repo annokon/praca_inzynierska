@@ -75,9 +75,18 @@
     color: rgba(0, 0, 0, 0.85);
 }
 
+.apm-overlay {
+    overscroll-behavior: contain;
+}
+
+.apm-panel {
+    overscroll-behavior: contain;
+}
+
 .apm-list {
     overflow: auto;
     border-top: 2px solid rgba(0, 0, 0, 0.85);
+    overscroll-behavior: contain;
 }
 
 .apm-row {
