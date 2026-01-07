@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../css/profile.css";
+import "../../css/profile.css";
 
 function Pill({ children }) {
     return <span className="pill">{children}</span>;

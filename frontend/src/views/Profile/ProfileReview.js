@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
-import "../css/profile_review.css";
+import "../../css/profile_review.css";
 
 function Stars({ value, max = 10, step = 0.5, className = "" }) {
     const safe = Number.isFinite(value) ? Math.max(0, Math.min(value, max)) : 0;

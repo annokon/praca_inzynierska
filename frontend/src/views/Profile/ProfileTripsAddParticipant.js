@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import "../css/profile_trips_add_participant.css";
+import "../../css/profile_trips_add_participant.css";
 
 export default function ProfileTripsAddParticipant({
                                                 open,

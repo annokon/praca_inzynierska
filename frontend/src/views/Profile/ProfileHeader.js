@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/profile_header.css";
+import "../../css/profile_header.css";
 
 const IconButton = ({ title, children, onClick, className = "ph-iconBtn" }) => (
     <button
