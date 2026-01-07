@@ -8,11 +8,12 @@ import VerifyEmail from "./views/Register/VerifyEmail";
 import AdditionalInfo from "./views/Register/AdditionalInfo";
 import VerifiedEmail from "./views/Register/VerifiedEmail";
 import ForgotPassword from "./views/Login/ForgotPassword";
-import ProfileLayout from "./views/ProfileLayout";
-import ProfileAbout from "./views/ProfileAbout";
-import ProfileReview from "./views/ProfileReview";
-import ProfileTrips from "./views/ProfileTrips";
-import ProfileAchievements from "./views/ProfileAchievements";
+import ProfileLayout from "./views/Profile/ProfileLayout";
+import ProfileAbout from "./views/Profile/ProfileAbout";
+import ProfileReview from "./views/Profile/ProfileReview";
+import ProfileTrips from "./views/Profile/ProfileTrips";
+import ProfileAchievements from "./views/Profile/ProfileAchievements";
+import TripsFavFilters from "./views/TripsFavFilters";
 
 function App() {
     return (
@@ -33,8 +34,8 @@ function App() {
                         {<Route path="podroze" element={<ProfileTrips />} />}
                         <Route path="opinie" element={<ProfileReview />} />
                         <Route path="osiagniecia" element={<ProfileAchievements />} />
-                        {/*<Route path="filtry" element={<ProfileFilters />} />*/}
                     </Route>
+                    <Route path="/fav-filters" element={<TripsFavFilters />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>
