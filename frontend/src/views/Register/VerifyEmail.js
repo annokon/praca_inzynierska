@@ -13,9 +13,13 @@ export default function VerifyEmail() {
 
     useEffect(() => {
         const storedEmail = localStorage.getItem("verifyEmail");
-
+        if (!storedEmail) {
+            window.location.href = "/register";
+            return;
+        }
         setEmail(storedEmail);
     }, []);
+
     const focusIndex = (i) => inputsRef.current[i]?.focus();
 
     const handleDigitChange = (i, raw) => {
