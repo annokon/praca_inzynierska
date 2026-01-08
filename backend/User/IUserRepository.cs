@@ -12,4 +12,5 @@ public interface IUserRepository
     Task<bool> ExistsByEmailAsync(string email);
     Task<bool> ExistsByUsernameAsync(string username);
     Task<Models.User?> GetByEmailAsync(string email);
+    Task<Models.User?> GetUserWithLanguagesAsync(int idUser);
 }

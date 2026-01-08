@@ -16,10 +16,6 @@ public interface IUserService
     Task<RegisterResult> RegisterAsync(RegisterUserDTO dto);
     Task<LoginResult> LoginAsync(LoginUserDTO dto);
     Task<UserDTO?> GetByIdAsync(int id);
-    // Task<IEnumerable<Models.Language>> GetAllLanguagesAsync();
-    // Task<IEnumerable<Models.Language>> GetUserLanguagesAsync(int userId);
-    // Task<bool> UpdateUserLanguagesAsync(int userId, List<int> languageIds);
-    // Task<IEnumerable<Models.Language>> FetchLanguagesFromExternalApiAsync();
-    // Task SeedLanguagesAsync();
+    Task<UserProfileDTO?> GetProfileAsync(int id);
 
 }

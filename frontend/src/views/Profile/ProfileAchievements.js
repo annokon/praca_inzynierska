@@ -1,4 +1,4 @@
-import "../css/profile_achievements.css";
+import "../../css/profile_achievements.css";
 
 const sampleAchievements = [
     {

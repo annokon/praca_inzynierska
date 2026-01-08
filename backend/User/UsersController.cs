@@ -146,7 +146,10 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetMe()
     {
         var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var user = await _userService.GetByIdAsync(id);
+        var user = await _userService.GetProfileAsync(id);
+
+        if (user == null)
+            return NotFound();
 
         return Ok(user);
     }

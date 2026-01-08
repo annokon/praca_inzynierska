@@ -234,63 +234,27 @@ public class UserService : IUserService
     }
     
     
-    // public async Task<IEnumerable<Models.Language>> GetAllLanguagesAsync()
-    // {
-    //     return await _userRepository.GetAllLanguagesAsync();
-    // }
-    //
-    // public async Task<IEnumerable<Models.Language>> GetUserLanguagesAsync(int userId)
-    // {
-    //     return await _userRepository.GetUserLanguagesAsync(userId);
-    // }
-    //
-    // public async Task<bool> UpdateUserLanguagesAsync(int userId, List<int> languageIds)
-    // {
-    //     return await _userRepository.UpdateUserLanguagesAsync(userId, languageIds);
-    // }
-    //
-    //
-    // public async Task<IEnumerable<Models.Language>> FetchLanguagesFromExternalApiAsync()
-    // {
-    //     var request = new HttpRequestMessage(HttpMethod.Get, _apiUrl);
-    //     if (!string.IsNullOrEmpty(_apiKey))
-    //     {
-    //         request.Headers.Add("Authorization", $"Bearer {_apiKey}");
-    //     }
-    //     
-    //     var response = await _httpClient.SendAsync(request);
-    //
-    //     if (!response.IsSuccessStatusCode)
-    //         throw new Exception($"Failed to fetch languages from external API. Status code: {response.StatusCode}");
-    //
-    //     var json = await response.Content.ReadAsStringAsync();
-    //     
-    //     var externalLanguages = JsonSerializer.Deserialize<List<ExternalLanguageDTO>>(json, 
-    //         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-    //
-    //     if (externalLanguages == null)
-    //         return new List<Models.Language>();
-    //     
-    //     return externalLanguages.Select(l => new Models.Language
-    //         {
-    //             IdLanguage = l.Id,
-    //             LanguageName = l.Name
-    //         }).ToList();
-    //
-    // }
-    //
-    // public async Task SeedLanguagesAsync()
-    // {
-    //     var existingLanguages = await _userRepository.GetAllLanguagesAsync();
-    //     if (existingLanguages.Any())
-    //         return;
-    //     
-    //     var languages = await FetchLanguagesFromExternalApiAsync();
-    //     foreach (var lang in languages)
-    //     {
-    //         await _userRepository.AddLanguageAsync(lang);
-    //     }
-    //
-    // }
+    public async Task<UserProfileDTO?> GetProfileAsync(int id)
+    {
+        var user = await _userRepository.GetUserWithLanguagesAsync(id);
+        if (user == null) return null;
+
+        return new UserProfileDTO
+        {
+            Id = user.IdUser,
+            Username = user.Username,
+            DisplayName = user.DisplayName,
+            Email = user.Email,
+            BirthDate = user.BirthDate.ToString("yyyy-MM-dd"),
+            Gender = user.Gender,
+            Pronouns = user.Pronouns,
+            Personality = user.PersonalityType,
+            Location = user.Location,
+            Bio = user.Bio,
+            Languages = user.UserLanguages?
+                .Select(ul => ul.Language.LanguageNamePL)
+                .ToList() ?? []
+        };
+    }
 
 }

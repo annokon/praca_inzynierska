@@ -84,4 +84,11 @@ public class UserRepository : IUserRepository
     public async Task<Models.User?> GetByEmailAsync(string email) =>
         await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     
+    public async Task<Models.User?> GetUserWithLanguagesAsync(int idUser)
+    {
+        return await _context.Users
+            .Include(u => u.UserLanguages)!
+            .ThenInclude(ul => ul.Language)
+            .FirstOrDefaultAsync(u => u.IdUser == idUser);
+    }
 }

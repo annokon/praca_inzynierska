@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import "../css/profile_trips.css";
+import "../../css/profile_trips.css";
 import {useOutletContext} from "react-router-dom";
-import useAuth from "../hooks/useAuth";
-import ConfirmPopup from "../components/Popup/ConfirmPopup";
+import useAuth from "../../hooks/useAuth";
+import ConfirmPopup from "../../components/Popup/ConfirmPopup";
 import ProfileTripsAddParticipant from "./ProfileTripsAddParticipant";
-import ReviewPopup from "../components/Popup/ReviewPopup";
-import SuccessPopup from "../components/Popup/SuccessPopup";
+import ReviewPopup from "../../components/Popup/ReviewPopup";
+import SuccessPopup from "../../components/Popup/SuccessPopup";
 
 
 const sampleTrips = [
     {
         id: "t1",
-        ownerUserId: 2,
+        ownerUserId: 8,
         title: "Londyn wrzesień 2025",
         status: "Zarchiwizowana",
         destination: "Londyn, Anglia",
