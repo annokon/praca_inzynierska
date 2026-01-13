@@ -81,8 +81,11 @@ public class UserRepository : IUserRepository
         await _context.Users.AnyAsync(u => u.Username == username);
 
     
-    public async Task<Models.User?> GetByEmailAsync(string email) =>
-        await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+    public async Task<Models.User?> GetByEmailOrUsernameAsync(string login)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == login || u.Username == login);
+    }
     
     public async Task<Models.User?> GetUserWithLanguagesAsync(int idUser)
     {

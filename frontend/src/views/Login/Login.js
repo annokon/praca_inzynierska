@@ -9,7 +9,7 @@ export default function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        const email = e.target.email.value;
+        const login = e.target.login.value;
         const password = e.target.password.value;
 
         setStatus("Logowanie...");
@@ -18,11 +18,11 @@ export default function Login() {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ login, password })
         });
 
         if (!res.ok) {
-            setStatus("Nieprawidłowy email lub hasło.");
+            setStatus("Nieprawidłowy login lub hasło.");
             return;
         }
 
@@ -37,10 +37,13 @@ export default function Login() {
             return;
         }
 
-        //TODO if email verified
         const userData = await me.json();
 
-        const emailVerified = userData.emailVerified ?? userData.isEmailVerified ?? userData.isVerified;
+        const emailVerified =
+            userData.emailVerified ??
+            userData.isEmailVerified ??
+            userData.isVerified ??
+            true;
 
         if (!emailVerified) {
             setUser(userData);
@@ -50,8 +53,8 @@ export default function Login() {
         }
 
         setUser(userData);
-
         setStatus("Zalogowano pomyślnie!");
+
         setTimeout(() => {
             window.location.href = "/";
         }, 700);
@@ -63,47 +66,61 @@ export default function Login() {
                 <div className="auth__card">
                     <h1 className="auth__title auth__title--center">Logowanie</h1>
                     <p className="auth__subtitle auth__subtitle--center">
-                        Wpisz email i hasło, aby się zalogować.
+                        Wpisz email lub nazwę użytkownika i hasło, aby się zalogować.
                     </p>
 
-                <form id="loginForm" onSubmit={handleLogin}>
-                    <div className="form-field">
-                        <label className="form-label" htmlFor="email">
-                            Email
-                        </label>
-                        <input id="email" name="email" type="email" className="form-input" required />
-                    </div>
+                    <form id="loginForm" onSubmit={handleLogin}>
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="login">
+                                Email lub nazwa użytkownika
+                            </label>
+                            <input
+                                id="login"
+                                name="login"
+                                type="text"
+                                className="form-input"
+                                required
+                            />
+                        </div>
 
-                    <div className="form-field">
-                        <label className="form-label" htmlFor="password">
-                            Hasło
-                        </label>
-                        <input id="password" name="password" type="password" className="form-input" required />
-                        <button
-                            type="button"
-                            className="auth__link-forgot"
-                            onClick={() => (window.location.href = "/forgot-password")}
-                        >
-                            Nie pamiętasz hasła?
-                        </button>
-                    </div>
+                        <div className="form-field">
+                            <label className="form-label" htmlFor="password">
+                                Hasło
+                            </label>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                className="form-input"
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="auth__link-forgot"
+                                onClick={() => (window.location.href = "/forgot-password")}
+                            >
+                                Nie pamiętasz hasła?
+                            </button>
+                        </div>
 
-                    <div className="form-footer">
-                    <button type="submit" className="btn btn--primary">Zaloguj się</button>
+                        <div className="form-footer">
+                            <button type="submit" className="btn btn--primary">
+                                Zaloguj się
+                            </button>
 
-                    <button
-                        type="button"
-                        className="btn btn--secondary"
-                        onClick={() => (window.location.href = "/register")}
-                    >
-                        Nie masz konta? Stwórz nowe teraz
-                    </button>
+                            <button
+                                type="button"
+                                className="btn btn--secondary"
+                                onClick={() => (window.location.href = "/register")}
+                            >
+                                Nie masz konta? Stwórz nowe teraz
+                            </button>
 
-                    <div id="status" className="form-status">{status}</div>
-                    </div>
-                </form>
+                            <div id="status" className="form-status">{status}</div>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
         </div>
     );
 }

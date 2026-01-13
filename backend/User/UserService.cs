@@ -201,12 +201,19 @@ public class UserService : IUserService
 
     public async Task<LoginResult> LoginAsync(LoginUserDTO dto)
     {
-        var user = await _userRepository.GetByEmailAsync(dto.Email);
+        if (string.IsNullOrWhiteSpace(dto.Login) ||
+            string.IsNullOrWhiteSpace(dto.Password))
+            return LoginResult.Fail("Enter username or password.");
+
+        var login = dto.Login.Trim();
+
+        var user = await _userRepository.GetByEmailOrUsernameAsync(login);
+
         if (user == null)
-            return LoginResult.Fail("Invalid credentials");
+            return LoginResult.Fail("Incorrect login or password.");
 
         if (!_passwordHasher.VerifyPassword(dto.Password, user.PasswordHash))
-            return LoginResult.Fail("Invalid credentials");
+            return LoginResult.Fail("Incorrect login or password.");
 
         return LoginResult.SuccessResult(
             access: _jwt.GenerateAccessToken(user),
@@ -214,6 +221,7 @@ public class UserService : IUserService
             role: user.Role
         );
     }
+
     
     public async Task<UserDTO?> GetByIdAsync(int id)
     {

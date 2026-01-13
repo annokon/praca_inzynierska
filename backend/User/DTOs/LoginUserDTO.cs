@@ -2,6 +2,6 @@
 
 public class LoginUserDTO
 {
-    public string Email { get; set; } = "";
+    public string Login { get; set; } = "";  // email or username
     public string Password { get; set; } = "";
 }
