@@ -1,4 +1,6 @@
-﻿namespace backend.Interest;
+﻿using backend.Interest.DTOs;
+
+namespace backend.Interest;
 
 public class InterestService : IInterestService
 {
@@ -46,5 +48,16 @@ public class InterestService : IInterestService
         }
 
         Console.WriteLine("Interests imported from intrests.pl.txt");
+    }
+    
+    public async Task<IEnumerable<InterestDTO>> GetAllAsync()
+    {
+        var items = await _repo.GetAllAsync();
+
+        return items.Select(i => new InterestDTO
+        {
+            Id = i.IdInterest,
+            Name = i.InterestName
+        });
     }
 }

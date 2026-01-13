@@ -137,24 +137,23 @@ export default function AdditionalInfo() {
     useEffect(() => {
         const loadInterests = async () => {
             try {
-                // TODO: api
+                const res = await fetch("http://localhost:5292/api/interests");
 
-                const interestOptions = [
-                    "sport",
-                    "książki",
-                    "sztuka",
-                    "fotografia",
-                    "pisanie",
-                    "muzyka",
-                    "hodowla pszczół",
-                ];
+                if (!res.ok) {
+                    throw new Error("Nie udało się pobrać zainteresowań");
+                }
+
+                const data = await res.json();
+
+                const interestOptions = data.map(i => i.name);
+
                 setAllInterests(interestOptions);
             } catch (e) {
                 console.error("Błąd ładowania zainteresowań", e);
             }
         };
 
-        void loadInterests();
+        loadInterests();
     }, []);
 
     const filteredInterests = allInterests.filter((interest) =>

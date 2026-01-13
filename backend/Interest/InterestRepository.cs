@@ -12,6 +12,12 @@ public class InterestRepository : IInterestRepository
         _context = context;
     }
 
+    public async Task<IEnumerable<Models.Interest>> GetAllAsync() =>
+        await _context.Set<Models.Interest>()
+            .AsNoTracking()
+            .OrderBy(i => i.IdInterest)
+            .ToListAsync();
+
     public async Task<bool> AnyAsync() =>
         await _context.Interests.AnyAsync();
 
