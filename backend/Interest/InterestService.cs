@@ -20,7 +20,7 @@ public class InterestService : IInterestService
         }
 
         var filePath = Path.Combine(_env.ContentRootPath, 
-            "Resources", "interests", "interests.pl.txt");
+            "Resources", "Interests", "interests.pl.txt");
 
         if (!File.Exists(filePath))
         {
