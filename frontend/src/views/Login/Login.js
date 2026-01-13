@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import "../../css/login_register.css";
 import useAuth from "../../hooks/useAuth";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Login() {
     const [status, setStatus] = useState("");
     const { setUser } = useAuth();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from || "/";
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -48,7 +53,7 @@ export default function Login() {
         if (!emailVerified) {
             setUser(userData);
             setStatus("Musisz zweryfikować email.");
-            window.location.href = "/verify-email";
+            navigate("/verify-email", { replace: true });
             return;
         }
 
@@ -56,7 +61,7 @@ export default function Login() {
         setStatus("Zalogowano pomyślnie!");
 
         setTimeout(() => {
-            window.location.href = "/";
+            navigate(from, { replace: true });
         }, 700);
     };
 
@@ -97,7 +102,7 @@ export default function Login() {
                             <button
                                 type="button"
                                 className="auth__link-forgot"
-                                onClick={() => (window.location.href = "/forgot-password")}
+                                onClick={() => navigate("/forgot-password")}
                             >
                                 Nie pamiętasz hasła?
                             </button>
@@ -111,7 +116,7 @@ export default function Login() {
                             <button
                                 type="button"
                                 className="btn btn--secondary"
-                                onClick={() => (window.location.href = "/register")}
+                                onClick={() => navigate("/register")}
                             >
                                 Nie masz konta? Stwórz nowe teraz
                             </button>

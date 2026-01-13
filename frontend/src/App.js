@@ -14,6 +14,10 @@ import ProfileReview from "./views/Profile/ProfileReview";
 import ProfileTrips from "./views/Profile/ProfileTrips";
 import ProfileAchievements from "./views/Profile/ProfileAchievements";
 import TripsFavFilters from "./views/TripsFavFilters";
+import SettingsChangeAdditionalnfo from "./views/Settings/SettingsChangeAdditionalInfo/SettingsChangeAdditionalnfo";
+import RequireAuth from "./routing/RequireAuth";
+import SettingsProfile from "./views/Settings/SettingsProfile/SettingsProfile";
+import SettingsChangeData from "./views/Settings/SettingsChangeData/SettingsChangeData";
 
 function App() {
     return (
@@ -36,6 +40,11 @@ function App() {
                         <Route path="osiagniecia" element={<ProfileAchievements />} />
                     </Route>
                     <Route path="/fav-filters" element={<TripsFavFilters />} />
+                    <Route element={<RequireAuth />}>
+                        <Route path="/settings-profile" element={<SettingsProfile />} />
+                        <Route path="/settings-change-data" element={<SettingsChangeData />} />
+                        <Route path="/settings-info" element={<SettingsChangeAdditionalnfo />} />
+                    </Route>
                 </Routes>
             </BrowserRouter>
         </AuthProvider>
