@@ -9,7 +9,6 @@ public class CookieHelper
             HttpOnly = true,
             Secure = false,
             SameSite = SameSiteMode.Lax,
-            Expires = DateTime.UtcNow.AddMinutes(15)
         });
     }
 

@@ -5,6 +5,7 @@ using backend.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using backend.Interest;
 using backend.Language;
 
 
@@ -28,6 +29,8 @@ builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>(
 builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("Email"));
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<IInterestRepository, InterestRepository>();
+builder.Services.AddScoped<IInterestService, InterestService>();
 
 builder.Services.AddHttpClient();
 
@@ -101,6 +104,11 @@ using (var scope = app.Services.CreateScope())
     
     await languageService.SeedLanguagesAsync();
     Console.WriteLine("Languages imported from CLDR JSON files.");
+    
+    
+    var interestService = scope.ServiceProvider.GetRequiredService<IInterestService>();
+    await interestService.SeedInterestsAsync();
+
     
     if (!db.Users.Any())
     {

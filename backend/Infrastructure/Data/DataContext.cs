@@ -12,6 +12,7 @@ public class DataContext : DbContext
     public DbSet<Models.User> Users => Set<Models.User>();
     public DbSet<Models.Language> Languages => Set<Models.Language>();
     public DbSet<UserLanguage> UserLanguages => Set<UserLanguage>();
+    public DbSet<Models.Interest> Interests => Set<Models.Interest>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
