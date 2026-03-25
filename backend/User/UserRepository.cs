@@ -94,4 +94,8 @@ public class UserRepository : IUserRepository
             .ThenInclude(ul => ul.Language)
             .FirstOrDefaultAsync(u => u.IdUser == idUser);
     }
+
+    public async Task<bool> ValidateGender(int dtoGenderId) =>
+        await _context.GenderOptions.AnyAsync(g => g.Id == dtoGenderId);
+
 }

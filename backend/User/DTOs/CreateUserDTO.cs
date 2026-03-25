@@ -24,7 +24,7 @@ public class CreateUserDTO
     public DateOnly BirthDate { get; set; }
 
     [Required, MaxLength(20)]
-    public string Gender { get; set; } = null!;
+    public int GenderId { get; set; }
 
     
     // terms of use

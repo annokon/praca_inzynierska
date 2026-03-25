@@ -10,10 +10,15 @@ public class TransportMode
     [Key]
     public int IdTransportMode { get; set; }
 
-    [Column("transport_mode_name")]
+    [Column("transport_mode_name_en")]
     [Required]
     [MaxLength(100)]
-    public string TransportModeName { get; set; } = null!;
+    public string TransportModeNameEn { get; set; } = null!;
+    
+    [Column("transport_mode_name_pl")]
+    [Required]
+    [MaxLength(100)]
+    public string TransportModeNamePl { get; set; } = null!;
 
     public ICollection<UserTransportMode>? UserTransportModes { get; set; }
 }

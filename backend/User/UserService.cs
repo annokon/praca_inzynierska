@@ -42,9 +42,9 @@ public class UserService : IUserService
             DisplayName = u.DisplayName,
             Email = u.Email,
             BirthDate = u.BirthDate,
-            Gender = u.Gender,
+            Gender = u.Gender.NamePl,
             Location = u.Location,
-            PersonalityType = u.PersonalityType,
+            PersonalityType = u.PersonalityType.NamePl,
             Bio = u.Bio,
             ProfilePhotoPath = u.ProfilePhotoPath,
             Role = u.Role,
@@ -64,9 +64,9 @@ public class UserService : IUserService
             Username = u.Username,
             DisplayName = u.DisplayName,
             Email = u.Email,
-            Gender = u.Gender,
+            Gender = u.Gender.NamePl,
             Location = u.Location,
-            PersonalityType = u.PersonalityType,
+            PersonalityType = u.PersonalityType.NamePl,
             Bio = u.Bio,
             ProfilePhotoPath = u.ProfilePhotoPath,
             Role = u.Role,
@@ -81,7 +81,9 @@ public class UserService : IUserService
             throw new Exception("This email is already in use.");
         if (await _userRepository.ExistsByUsernameAsync(dto.Username))
             throw new Exception("This username is already taken.");
-
+        if (await _userRepository.ValidateGender(dto.GenderId))
+            throw new Exception("Invalid gender option.");
+        
         var user = new backend.Models.User
         {
             IdUser = dto.IdUser,
@@ -90,7 +92,7 @@ public class UserService : IUserService
             Email = dto.Email,
             PasswordHash = _passwordHasher.HashPassword(dto.Password),
             BirthDate = dto.BirthDate,
-            Gender = dto.Gender,
+            GenderId = dto.GenderId,
             CreatedAt = DateTime.UtcNow,
             IsActive = true,
             Role = "user"
@@ -104,7 +106,7 @@ public class UserService : IUserService
             Username = user.Username,
             DisplayName = user.DisplayName,
             Email = user.Email,
-            Gender = user.Gender,
+            Gender = user.Gender.NamePl,
             IsActive = user.IsActive,
             Role = user.Role
         };
@@ -116,13 +118,13 @@ public class UserService : IUserService
         var user = await _userRepository.GetByIdUserAsync(idUser);
         if (user == null) return false;
 
-        user.Pronouns = dto.Pronouns;
-        user.AlcoholPreference = dto.AlcoholPreference;
-        user.SmokingPreference = dto.SmokingPreference;
-        user.DrivingLicenseType = dto.DrivingLicenseType;
+        user.Pronouns.NamePl = dto.Pronouns;
+        user.AlcoholPreference.NamePl = dto.AlcoholPreference;
+        user.SmokingPreference.NamePl = dto.SmokingPreference;
+        user.DrivingLicense.NamePl = dto.DrivingLicenseType;
         user.TravelStyle = dto.TravelStyle;
-        user.TravelExperience = dto.TravelExperience;
-        user.PersonalityType = dto.PersonalityType;
+        user.TravelExperience.NamePl = dto.TravelExperience;
+        user.PersonalityType.NamePl = dto.PersonalityType;
         user.UpdatedAt = DateTime.UtcNow;
 
         await _userRepository.UpdateAsync(user);
@@ -138,9 +140,9 @@ public class UserService : IUserService
         user.DisplayName = dto.DisplayName ?? user.DisplayName;
         user.Email = dto.Email ?? user.Email;
         user.Location = dto.Location ?? user.Location;
-        user.Gender = dto.Gender ?? user.Gender;
+        user.Gender.NamePl = dto.Gender ?? user.Gender.NamePl;
         user.Bio = dto.Bio ?? user.Bio;
-        user.PersonalityType = dto.PersonalityType ?? user.PersonalityType;
+        user.PersonalityType.NamePl = dto.PersonalityType ?? user.PersonalityType.NamePl;
         user.UpdatedAt = DateTime.UtcNow;
 
         await _userRepository.UpdateAsync(user);
@@ -234,7 +236,7 @@ public class UserService : IUserService
             Username = u.Username,
             DisplayName = u.DisplayName,
             Email = u.Email,
-            Gender = u.Gender,
+            Gender = u.Gender.NamePl,
             Location = u.Location,
             ProfilePhotoPath = u.ProfilePhotoPath,
             Role = u.Role
@@ -254,9 +256,9 @@ public class UserService : IUserService
             DisplayName = user.DisplayName,
             Email = user.Email,
             BirthDate = user.BirthDate.ToString("yyyy-MM-dd"),
-            Gender = user.Gender,
-            Pronouns = user.Pronouns,
-            Personality = user.PersonalityType,
+            Gender = user.Gender.NamePl,
+            Pronouns = user.Pronouns.NamePl,
+            Personality = user.PersonalityType.NamePl,
             Location = user.Location,
             Bio = user.Bio,
             Languages = user.UserLanguages?

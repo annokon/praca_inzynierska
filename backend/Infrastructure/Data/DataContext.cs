@@ -1,4 +1,5 @@
 ﻿using backend.Models;
+using backend.Options;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Infrastructure.Data;
@@ -8,12 +9,18 @@ public class DataContext : DbContext
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }
-    
+
     public DbSet<Models.User> Users => Set<Models.User>();
     public DbSet<Models.Language> Languages => Set<Models.Language>();
     public DbSet<UserLanguage> UserLanguages => Set<UserLanguage>();
     public DbSet<Models.Interest> Interests => Set<Models.Interest>();
-
+    public DbSet<GenderOption> GenderOptions => Set<GenderOption>();
+    public DbSet<PronounOption> PronounOptions => Set<PronounOption>();
+    public DbSet<PersonalityTypeOption> PersonalityTypeOptions => Set<PersonalityTypeOption>();
+    public DbSet<AlcoholPreferenceOption> AlcoholPreferenceOptions => Set<AlcoholPreferenceOption>();
+    public DbSet<SmokingPreferenceOption> SmokingPreferenceOptions => Set<SmokingPreferenceOption>();
+    public DbSet<DrivingLicenseOption> DrivingLicenseOptions => Set<DrivingLicenseOption>();
+    public DbSet<TravelExperienceOption> TravelExperienceOptions => Set<TravelExperienceOption>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,7 +31,7 @@ public class DataContext : DbContext
                 .HasForeignKey<Notification>(n => n.IdTripInvitation);
 
             entity.HasOne(n => n.Message)
-                .WithMany(m => m.Notifications) 
+                .WithMany(m => m.Notifications)
                 .HasForeignKey(n => n.IdMessage)
                 .OnDelete(DeleteBehavior.Cascade);
         });
@@ -88,7 +95,7 @@ public class DataContext : DbContext
                 .HasForeignKey(uc => uc.IdUser)
                 .OnDelete(DeleteBehavior.Cascade);
         });
-        
+
         modelBuilder.Entity<UserInterest>(entity =>
         {
             entity.HasKey(ui => new { ui.IdInterest, ui.IdUser });
@@ -119,5 +126,58 @@ public class DataContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+        modelBuilder.Entity<GenderOption>().HasData(
+            new GenderOption { Id = 1, NameEn = "Male", NamePl = "Mężczyzna" },
+            new GenderOption { Id = 2, NameEn = "Female", NamePl = "Kobieta" },
+            new GenderOption { Id = 3, NameEn = "Non-binary", NamePl = "Niebinarny" },
+            new GenderOption { Id = 4, NameEn = "Other", NamePl = "Inne" }
+        );
+
+        modelBuilder.Entity<PronounOption>().HasData(
+            new PronounOption { Id = 1, NameEn = "He/Him", NamePl = "On/Jego" },
+            new PronounOption { Id = 2, NameEn = "She/Her", NamePl = "Ona/Jej" },
+            new PronounOption { Id = 3, NameEn = "They/Them", NamePl = "Oni/Ich" }
+        );
+
+        modelBuilder.Entity<PersonalityTypeOption>().HasData(
+            new PersonalityTypeOption { Id = 1, NameEn = "Introvert", NamePl = "Introwertyk" },
+            new PersonalityTypeOption { Id = 2, NameEn = "Extrovert", NamePl = "Ekstrawertyk" },
+            new PersonalityTypeOption { Id = 3, NameEn = "Ambivert", NamePl = "Ambiwertyk" }
+        );
+
+        modelBuilder.Entity<AlcoholPreferenceOption>().HasData(
+            new AlcoholPreferenceOption { Id = 1, NameEn = "Does not drink but does not mind", NamePl = "Nie piję i nie przeszkadza mi" },
+            new AlcoholPreferenceOption { Id = 2, NameEn = "Social drinker", NamePl = "Piję okazjonalnie" },
+            new AlcoholPreferenceOption { Id = 3, NameEn = "Regular drinker", NamePl = "Piję regularnie" },
+            new AlcoholPreferenceOption { Id = 4, NameEn = "Does not tolerate alcohol", NamePl = "Nie toleruję" }
+        );
+
+        modelBuilder.Entity<SmokingPreferenceOption>().HasData(
+            new SmokingPreferenceOption { Id = 1, NameEn = "Non-smoker but does not mind", NamePl = "Nie palę i nie przeszkadza mi" },
+            new SmokingPreferenceOption { Id = 2, NameEn = "Occasional smoker", NamePl = "Palę okazjonalnie" },
+            new SmokingPreferenceOption { Id = 3, NameEn = "Smoker", NamePl = "Palę" },
+            new SmokingPreferenceOption { Id = 4, NameEn = "Does not tolerate smoking", NamePl = "Nie toleruję" }
+        );
+
+        modelBuilder.Entity<DrivingLicenseOption>().HasData(
+            new DrivingLicenseOption { Id = 1, NameEn = "Yes, international", NamePl = "Posiadam międzynarodowe" },
+            new DrivingLicenseOption { Id = 2, NameEn = "No", NamePl = "Nie posiadam" },
+            new DrivingLicenseOption { Id = 3, NameEn = "Other", NamePl = "Inne" }
+        );
+
+        modelBuilder.Entity<TravelExperienceOption>().HasData(
+            new TravelExperienceOption { Id = 1, NameEn = "Beginner", NamePl = "Początkujący" },
+            new TravelExperienceOption { Id = 2, NameEn = "Intermediate", NamePl = "Średniozaawansowany" },
+            new TravelExperienceOption { Id = 3, NameEn = "Experienced", NamePl = "Zaawansowany" },
+            new TravelExperienceOption { Id = 4, NameEn = "Backpacker", NamePl = "Backpacker" }
+        );
+
+        modelBuilder.Entity<TransportMode>().HasData(
+            new TransportMode { IdTransportMode = 1, TransportModeNameEn = "Car", TransportModeNamePl = "Samochód" },
+            new TransportMode { IdTransportMode = 2, TransportModeNameEn = "Plane", TransportModeNamePl = "Samolot" },
+            new TransportMode { IdTransportMode = 3, TransportModeNameEn = "Train", TransportModeNamePl = "Pociąg" },
+            new TransportMode { IdTransportMode = 4, TransportModeNameEn = "Bus", TransportModeNamePl = "Autobus" },
+            new TransportMode { IdTransportMode = 5, TransportModeNameEn = "Bike", TransportModeNamePl = "Rower" }
+        );
     }
 }

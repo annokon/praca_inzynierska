@@ -13,4 +13,5 @@ public interface IUserRepository
     Task<bool> ExistsByUsernameAsync(string username);
     Task<Models.User?> GetUserWithLanguagesAsync(int idUser);
     Task<Models.User?> GetByEmailOrUsernameAsync(string login);
+    Task<bool> ValidateGender(int dtoGenderId);
 }

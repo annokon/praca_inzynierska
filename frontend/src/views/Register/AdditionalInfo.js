@@ -12,24 +12,30 @@ export default function AdditionalInfo() {
     const [skipLanguages, setSkipLanguages] = useState(false);
 
     //płeć, zaimki
+    const [gendersOptions, setGendersOptions] = useState([]);
     const [gender, setGender] = useState("");
+    const [pronounsOptions, setPronounsOptions] = useState([]);
     const [pronouns, setPronouns] = useState("");
     const [skipGenderPronouns, setSkipGenderPronouns] = useState(false);
 
     //typ osobowości
+    const [personalityOptions, setPersonalityOptions] = useState([]);
     const [personalityType, setPersonalityType] = useState("");
     const [skipPersonality, setSkipPersonality] = useState(false);
 
     //alkohol, papierosy
+    const [alcoholOptions, setAlcoholOptions] = useState([]);
     const [alcoholAttitude, setAlcoholAttitude] = useState("");
+    const [smokingOptions, setSmokingOptions] = useState([]);
     const [smokingAttitude, setSmokingAttitude] = useState("");
     const [skipSubstances, setSkipSubstances] = useState(false);
 
     //prawo jazdy
+    const [drivingOptions, setDrivingOptions] = useState([]);
     const [hasDrivingLicense, setHasDrivingLicense] = useState("");
     const [skipDrivingLicense, setSkipDrivingLicense] = useState(false);
 
-    //lokalizacja
+    //lokalizacja   TODO
     const [locationSearch, setLocationSearch] = useState("");
     const [allLocations, setAllLocations] = useState([]);
     const [skipLocation, setSkipLocation] = useState(false);
@@ -39,6 +45,7 @@ export default function AdditionalInfo() {
     const [skipTravelStyle, setSkipTravelStyle] = useState(false);
 
     //doświadczenie
+    const [travelExperienceOptions, setTravelExperienceOptions] = useState([]);
     const [travelExperience, setTravelExperience] = useState("");
     const [skipTravelExperience, setSkipTravelExperience] = useState(false);
 
@@ -48,18 +55,45 @@ export default function AdditionalInfo() {
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [skipInterests, setSkipInterests] = useState(false);
 
-    //transport
+    //transport TODO
     const [selectedTransport, setSelectedTransport] = useState([]);
     const [skipTransport, setSkipTransport] = useState(false);
 
     //popup
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const res = await fetch("http://localhost:5292/api/options?lang=pl", {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include"
+                });
+                if (!res.ok) throw new Error("Nie udało się pobrać opcji");
+                const data = await res.json();
+
+                setGendersOptions(data.genders);
+                setPronounsOptions(data.pronouns);
+                setPersonalityOptions(data.personalities);
+                setAlcoholOptions(data.alcohol);
+                setSmokingOptions(data.smoking);
+                setDrivingOptions(data.driving);
+                setTravelExperienceOptions(data.travelExperience);
+            } catch (err) {
+                console.error("Błąd ładowania opcji:", err);
+            }
+        };
+
+        fetchOptions();
+    }, []);
+
     const travelStyleOptions = [
         { value: "spontaniczny", label: "spontaniczny" },
         { value: "troche_zaplanowany", label: "trochę zaplanowany" },
         { value: "szczegolowo_zaplanowany", label: "szczegółowo zaplanowany" },
     ];
+
     const transportOptions = [
         { value: "samochod", label: "samochód" },
         { value: "samolot", label: "samolot" },
@@ -419,10 +453,9 @@ export default function AdditionalInfo() {
                                 onChange={(e) => setGender(e.target.value)}
                             >
                                 <option value="">Select</option>
-                                <option value="female">Kobieta</option>
-                                <option value="male">Mężczyzna</option>
-                                <option value="nonbinary">Inna</option>
-                                <option value="no-answer">Wolę nie podawać</option>
+                                {gendersOptions.map(g => (
+                                    <option key={g.id} value={g.id}>{g.name}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -437,11 +470,9 @@ export default function AdditionalInfo() {
                                 onChange={(e) => setPronouns(e.target.value)}
                             >
                                 <option value="">Select</option>
-                                <option value="she-her">ona / jej</option>
-                                <option value="he-him">on / jego</option>
-                                <option value="they-them">oni / ich</option>
-                                <option value="custom">Inne</option>
-                                <option value="no-answer">Wolę nie podawać</option>
+                                {pronounsOptions.map(p => (
+                                    <option key={p.id} value={p.id}>{p.name}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -490,9 +521,9 @@ export default function AdditionalInfo() {
                                 }
                             >
                                 <option value="">Select</option>
-                                <option value="introvert">Introwertyk</option>
-                                <option value="extrovert">Ekstrawertyk</option>
-                                <option value="ambivert">Ambiwertyk</option>
+                                {personalityOptions.map(p => (
+                                    <option key={p.id} value={p.id}>{p.name}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -539,10 +570,9 @@ export default function AdditionalInfo() {
                                 onChange={(e) => setAlcoholAttitude(e.target.value)}
                             >
                                 <option value="">Select</option>
-                                <option value="drinking">Piję</option>
-                                <option value="occasionally">Piję okazjonalnie</option>
-                                <option value="none-tolerating">Nie piję i nie przeszkadza mi</option>
-                                <option value="no-tolerating">Nie toleruję</option>
+                                {alcoholOptions.map(a => (
+                                    <option key={a.id} value={a.id}>{a.name}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -557,10 +587,9 @@ export default function AdditionalInfo() {
                                 onChange={(e) => setSmokingAttitude(e.target.value)}
                             >
                                 <option value="">Select</option>
-                                <option value="smoking">Palę</option>
-                                <option value="occasionally">Palę okazjonalnie</option>
-                                <option value="none-tolerating">Nie palę i nie przeszkadza mi</option>
-                                <option value="no-tolerating">Nie toleruję</option>
+                                {smokingOptions.map(s => (
+                                    <option key={s.id} value={s.id}>{s.name}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -607,9 +636,9 @@ export default function AdditionalInfo() {
                                 onChange={(e) => setHasDrivingLicense(e.target.value)}
                             >
                                 <option value="">Select</option>
-                                <option value="national">Posiadam międzynarodowe</option>
-                                <option value="no">Nie posiadam</option>
-                                <option value="different">Inne</option>
+                                {drivingOptions.map(d => (
+                                    <option key={d.id} value={d.id}>{d.name}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -758,8 +787,9 @@ export default function AdditionalInfo() {
                                 onChange={(e) => setTravelExperience(e.target.value)}
                             >
                                 <option value="">Select</option>
-                                <option value="beginner">Początkujący</option>
-                                <option value="experienced">Doświadczony podróżnik</option>
+                                {travelExperienceOptions.map(t => (
+                                    <option key={t.id} value={t.id}>{t.name}</option>
+                                ))}
                             </select>
                         </div>
 

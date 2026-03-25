@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backend.Options;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models;
@@ -38,11 +39,13 @@ public class User
 
     [Column("gender")]
     [MaxLength(20)] 
-    public string? Gender { get; set; }
+    public int? GenderId { get; set; }
+    public GenderOption? Gender { get; set; }
 
     [Column("pronouns")]
     [MaxLength(20)] 
-    public string? Pronouns { get; set; }
+    public int? PronounsId { get; set; }
+    public PronounOption? Pronouns { get; set; }
 
     [Column("location")]
     [MaxLength(100)] 
@@ -50,19 +53,23 @@ public class User
 
     [Column("personality_type")]
     [MaxLength(20)] 
-    public string? PersonalityType { get; set; }
+    public int? PersonalityTypeId { get; set; }
+    public PersonalityTypeOption? PersonalityType { get; set; }
 
     [Column("alcohol_preference")]
     [MaxLength(50)] 
-    public string? AlcoholPreference { get; set; }
+    public int? AlcoholPreferenceId { get; set; }
+    public AlcoholPreferenceOption? AlcoholPreference { get; set; }
 
     [Column("smoking_preference")]
     [MaxLength(50)] 
-    public string? SmokingPreference { get; set; }
+    public int? SmokingPreferenceId { get; set; }
+    public SmokingPreferenceOption? SmokingPreference { get; set; }
 
     [Column("driving_license_type")]
     [MaxLength(20)] 
-    public string? DrivingLicenseType { get; set; }
+    public int? DrivingLicenseId { get; set; }
+    public DrivingLicenseOption? DrivingLicense { get; set; }
 
     [Column("travel_style")]
     [MaxLength(50)] 
@@ -70,7 +77,8 @@ public class User
 
     [Column("travel_experience")]
     [MaxLength(50)] 
-    public string? TravelExperience { get; set; }
+    public int? TravelExperienceId { get; set; }
+    public TravelExperienceOption? TravelExperience { get; set; }
 
     [Column("bio")]
     [MaxLength(500)] 
