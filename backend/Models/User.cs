@@ -71,9 +71,9 @@ public class User
     public int? DrivingLicenseId { get; set; }
     public DrivingLicenseOption? DrivingLicense { get; set; }
 
-    [Column("travel_style")]
-    [MaxLength(50)] 
-    public string? TravelStyle { get; set; }
+    // [Column("travel_style")]
+    // [MaxLength(50)] 
+    // public string? TravelStyle { get; set; }
 
     [Column("travel_experience")]
     [MaxLength(50)] 
@@ -186,5 +186,8 @@ public class User
 
     //for transport mode
     public ICollection<UserTransportMode>? UserTransportModes { get; set; }
+    
+    // for travel style
+    public ICollection<UserTravelStyle>? UserTravelStyles { get; set; }
 
 }

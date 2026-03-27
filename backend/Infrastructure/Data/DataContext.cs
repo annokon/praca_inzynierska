@@ -125,6 +125,21 @@ public class DataContext : DbContext
                 .HasForeignKey(utm => utm.IdUser)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+        
+        modelBuilder.Entity<UserTravelStyle>(entity =>
+        {
+            entity.HasKey(uts => new { uts.IdTravelStyle, uts.IdUser });
+
+            entity.HasOne(uts => uts.TravelStyle)
+                .WithMany(tm => tm.UserTravelStyles)
+                .HasForeignKey(uts => uts.IdTravelStyle)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(uts => uts.User)
+                .WithMany(u => u.UserTravelStyles)
+                .HasForeignKey(uts => uts.IdUser)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         modelBuilder.Entity<GenderOption>().HasData(
             new GenderOption { Id = 1, NameEn = "Male", NamePl = "Mężczyzna" },
@@ -172,12 +187,27 @@ public class DataContext : DbContext
             new TravelExperienceOption { Id = 4, NameEn = "Backpacker", NamePl = "Backpacker" }
         );
 
-        modelBuilder.Entity<TransportMode>().HasData(
-            new TransportMode { IdTransportMode = 1, TransportModeNameEn = "Car", TransportModeNamePl = "Samochód" },
-            new TransportMode { IdTransportMode = 2, TransportModeNameEn = "Plane", TransportModeNamePl = "Samolot" },
-            new TransportMode { IdTransportMode = 3, TransportModeNameEn = "Train", TransportModeNamePl = "Pociąg" },
-            new TransportMode { IdTransportMode = 4, TransportModeNameEn = "Bus", TransportModeNamePl = "Autobus" },
-            new TransportMode { IdTransportMode = 5, TransportModeNameEn = "Bike", TransportModeNamePl = "Rower" }
+        modelBuilder.Entity<Models.TransportMode>().HasData(
+            new Models.TransportMode { IdTransportMode = 1, TransportModeNameEn = "Car", TransportModeNamePl = "Samochód" },
+            new Models.TransportMode { IdTransportMode = 2, TransportModeNameEn = "Plane", TransportModeNamePl = "Samolot" },
+            new Models.TransportMode { IdTransportMode = 3, TransportModeNameEn = "Train", TransportModeNamePl = "Pociąg" },
+            new Models.TransportMode { IdTransportMode = 4, TransportModeNameEn = "Bus", TransportModeNamePl = "Autobus" },
+            new Models.TransportMode { IdTransportMode = 5, TransportModeNameEn = "Bike", TransportModeNamePl = "Rower" },
+            new Models.TransportMode { IdTransportMode = 6, TransportModeNameEn = "Motorbike", TransportModeNamePl = "Motor" },
+            new Models.TransportMode { IdTransportMode = 7, TransportModeNameEn = "Ferry", TransportModeNamePl = "Prom" }
+        );
+        
+        modelBuilder.Entity<Models.TravelStyle>().HasData(
+            new Models.TravelStyle { IdTravelStyle = 1, TravelStyleNameEn = "Spontaneous", TravelStyleNamePl = "Spontaniczny" },
+            new Models.TravelStyle { IdTravelStyle = 2, TravelStyleNameEn = "Partially planned", TravelStyleNamePl = "Trochę zaplanowany" },
+            new Models.TravelStyle { IdTravelStyle = 3, TravelStyleNameEn = "Fully planned", TravelStyleNamePl = "Szczegółowo zaplanowany" },
+            new Models.TravelStyle { IdTravelStyle = 4, TravelStyleNameEn = "All-inclusive", TravelStyleNamePl = "All-inclusive" },
+            new Models.TravelStyle { IdTravelStyle = 5, TravelStyleNameEn = "City break", TravelStyleNamePl = "City break" },
+            new Models.TravelStyle { IdTravelStyle = 6, TravelStyleNameEn = "Road trip", TravelStyleNamePl = "Road trip" },
+            new Models.TravelStyle { IdTravelStyle = 7, TravelStyleNameEn = "Package holiday", TravelStyleNamePl = "Wakacje z biurem podróży" },
+            new Models.TravelStyle { IdTravelStyle = 8, TravelStyleNameEn = "Extreme travel", TravelStyleNamePl = "Podróże ekstremalne" },
+            new Models.TravelStyle { IdTravelStyle = 9, TravelStyleNameEn = "Slow travel", TravelStyleNamePl = "Slow travel" },
+            new Models.TravelStyle { IdTravelStyle = 10, TravelStyleNameEn = "Backpacking", TravelStyleNamePl = "Backpacking" }
         );
     }
 }

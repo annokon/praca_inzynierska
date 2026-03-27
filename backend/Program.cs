@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using backend.Interest;
 using backend.Language;
+using backend.TransportMode;
+using backend.TravelStyle;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +33,10 @@ builder.Services.Configure<EmailSettings>(
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<IInterestRepository, InterestRepository>();
 builder.Services.AddScoped<IInterestService, InterestService>();
+builder.Services.AddScoped<ITransportModeRepository, TransportModeRepository>();
+builder.Services.AddScoped<ITransportModeService, TransportModeService>();
+builder.Services.AddScoped<ITravelStyleRepository, TravelStyleRepository>();
+builder.Services.AddScoped<ITravelStyleService, TravelStyleService>();
 
 builder.Services.AddHttpClient();
 

@@ -118,13 +118,17 @@ public class UserService : IUserService
         var user = await _userRepository.GetByIdUserAsync(idUser);
         if (user == null) return false;
 
+        user.Gender.NamePl = dto.Gender;
         user.Pronouns.NamePl = dto.Pronouns;
+        user.PersonalityType.NamePl = dto.PersonalityType;
         user.AlcoholPreference.NamePl = dto.AlcoholPreference;
         user.SmokingPreference.NamePl = dto.SmokingPreference;
         user.DrivingLicense.NamePl = dto.DrivingLicenseType;
-        user.TravelStyle = dto.TravelStyle;
+        user.Location = dto.Location;
         user.TravelExperience.NamePl = dto.TravelExperience;
-        user.PersonalityType.NamePl = dto.PersonalityType;
+        
+        // TODO add collections: languages, travel style, interests, transport modes
+        
         user.UpdatedAt = DateTime.UtcNow;
 
         await _userRepository.UpdateAsync(user);

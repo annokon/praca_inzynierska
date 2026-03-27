@@ -155,6 +155,20 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "travel_style",
+                columns: table => new
+                {
+                    id_travel_style = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    travel_style_name_en = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    travel_style_name_pl = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_travel_style", x => x.id_travel_style);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TravelExperienceOptions",
                 columns: table => new
                 {
@@ -211,7 +225,6 @@ namespace backend.Migrations
                     alcohol_preference = table.Column<int>(type: "integer", maxLength: 50, nullable: true),
                     smoking_preference = table.Column<int>(type: "integer", maxLength: 50, nullable: true),
                     driving_license_type = table.Column<int>(type: "integer", maxLength: 20, nullable: true),
-                    travel_style = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     travel_experience = table.Column<int>(type: "integer", maxLength: 50, nullable: true),
                     bio = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     profile_photo_path = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
@@ -547,6 +560,30 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "user_travel_style",
+                columns: table => new
+                {
+                    id_travel_style = table.Column<int>(type: "integer", nullable: false),
+                    id_user = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_user_travel_style", x => new { x.id_travel_style, x.id_user });
+                    table.ForeignKey(
+                        name: "FK_user_travel_style_travel_style_id_travel_style",
+                        column: x => x.id_travel_style,
+                        principalTable: "travel_style",
+                        principalColumn: "id_travel_style",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_user_travel_style_user_id_user",
+                        column: x => x.id_user,
+                        principalTable: "user",
+                        principalColumn: "id_user",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "message",
                 columns: table => new
                 {
@@ -656,8 +693,9 @@ namespace backend.Migrations
                 columns: new[] { "Id", "NameEn", "NamePl" },
                 values: new object[,]
                 {
-                    { 1, "None", "Brak" },
-                    { 2, "Yes, international", "Tak, międzynarodowe" }
+                    { 1, "Yes, international", "Posiadam międzynarodowe" },
+                    { 2, "No", "Nie posiadam" },
+                    { 3, "Other", "Inne" }
                 });
 
             migrationBuilder.InsertData(
@@ -722,7 +760,26 @@ namespace backend.Migrations
                     { 2, "Plane", "Samolot" },
                     { 3, "Train", "Pociąg" },
                     { 4, "Bus", "Autobus" },
-                    { 5, "Bike", "Rower" }
+                    { 5, "Bike", "Rower" },
+                    { 6, "Motorbike", "Motor" },
+                    { 7, "Ferry", "Prom" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "travel_style",
+                columns: new[] { "id_travel_style", "travel_style_name_en", "travel_style_name_pl" },
+                values: new object[,]
+                {
+                    { 1, "Spontaneous", "Spontaniczny" },
+                    { 2, "Partially planned", "Trochę zaplanowany" },
+                    { 3, "Fully planned", "Szczegółowo zaplanowany" },
+                    { 4, "All-inclusive", "All-inclusive" },
+                    { 5, "City break", "City break" },
+                    { 6, "Road trip", "Road trip" },
+                    { 7, "Package holiday", "Wakacje z biurem podróży" },
+                    { 8, "Extreme travel", "Podróże ekstremalne" },
+                    { 9, "Slow travel", "Slow travel" },
+                    { 10, "Backpacking", "Backpacking" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -887,6 +944,11 @@ namespace backend.Migrations
                 name: "IX_user_transport_mode_id_user",
                 table: "user_transport_mode",
                 column: "id_user");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_user_travel_style_id_user",
+                table: "user_travel_style",
+                column: "id_user");
         }
 
         /// <inheritdoc />
@@ -923,6 +985,9 @@ namespace backend.Migrations
                 name: "user_transport_mode");
 
             migrationBuilder.DropTable(
+                name: "user_travel_style");
+
+            migrationBuilder.DropTable(
                 name: "message");
 
             migrationBuilder.DropTable(
@@ -942,6 +1007,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "transport_mode");
+
+            migrationBuilder.DropTable(
+                name: "travel_style");
 
             migrationBuilder.DropTable(
                 name: "chat");

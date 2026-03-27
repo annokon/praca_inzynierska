@@ -6,6 +6,9 @@ public class AdditionalDataUserDTO
 {
     // optional data
     [MaxLength(20)]
+    public string? Gender { get; set; }
+    
+    [MaxLength(20)]
     public string? Pronouns { get; set; }
 
     [MaxLength(100)]

@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import "../../css/login_register.css";
 import SuccessPopup from "../../components/Popup/SuccessPopup";
+import AsyncSelect from 'react-select/async';
 
 export default function AdditionalInfo() {
     const [step, setStep] = useState(1);
@@ -35,13 +36,14 @@ export default function AdditionalInfo() {
     const [hasDrivingLicense, setHasDrivingLicense] = useState("");
     const [skipDrivingLicense, setSkipDrivingLicense] = useState(false);
 
-    //lokalizacja   TODO
-    const [locationSearch, setLocationSearch] = useState("");
-    const [allLocations, setAllLocations] = useState([]);
+    //lokalizacja
+    const [selectedLocation, setSelectedLocation] = useState(null);
     const [skipLocation, setSkipLocation] = useState(false);
 
     //styl
-    const [travelStyle, setTravelStyle] = useState("");
+    const [travelStyleOptions, setTravelStyleOptions] = useState([]);
+    const [travelStyleSearch, setTravelStyleSearch] = useState("");
+    const [selectedTravelStyles, setSelectedTravelStyles] = useState([]);
     const [skipTravelStyle, setSkipTravelStyle] = useState(false);
 
     //doświadczenie
@@ -55,7 +57,9 @@ export default function AdditionalInfo() {
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [skipInterests, setSkipInterests] = useState(false);
 
-    //transport TODO
+    //transport
+    const [transportOptions, setTransportOptions] = useState([]);
+    const [transportSearch, setTransportSearch] = useState("");
     const [selectedTransport, setSelectedTransport] = useState([]);
     const [skipTransport, setSkipTransport] = useState(false);
 
@@ -88,30 +92,89 @@ export default function AdditionalInfo() {
         fetchOptions();
     }, []);
 
-    const travelStyleOptions = [
-        { value: "spontaniczny", label: "spontaniczny" },
-        { value: "troche_zaplanowany", label: "trochę zaplanowany" },
-        { value: "szczegolowo_zaplanowany", label: "szczegółowo zaplanowany" },
-    ];
+    useEffect(() => {
+        const loadTransportModes = async () => {
+            try {
+                const res = await fetch("http://localhost:5292/api/transportmodes?lang=pl");
 
-    const transportOptions = [
-        { value: "samochod", label: "samochód" },
-        { value: "samolot", label: "samolot" },
-        { value: "pieszo", label: "pieszo" },
-        { value: "pociag", label: "pociąg" },
-        { value: "statek", label: "statek" },
-        { value: "autostop", label: "autostop" },
-        { value: "autobus", label: "autobus" },
-        { value: "obojetnie", label: "obojętnie" },
-    ];
+                if (!res.ok) throw new Error("Błąd transportów");
 
-    function toggleTransport(option) {
-        setSelectedTransport((prev) =>
-            prev.includes(option)
-                ? prev.filter((o) => o !== option)
-                : [...prev, option]
+                const data = await res.json();
+
+                setTransportOptions(data); // [{id, name}]
+            } catch (e) {
+                console.error("Błąd ładowania transportów", e);
+            }
+        };
+
+        loadTransportModes();
+    }, []);
+
+    const filteredTransport = transportOptions.filter(t =>
+        t.name.toLowerCase().includes(transportSearch.toLowerCase())
+    );
+
+    function toggleTransport(id) {
+        setSelectedTransport(prev =>
+            prev.includes(id)
+                ? prev.filter(t => t !== id)
+                : [...prev, id]
         );
     }
+
+    useEffect(() => {
+        const loadTravelStyles = async () => {
+            try {
+                const res = await fetch("http://localhost:5292/api/travelstyles?lang=pl");
+
+                if (!res.ok) throw new Error("Błąd stylów podróży");
+
+                const data = await res.json();
+
+                setTravelStyleOptions(data);
+            } catch (e) {
+                console.error("Błąd ładowania stylów podróży", e);
+            }
+        };
+
+        loadTravelStyles();
+    }, []);
+
+    const filteredTravelStyles = travelStyleOptions.filter(t =>
+        t.name.toLowerCase().includes(travelStyleSearch.toLowerCase())
+    );
+
+    function toggleTravelStyle(id) {
+        setSelectedTravelStyles(prev =>
+            prev.includes(id)
+                ? prev.filter(t => t !== id)
+                : [...prev, id]
+        );
+    }
+
+    const loadLocationOptions = async (inputValue) => {
+        if (!inputValue || inputValue.length < 2) return [];
+
+        try {
+            const res = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=json&q=${inputValue}&addressdetails=1&limit=5`
+            );
+
+            const data = await res.json();
+
+            return data.map(item => ({
+                label: item.display_name, // co widać
+                value: {
+                    name: item.display_name,
+                    lat: item.lat,
+                    lon: item.lon
+                }
+            }));
+        } catch (e) {
+            console.error("Błąd lokalizacji", e);
+            return [];
+        }
+    };
 
     useEffect(() => {
         const loadLanguages = async () => {
@@ -157,18 +220,6 @@ export default function AdditionalInfo() {
     }
 
     useEffect(() => {
-        const loadLocations = async () => {
-            try {
-                // TODO: api
-            } catch (e) {
-                console.error("Błąd ładowania lokalizacji", e);
-            }
-        };
-
-        void loadLocations();
-    }, []);
-
-    useEffect(() => {
         const loadInterests = async () => {
             try {
                 const res = await fetch("http://localhost:5292/api/interests");
@@ -193,6 +244,8 @@ export default function AdditionalInfo() {
     const filteredInterests = allInterests.filter((interest) =>
         interest.toLowerCase().includes(interestsSearch.toLowerCase())
     );
+
+    const visibleInterests = filteredInterests.slice(0, 6);
 
     function toggleInterest(interest) {
         setSelectedInterests((prev) =>
@@ -276,7 +329,7 @@ export default function AdditionalInfo() {
 
     function handleSkipLocation() {
         setSkipLocation(true);
-        setLocationSearch("");
+        setSelectedLocation(null);
         setStep(7);
     }
 
@@ -290,7 +343,7 @@ export default function AdditionalInfo() {
 
     function handleSkipTravelStyle() {
         setSkipTravelStyle(true);
-        setTravelStyle("");
+        setSelectedTravelStyles([]);
         setStep(8)
     }
 
@@ -348,8 +401,16 @@ export default function AdditionalInfo() {
             alcoholAttitude: skipSubstances ? null : alcoholAttitude || null,
             smokingAttitude: skipSubstances ? null : smokingAttitude || null,
             hasDrivingLicense: skipDrivingLicense ? null : hasDrivingLicense || null,
-            homeLocation: skipLocation ? null : (locationSearch || null),
-            travelStyle: skipTravelStyle ? null : (travelStyle || null),
+            homeLocation: skipLocation
+                ? null
+                : selectedLocation
+                    ? selectedLocation.value
+                    : null,
+            travelStyle: skipTravelStyle
+                ? null
+                : selectedTravelStyles.length > 0
+                    ? selectedTravelStyles
+                    : null,
             travelExperience: skipTravelExperience ? null : (travelExperience || null),
             interests: skipInterests
                 ? null
@@ -678,13 +739,13 @@ export default function AdditionalInfo() {
                             <label className="form-label" htmlFor="locationSearch">
                                 Skąd jesteś?
                             </label>
-                            <input
-                                id="locationSearch"
-                                type="text"
-                                placeholder="Search"
-                                className="form-input"
-                                value={locationSearch}
-                                onChange={(e) => setLocationSearch(e.target.value)}
+                            <AsyncSelect
+                                cacheOptions
+                                loadOptions={loadLocationOptions}
+                                defaultOptions
+                                value={selectedLocation}
+                                onChange={setSelectedLocation}
+                                placeholder="Wpisz miasto..."
                             />
                         </div>
 
@@ -702,7 +763,7 @@ export default function AdditionalInfo() {
                                     type="button"
                                     className="btn btn--primary"
                                     onClick={handleNextFromLocation}
-                                    disabled={locationSearch.trim() === ""}
+                                    disabled={!selectedLocation}
                                 >
                                     Dalej &gt;
                                 </button>
@@ -726,19 +787,19 @@ export default function AdditionalInfo() {
                             </label>
 
                             <div className="pill-group">
-                                {travelStyleOptions.map((option) => (
+                                {filteredTravelStyles.map((option) => (
                                     <button
-                                        key={option.value}
+                                        key={option.id}
                                         type="button"
                                         className={
                                             "pill pill--selectable" +
-                                            (travelStyle === option.value
+                                            (selectedTravelStyles.includes(option.id)
                                                 ? " pill--selected"
                                                 : "")
                                         }
-                                        onClick={() => setTravelStyle(option.value)}
+                                        onClick={() => toggleTravelStyle(option.id)}
                                     >
-                                        {option.label}
+                                        {option.name}
                                     </button>
                                 ))}
                             </div>
@@ -758,7 +819,7 @@ export default function AdditionalInfo() {
                                     type="button"
                                     className="btn btn--primary"
                                     onClick={handleNextFromTravelStyle}
-                                    disabled={travelStyle === ""}
+                                    disabled={selectedTravelStyles.length === 0}
                                 >
                                     Dalej &gt;
                                 </button>
@@ -840,7 +901,7 @@ export default function AdditionalInfo() {
                         </div>
 
                         <div className="pill-group">
-                            {filteredInterests.map((interest) => (
+                            {visibleInterests.map((interest) => (
                                 <button
                                     key={interest}
                                     type="button"
@@ -901,19 +962,19 @@ export default function AdditionalInfo() {
                             </label>
 
                             <div className="pill-group">
-                                {transportOptions.map((option) => (
+                                {filteredTransport.map((option) => (
                                     <button
-                                        key={option.value}
+                                        key={option.id}
                                         type="button"
                                         className={
                                             "pill pill--selectable" +
-                                            (selectedTransport.includes(option.value)
+                                            (selectedTransport.includes(option.id)
                                                 ? " pill--selected"
                                                 : "")
                                         }
-                                        onClick={() => toggleTransport(option.value)}
+                                        onClick={() => toggleTransport(option.id)}
                                     >
-                                        {option.label}
+                                        {option.name}
                                     </button>
                                 ))}
                             </div>
