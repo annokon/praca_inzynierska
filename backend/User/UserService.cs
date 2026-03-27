@@ -260,9 +260,9 @@ public class UserService : IUserService
             DisplayName = user.DisplayName,
             Email = user.Email,
             BirthDate = user.BirthDate.ToString("yyyy-MM-dd"),
-            Gender = user.Gender.NamePl,
-            Pronouns = user.Pronouns.NamePl,
-            Personality = user.PersonalityType.NamePl,
+            Gender = user.Gender?.NamePl,
+            Pronouns = user.Pronouns?.NamePl,
+            Personality = user.PersonalityType?.NamePl,
             Location = user.Location,
             Bio = user.Bio,
             Languages = user.UserLanguages?
