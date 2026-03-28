@@ -20,7 +20,7 @@ export default function Navbar() {
             <div className="navbar-left">
                 <img src={logo} alt="logo" className="navbar-logo" />
 
-                <a href="/public" className="nav-link">Strona Główna</a>
+                <a href="/main" className="nav-link">Strona Główna</a>
                 <a href="/trips" className="nav-link">Ogłoszenia Podróży</a>
                 <a href="/add-trip" className="nav-link">Dodaj Nowe Ogłoszenie</a>
 
@@ -44,9 +44,15 @@ export default function Navbar() {
                         )}
 
                         {user && (
-                            <button className="nav-link logout-btn" onClick={handleLogout}>
-                                Wyloguj się
-                            </button>
+                            <>
+                                <Link to="/settings-profile" className="nav-link settings-btn">
+                                    Ustawienia
+                                </Link>
+
+                                <button className="nav-link logout-btn" onClick={handleLogout}>
+                                    Wyloguj się
+                                </button>
+                            </>
                         )}
                     </>
                 )}
