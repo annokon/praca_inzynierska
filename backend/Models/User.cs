@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using backend.Options;
+using backend.CategoriesOptions.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models;

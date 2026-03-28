@@ -1,4 +1,4 @@
-﻿namespace backend.Options;
+﻿namespace backend.CategoriesOptions.DTOs;
 
 public class OptionDTO
 {
