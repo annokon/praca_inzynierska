@@ -38,12 +38,10 @@ public class User
     public DateOnly BirthDate { get; set; }
 
     [Column("gender")]
-    [MaxLength(20)] 
     public int? GenderId { get; set; }
     public GenderOption? Gender { get; set; }
 
     [Column("pronouns")]
-    [MaxLength(20)] 
     public int? PronounsId { get; set; }
     public PronounOption? Pronouns { get; set; }
 
@@ -52,22 +50,18 @@ public class User
     public string? Location { get; set; }
 
     [Column("personality_type")]
-    [MaxLength(20)] 
     public int? PersonalityTypeId { get; set; }
     public PersonalityTypeOption? PersonalityType { get; set; }
 
     [Column("alcohol_preference")]
-    [MaxLength(50)] 
     public int? AlcoholPreferenceId { get; set; }
     public AlcoholPreferenceOption? AlcoholPreference { get; set; }
 
     [Column("smoking_preference")]
-    [MaxLength(50)] 
     public int? SmokingPreferenceId { get; set; }
     public SmokingPreferenceOption? SmokingPreference { get; set; }
 
     [Column("driving_license_type")]
-    [MaxLength(20)] 
     public int? DrivingLicenseId { get; set; }
     public DrivingLicenseOption? DrivingLicense { get; set; }
 
@@ -76,7 +70,6 @@ public class User
     // public string? TravelStyle { get; set; }
 
     [Column("travel_experience")]
-    [MaxLength(50)] 
     public int? TravelExperienceId { get; set; }
     public TravelExperienceOption? TravelExperience { get; set; }
 
