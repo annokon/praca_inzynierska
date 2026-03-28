@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backend.Models;
 
-namespace backend.Models;
+namespace backend.TransportMode;
 
 [Table("transport_mode")]
 public class TransportMode
@@ -10,15 +11,10 @@ public class TransportMode
     [Key]
     public int IdTransportMode { get; set; }
 
-    [Column("transport_mode_name_en")]
+    [Column("transport_mode_name")]
     [Required]
     [MaxLength(100)]
-    public string TransportModeNameEn { get; set; } = null!;
-    
-    [Column("transport_mode_name_pl")]
-    [Required]
-    [MaxLength(100)]
-    public string TransportModeNamePl { get; set; } = null!;
+    public string TransportModeName { get; set; } = null!;
 
     public ICollection<UserTransportMode>? UserTransportModes { get; set; }
 }

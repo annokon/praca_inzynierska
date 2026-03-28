@@ -139,8 +139,7 @@ namespace backend.Migrations
                 {
                     id_transport_mode = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    transport_mode_name_en = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    transport_mode_name_pl = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    transport_mode_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -166,8 +165,7 @@ namespace backend.Migrations
                 {
                     id_travel_style = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    travel_style_name_en = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    travel_style_name_pl = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    travel_style_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -734,16 +732,16 @@ namespace backend.Migrations
 
             migrationBuilder.InsertData(
                 table: "transport_mode",
-                columns: new[] { "id_transport_mode", "transport_mode_name_en", "transport_mode_name_pl" },
+                columns: new[] { "id_transport_mode", "transport_mode_name" },
                 values: new object[,]
                 {
-                    { 1, "Car", "Samochód" },
-                    { 2, "Plane", "Samolot" },
-                    { 3, "Train", "Pociąg" },
-                    { 4, "Bus", "Autobus" },
-                    { 5, "Bike", "Rower" },
-                    { 6, "Motorbike", "Motor" },
-                    { 7, "Ferry", "Prom" }
+                    { 1, "Samochód" },
+                    { 2, "Samolot" },
+                    { 3, "Pociąg" },
+                    { 4, "Autobus" },
+                    { 5, "Rower" },
+                    { 6, "Motor" },
+                    { 7, "Prom" }
                 });
 
             migrationBuilder.InsertData(
@@ -759,19 +757,19 @@ namespace backend.Migrations
 
             migrationBuilder.InsertData(
                 table: "travel_style",
-                columns: new[] { "id_travel_style", "travel_style_name_en", "travel_style_name_pl" },
+                columns: new[] { "id_travel_style", "travel_style_name" },
                 values: new object[,]
                 {
-                    { 1, "Spontaneous", "Spontaniczny" },
-                    { 2, "Partially planned", "Trochę zaplanowany" },
-                    { 3, "Fully planned", "Szczegółowo zaplanowany" },
-                    { 4, "All-inclusive", "All-inclusive" },
-                    { 5, "City break", "City break" },
-                    { 6, "Road trip", "Road trip" },
-                    { 7, "Package holiday", "Wakacje z biurem podróży" },
-                    { 8, "Extreme travel", "Podróże ekstremalne" },
-                    { 9, "Slow travel", "Slow travel" },
-                    { 10, "Backpacking", "Backpacking" }
+                    { 1, "Spontaniczny" },
+                    { 2, "Trochę zaplanowany" },
+                    { 3, "Szczegółowo zaplanowany" },
+                    { 4, "All-inclusive" },
+                    { 5, "City break" },
+                    { 6, "Road trip" },
+                    { 7, "Wakacje z biurem podróży" },
+                    { 8, "Podróże ekstremalne" },
+                    { 9, "Slow travel" },
+                    { 10, "Backpacking" }
                 });
 
             migrationBuilder.CreateIndex(

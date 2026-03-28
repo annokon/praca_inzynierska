@@ -10,8 +10,10 @@ using backend.CategoriesOptions.Services;
 using backend.Interest;
 using backend.Language.Repositories;
 using backend.Language.Services;
-using backend.TransportMode;
-using backend.TravelStyle;
+using backend.TransportMode.Repositories;
+using backend.TransportMode.Services;
+using backend.TravelStyle.Repositories;
+using backend.TravelStyle.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);

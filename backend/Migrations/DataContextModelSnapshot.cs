@@ -619,164 +619,6 @@ namespace backend.Migrations
                     b.ToTable("search_filter");
                 });
 
-            modelBuilder.Entity("backend.Models.TransportMode", b =>
-                {
-                    b.Property<int>("IdTransportMode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id_transport_mode");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTransportMode"));
-
-                    b.Property<string>("TransportModeNameEn")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("transport_mode_name_en");
-
-                    b.Property<string>("TransportModeNamePl")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("transport_mode_name_pl");
-
-                    b.HasKey("IdTransportMode");
-
-                    b.ToTable("transport_mode");
-
-                    b.HasData(
-                        new
-                        {
-                            IdTransportMode = 1,
-                            TransportModeNameEn = "Car",
-                            TransportModeNamePl = "Samochód"
-                        },
-                        new
-                        {
-                            IdTransportMode = 2,
-                            TransportModeNameEn = "Plane",
-                            TransportModeNamePl = "Samolot"
-                        },
-                        new
-                        {
-                            IdTransportMode = 3,
-                            TransportModeNameEn = "Train",
-                            TransportModeNamePl = "Pociąg"
-                        },
-                        new
-                        {
-                            IdTransportMode = 4,
-                            TransportModeNameEn = "Bus",
-                            TransportModeNamePl = "Autobus"
-                        },
-                        new
-                        {
-                            IdTransportMode = 5,
-                            TransportModeNameEn = "Bike",
-                            TransportModeNamePl = "Rower"
-                        },
-                        new
-                        {
-                            IdTransportMode = 6,
-                            TransportModeNameEn = "Motorbike",
-                            TransportModeNamePl = "Motor"
-                        },
-                        new
-                        {
-                            IdTransportMode = 7,
-                            TransportModeNameEn = "Ferry",
-                            TransportModeNamePl = "Prom"
-                        });
-                });
-
-            modelBuilder.Entity("backend.Models.TravelStyle", b =>
-                {
-                    b.Property<int>("IdTravelStyle")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id_travel_style");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTravelStyle"));
-
-                    b.Property<string>("TravelStyleNameEn")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("travel_style_name_en");
-
-                    b.Property<string>("TravelStyleNamePl")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("travel_style_name_pl");
-
-                    b.HasKey("IdTravelStyle");
-
-                    b.ToTable("travel_style");
-
-                    b.HasData(
-                        new
-                        {
-                            IdTravelStyle = 1,
-                            TravelStyleNameEn = "Spontaneous",
-                            TravelStyleNamePl = "Spontaniczny"
-                        },
-                        new
-                        {
-                            IdTravelStyle = 2,
-                            TravelStyleNameEn = "Partially planned",
-                            TravelStyleNamePl = "Trochę zaplanowany"
-                        },
-                        new
-                        {
-                            IdTravelStyle = 3,
-                            TravelStyleNameEn = "Fully planned",
-                            TravelStyleNamePl = "Szczegółowo zaplanowany"
-                        },
-                        new
-                        {
-                            IdTravelStyle = 4,
-                            TravelStyleNameEn = "All-inclusive",
-                            TravelStyleNamePl = "All-inclusive"
-                        },
-                        new
-                        {
-                            IdTravelStyle = 5,
-                            TravelStyleNameEn = "City break",
-                            TravelStyleNamePl = "City break"
-                        },
-                        new
-                        {
-                            IdTravelStyle = 6,
-                            TravelStyleNameEn = "Road trip",
-                            TravelStyleNamePl = "Road trip"
-                        },
-                        new
-                        {
-                            IdTravelStyle = 7,
-                            TravelStyleNameEn = "Package holiday",
-                            TravelStyleNamePl = "Wakacje z biurem podróży"
-                        },
-                        new
-                        {
-                            IdTravelStyle = 8,
-                            TravelStyleNameEn = "Extreme travel",
-                            TravelStyleNamePl = "Podróże ekstremalne"
-                        },
-                        new
-                        {
-                            IdTravelStyle = 9,
-                            TravelStyleNameEn = "Slow travel",
-                            TravelStyleNamePl = "Slow travel"
-                        },
-                        new
-                        {
-                            IdTravelStyle = 10,
-                            TravelStyleNameEn = "Backpacking",
-                            TravelStyleNamePl = "Backpacking"
-                        });
-                });
-
             modelBuilder.Entity("backend.Models.Trip", b =>
                 {
                     b.Property<int>("IdTrip")
@@ -1214,6 +1056,135 @@ namespace backend.Migrations
                     b.ToTable("user_travel_style");
                 });
 
+            modelBuilder.Entity("backend.TransportMode.TransportMode", b =>
+                {
+                    b.Property<int>("IdTransportMode")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_transport_mode");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTransportMode"));
+
+                    b.Property<string>("TransportModeName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("transport_mode_name");
+
+                    b.HasKey("IdTransportMode");
+
+                    b.ToTable("transport_mode");
+
+                    b.HasData(
+                        new
+                        {
+                            IdTransportMode = 1,
+                            TransportModeName = "Samochód"
+                        },
+                        new
+                        {
+                            IdTransportMode = 2,
+                            TransportModeName = "Samolot"
+                        },
+                        new
+                        {
+                            IdTransportMode = 3,
+                            TransportModeName = "Pociąg"
+                        },
+                        new
+                        {
+                            IdTransportMode = 4,
+                            TransportModeName = "Autobus"
+                        },
+                        new
+                        {
+                            IdTransportMode = 5,
+                            TransportModeName = "Rower"
+                        },
+                        new
+                        {
+                            IdTransportMode = 6,
+                            TransportModeName = "Motor"
+                        },
+                        new
+                        {
+                            IdTransportMode = 7,
+                            TransportModeName = "Prom"
+                        });
+                });
+
+            modelBuilder.Entity("backend.TravelStyle.TravelStyle", b =>
+                {
+                    b.Property<int>("IdTravelStyle")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_travel_style");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTravelStyle"));
+
+                    b.Property<string>("TravelStyleName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("travel_style_name");
+
+                    b.HasKey("IdTravelStyle");
+
+                    b.ToTable("travel_style");
+
+                    b.HasData(
+                        new
+                        {
+                            IdTravelStyle = 1,
+                            TravelStyleName = "Spontaniczny"
+                        },
+                        new
+                        {
+                            IdTravelStyle = 2,
+                            TravelStyleName = "Trochę zaplanowany"
+                        },
+                        new
+                        {
+                            IdTravelStyle = 3,
+                            TravelStyleName = "Szczegółowo zaplanowany"
+                        },
+                        new
+                        {
+                            IdTravelStyle = 4,
+                            TravelStyleName = "All-inclusive"
+                        },
+                        new
+                        {
+                            IdTravelStyle = 5,
+                            TravelStyleName = "City break"
+                        },
+                        new
+                        {
+                            IdTravelStyle = 6,
+                            TravelStyleName = "Road trip"
+                        },
+                        new
+                        {
+                            IdTravelStyle = 7,
+                            TravelStyleName = "Wakacje z biurem podróży"
+                        },
+                        new
+                        {
+                            IdTravelStyle = 8,
+                            TravelStyleName = "Podróże ekstremalne"
+                        },
+                        new
+                        {
+                            IdTravelStyle = 9,
+                            TravelStyleName = "Slow travel"
+                        },
+                        new
+                        {
+                            IdTravelStyle = 10,
+                            TravelStyleName = "Backpacking"
+                        });
+                });
+
             modelBuilder.Entity("backend.Models.BlockedUser", b =>
                 {
                     b.HasOne("backend.Models.User", "Blocked")
@@ -1491,7 +1462,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.UserTransportMode", b =>
                 {
-                    b.HasOne("backend.Models.TransportMode", "TransportMode")
+                    b.HasOne("backend.TransportMode.TransportMode", "TransportMode")
                         .WithMany("UserTransportModes")
                         .HasForeignKey("IdTransportMode")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1510,7 +1481,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.UserTravelStyle", b =>
                 {
-                    b.HasOne("backend.Models.TravelStyle", "TravelStyle")
+                    b.HasOne("backend.TravelStyle.TravelStyle", "TravelStyle")
                         .WithMany("UserTravelStyles")
                         .HasForeignKey("IdTravelStyle")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1552,16 +1523,6 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.Message", b =>
                 {
                     b.Navigation("Notifications");
-                });
-
-            modelBuilder.Entity("backend.Models.TransportMode", b =>
-                {
-                    b.Navigation("UserTransportModes");
-                });
-
-            modelBuilder.Entity("backend.Models.TravelStyle", b =>
-                {
-                    b.Navigation("UserTravelStyles");
                 });
 
             modelBuilder.Entity("backend.Models.Trip", b =>
@@ -1609,6 +1570,16 @@ namespace backend.Migrations
                     b.Navigation("UserTravelStyles");
 
                     b.Navigation("UsersBlockingThisUser");
+                });
+
+            modelBuilder.Entity("backend.TransportMode.TransportMode", b =>
+                {
+                    b.Navigation("UserTransportModes");
+                });
+
+            modelBuilder.Entity("backend.TravelStyle.TravelStyle", b =>
+                {
+                    b.Navigation("UserTravelStyles");
                 });
 #pragma warning restore 612, 618
         }
