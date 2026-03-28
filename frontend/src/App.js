@@ -20,6 +20,7 @@ import SettingsProfile from "./views/Settings/SettingsProfile/SettingsProfile";
 import SettingsChangeData from "./views/Settings/SettingsChangeData/SettingsChangeData";
 import SettingsAppearance from "./views/Settings/SettingsProfile/SettingsAppearance";
 import SettingsCurrency from "./views/Settings/SettingsProfile/SettingsCurrency";
+import SettingsEditUsername from "./views/Settings/SettingsChangeData/SettingsChangeUsername";
 
 function App() {
     return (
@@ -48,6 +49,7 @@ function App() {
                         <Route path="/settings-info" element={<SettingsChangeAdditionalnfo />} />
                         <Route path="/settings-appearance" element={<SettingsAppearance />} />
                         <Route path="/settings-currency" element={<SettingsCurrency />} />
+                        <Route path="/settings-edit-username" element={<SettingsEditUsername />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
