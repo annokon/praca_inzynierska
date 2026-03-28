@@ -25,7 +25,7 @@ export default function Navbar() {
                 <a href="/add-trip" className="nav-link">Dodaj Nowe Ogłoszenie</a>
 
                 {!loading && user && (
-                    <Link to={`/profile/${user.username}/o-uzytkowniku`} className="nav-link">
+                    <Link to={`/profile/${user.username}/about-user`} className="nav-link">
                         Mój profil
                     </Link>
                 )}

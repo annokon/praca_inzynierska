@@ -35,11 +35,11 @@ function App() {
                     <Route path="/forgot-password" element={<ForgotPassword />} />
 
                     <Route path="/profile/:username" element={<ProfileLayout />}>
-                        <Route index element={<Navigate to="o-uzytkowniku" replace />} />
-                        <Route path="o-uzytkowniku" element={<ProfileAbout />} />
-                        {<Route path="podroze" element={<ProfileTrips />} />}
-                        <Route path="opinie" element={<ProfileReview />} />
-                        <Route path="osiagniecia" element={<ProfileAchievements />} />
+                        <Route index element={<Navigate to="about-user" replace />} />
+                        <Route path="about-user" element={<ProfileAbout />} />
+                        {<Route path="trips" element={<ProfileTrips />} />}
+                        <Route path="reviews" element={<ProfileReview />} />
+                        <Route path="achievements" element={<ProfileAchievements />} />
                     </Route>
                     <Route path="/fav-filters" element={<TripsFavFilters />} />
                     <Route element={<RequireAuth />}>
