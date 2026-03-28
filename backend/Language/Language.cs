@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backend.Models;
 
-namespace backend.Models;
+namespace backend.Language;
 
 [Table("language")]
 public class Language
@@ -10,15 +11,10 @@ public class Language
     [Key]
     public int IdLanguage { get; set; }
     
-    [Column("language_name_pl")]
+    [Column("language_name")]
     [Required]
     [MaxLength(100)]
-    public string LanguageNamePL { get; set; } = null!;
-    
-    [Column("language_name_en")]
-    [Required]
-    [MaxLength(100)]
-    public string LanguageNameEN { get; set; } = null!;
+    public string LanguageName { get; set; } = null!;
     
     public ICollection<UserLanguage>? UserLanguages { get; set; }
 }

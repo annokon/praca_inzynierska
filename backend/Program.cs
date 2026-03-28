@@ -8,7 +8,8 @@ using System.Text;
 using backend.CategoriesOptions.Repositories;
 using backend.CategoriesOptions.Services;
 using backend.Interest;
-using backend.Language;
+using backend.Language.Repositories;
+using backend.Language.Services;
 using backend.TransportMode;
 using backend.TravelStyle;
 

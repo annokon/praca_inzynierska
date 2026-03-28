@@ -4,7 +4,7 @@ using backend.Language.DTOs;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Language;
+namespace backend.Language.Repositories;
 
 public class LanguageRepository : ILanguageRepository
 {
@@ -17,14 +17,14 @@ public class LanguageRepository : ILanguageRepository
         _env = env;
     }
 
-    public async Task<IEnumerable<Models.Language>> GetAllLanguagesAsync()
+    public async Task<IEnumerable<Language>> GetAllLanguagesAsync()
     {
         return await _context.Languages
-            .OrderBy(l => l.LanguageNamePL)
+            .OrderBy(l => l.LanguageName)
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Models.Language>> GetUserLanguagesAsync(int userId)
+    public async Task<IEnumerable<Language>> GetUserLanguagesAsync(int userId)
     {
         return await _context.UserLanguages
             .Where(ul => ul.IdUser == userId)
@@ -54,7 +54,7 @@ public class LanguageRepository : ILanguageRepository
         return true;
     }
 
-    public async Task AddLanguageAsync(Models.Language language)
+    public async Task AddLanguageAsync(Language language)
     {
         await _context.Languages.AddAsync(language);
         await _context.SaveChangesAsync();

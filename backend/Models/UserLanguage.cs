@@ -10,7 +10,7 @@ public class UserLanguage
     [Required]
     [ForeignKey(nameof(Language))]
     public int IdLanguage { get; set; }
-    public Language Language { get; set; } = null!;
+    public Language.Language Language { get; set; } = null!;
 
     [Column("id_user")]
     [Required]
