@@ -15,17 +15,16 @@ namespace backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AlcoholPreferenceOptions",
+                name: "alcohol_preference",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    id_alcohol_preference = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NameEn = table.Column<string>(type: "text", nullable: false),
-                    NamePl = table.Column<string>(type: "text", nullable: false)
+                    alcohol_preference_name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AlcoholPreferenceOptions", x => x.Id);
+                    table.PrimaryKey("PK_alcohol_preference", x => x.id_alcohol_preference);
                 });
 
             migrationBuilder.CreateTable(
@@ -44,31 +43,29 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DrivingLicenseOptions",
+                name: "driving_license",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    id_driving_license = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NameEn = table.Column<string>(type: "text", nullable: false),
-                    NamePl = table.Column<string>(type: "text", nullable: false)
+                    driving_license_name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DrivingLicenseOptions", x => x.Id);
+                    table.PrimaryKey("PK_driving_license", x => x.id_driving_license);
                 });
 
             migrationBuilder.CreateTable(
-                name: "GenderOptions",
+                name: "gender",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    id_gender = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NameEn = table.Column<string>(type: "text", nullable: false),
-                    NamePl = table.Column<string>(type: "text", nullable: false)
+                    gender_name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GenderOptions", x => x.Id);
+                    table.PrimaryKey("PK_gender", x => x.id_gender);
                 });
 
             migrationBuilder.CreateTable(
@@ -90,8 +87,7 @@ namespace backend.Migrations
                 {
                     id_language = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    language_name_pl = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    language_name_en = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    language_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,45 +95,42 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PersonalityTypeOptions",
+                name: "personality_type",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    id_personality_type = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NameEn = table.Column<string>(type: "text", nullable: false),
-                    NamePl = table.Column<string>(type: "text", nullable: false)
+                    personality_type_name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PersonalityTypeOptions", x => x.Id);
+                    table.PrimaryKey("PK_personality_type", x => x.id_personality_type);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PronounOptions",
+                name: "pronoun",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    id_pronoun = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NameEn = table.Column<string>(type: "text", nullable: false),
-                    NamePl = table.Column<string>(type: "text", nullable: false)
+                    pronoun_name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PronounOptions", x => x.Id);
+                    table.PrimaryKey("PK_pronoun", x => x.id_pronoun);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SmokingPreferenceOptions",
+                name: "smoking_preference",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    id_smoking_preference = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NameEn = table.Column<string>(type: "text", nullable: false),
-                    NamePl = table.Column<string>(type: "text", nullable: false)
+                    smoking_preference_name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SmokingPreferenceOptions", x => x.Id);
+                    table.PrimaryKey("PK_smoking_preference", x => x.id_smoking_preference);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,6 +148,19 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "travel_experience",
+                columns: table => new
+                {
+                    id_travel_experience = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    travel_experience_name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_travel_experience", x => x.id_travel_experience);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "travel_style",
                 columns: table => new
                 {
@@ -166,20 +172,6 @@ namespace backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_travel_style", x => x.id_travel_style);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TravelExperienceOptions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NameEn = table.Column<string>(type: "text", nullable: false),
-                    NamePl = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TravelExperienceOptions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -247,40 +239,40 @@ namespace backend.Migrations
                 {
                     table.PrimaryKey("PK_user", x => x.id_user);
                     table.ForeignKey(
-                        name: "FK_user_AlcoholPreferenceOptions_alcohol_preference",
+                        name: "FK_user_alcohol_preference_alcohol_preference",
                         column: x => x.alcohol_preference,
-                        principalTable: "AlcoholPreferenceOptions",
-                        principalColumn: "Id");
+                        principalTable: "alcohol_preference",
+                        principalColumn: "id_alcohol_preference");
                     table.ForeignKey(
-                        name: "FK_user_DrivingLicenseOptions_driving_license_type",
+                        name: "FK_user_driving_license_driving_license_type",
                         column: x => x.driving_license_type,
-                        principalTable: "DrivingLicenseOptions",
-                        principalColumn: "Id");
+                        principalTable: "driving_license",
+                        principalColumn: "id_driving_license");
                     table.ForeignKey(
-                        name: "FK_user_GenderOptions_gender",
+                        name: "FK_user_gender_gender",
                         column: x => x.gender,
-                        principalTable: "GenderOptions",
-                        principalColumn: "Id");
+                        principalTable: "gender",
+                        principalColumn: "id_gender");
                     table.ForeignKey(
-                        name: "FK_user_PersonalityTypeOptions_personality_type",
+                        name: "FK_user_personality_type_personality_type",
                         column: x => x.personality_type,
-                        principalTable: "PersonalityTypeOptions",
-                        principalColumn: "Id");
+                        principalTable: "personality_type",
+                        principalColumn: "id_personality_type");
                     table.ForeignKey(
-                        name: "FK_user_PronounOptions_pronouns",
+                        name: "FK_user_pronoun_pronouns",
                         column: x => x.pronouns,
-                        principalTable: "PronounOptions",
-                        principalColumn: "Id");
+                        principalTable: "pronoun",
+                        principalColumn: "id_pronoun");
                     table.ForeignKey(
-                        name: "FK_user_SmokingPreferenceOptions_smoking_preference",
+                        name: "FK_user_smoking_preference_smoking_preference",
                         column: x => x.smoking_preference,
-                        principalTable: "SmokingPreferenceOptions",
-                        principalColumn: "Id");
+                        principalTable: "smoking_preference",
+                        principalColumn: "id_smoking_preference");
                     table.ForeignKey(
-                        name: "FK_user_TravelExperienceOptions_travel_experience",
+                        name: "FK_user_travel_experience_travel_experience",
                         column: x => x.travel_experience,
-                        principalTable: "TravelExperienceOptions",
-                        principalColumn: "Id");
+                        principalTable: "travel_experience",
+                        principalColumn: "id_travel_experience");
                 });
 
             migrationBuilder.CreateTable(
@@ -678,77 +670,66 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AlcoholPreferenceOptions",
-                columns: new[] { "Id", "NameEn", "NamePl" },
+                table: "alcohol_preference",
+                columns: new[] { "id_alcohol_preference", "alcohol_preference_name" },
                 values: new object[,]
                 {
-                    { 1, "Does not drink but does not mind", "Nie piję i nie przeszkadza mi" },
-                    { 2, "Social drinker", "Piję okazjonalnie" },
-                    { 3, "Regular drinker", "Piję regularnie" },
-                    { 4, "Does not tolerate alcohol", "Nie toleruję" }
+                    { 1, "Nie piję i nie przeszkadza mi" },
+                    { 2, "Piję okazjonalnie" },
+                    { 3, "Piję regularnie" },
+                    { 4, "Nie toleruję" }
                 });
 
             migrationBuilder.InsertData(
-                table: "DrivingLicenseOptions",
-                columns: new[] { "Id", "NameEn", "NamePl" },
+                table: "driving_license",
+                columns: new[] { "id_driving_license", "driving_license_name" },
                 values: new object[,]
                 {
-                    { 1, "Yes, international", "Posiadam międzynarodowe" },
-                    { 2, "No", "Nie posiadam" },
-                    { 3, "Other", "Inne" }
+                    { 1, "Posiadam międzynarodowe" },
+                    { 2, "Nie posiadam" },
+                    { 3, "Inne" }
                 });
 
             migrationBuilder.InsertData(
-                table: "GenderOptions",
-                columns: new[] { "Id", "NameEn", "NamePl" },
+                table: "gender",
+                columns: new[] { "id_gender", "gender_name" },
                 values: new object[,]
                 {
-                    { 1, "Male", "Mężczyzna" },
-                    { 2, "Female", "Kobieta" },
-                    { 3, "Non-binary", "Niebinarny" },
-                    { 4, "Other", "Inne" }
+                    { 1, "Mężczyzna" },
+                    { 2, "Kobieta" },
+                    { 3, "Niebinarny" },
+                    { 4, "Inne" }
                 });
 
             migrationBuilder.InsertData(
-                table: "PersonalityTypeOptions",
-                columns: new[] { "Id", "NameEn", "NamePl" },
+                table: "personality_type",
+                columns: new[] { "id_personality_type", "personality_type_name" },
                 values: new object[,]
                 {
-                    { 1, "Introvert", "Introwertyk" },
-                    { 2, "Extrovert", "Ekstrawertyk" },
-                    { 3, "Ambivert", "Ambiwertyk" }
+                    { 1, "Introwertyk" },
+                    { 2, "Ekstrawertyk" },
+                    { 3, "Ambiwertyk" }
                 });
 
             migrationBuilder.InsertData(
-                table: "PronounOptions",
-                columns: new[] { "Id", "NameEn", "NamePl" },
+                table: "pronoun",
+                columns: new[] { "id_pronoun", "pronoun_name" },
                 values: new object[,]
                 {
-                    { 1, "He/Him", "On/Jego" },
-                    { 2, "She/Her", "Ona/Jej" },
-                    { 3, "They/Them", "Oni/Ich" }
+                    { 1, "On/Jego" },
+                    { 2, "Ona/Jej" },
+                    { 3, "Oni/Ich" }
                 });
 
             migrationBuilder.InsertData(
-                table: "SmokingPreferenceOptions",
-                columns: new[] { "Id", "NameEn", "NamePl" },
+                table: "smoking_preference",
+                columns: new[] { "id_smoking_preference", "smoking_preference_name" },
                 values: new object[,]
                 {
-                    { 1, "Non-smoker but does not mind", "Nie palę i nie przeszkadza mi" },
-                    { 2, "Occasional smoker", "Palę okazjonalnie" },
-                    { 3, "Smoker", "Palę" },
-                    { 4, "Does not tolerate smoking", "Nie toleruję" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "TravelExperienceOptions",
-                columns: new[] { "Id", "NameEn", "NamePl" },
-                values: new object[,]
-                {
-                    { 1, "Beginner", "Początkujący" },
-                    { 2, "Intermediate", "Średniozaawansowany" },
-                    { 3, "Experienced", "Zaawansowany" },
-                    { 4, "Backpacker", "Backpacker" }
+                    { 1, "Nie palę i nie przeszkadza mi" },
+                    { 2, "Palę okazjonalnie" },
+                    { 3, "Palę" },
+                    { 4, "Nie toleruję" }
                 });
 
             migrationBuilder.InsertData(
@@ -763,6 +744,17 @@ namespace backend.Migrations
                     { 5, "Bike", "Rower" },
                     { 6, "Motorbike", "Motor" },
                     { 7, "Ferry", "Prom" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "travel_experience",
+                columns: new[] { "id_travel_experience", "travel_experience_name" },
+                values: new object[,]
+                {
+                    { 1, "Początkujący" },
+                    { 2, "Średniozaawansowany" },
+                    { 3, "Zaawansowany" },
+                    { 4, "Backpacker" }
                 });
 
             migrationBuilder.InsertData(
@@ -1021,25 +1013,25 @@ namespace backend.Migrations
                 name: "trip");
 
             migrationBuilder.DropTable(
-                name: "AlcoholPreferenceOptions");
+                name: "alcohol_preference");
 
             migrationBuilder.DropTable(
-                name: "DrivingLicenseOptions");
+                name: "driving_license");
 
             migrationBuilder.DropTable(
-                name: "GenderOptions");
+                name: "gender");
 
             migrationBuilder.DropTable(
-                name: "PersonalityTypeOptions");
+                name: "personality_type");
 
             migrationBuilder.DropTable(
-                name: "PronounOptions");
+                name: "pronoun");
 
             migrationBuilder.DropTable(
-                name: "SmokingPreferenceOptions");
+                name: "smoking_preference");
 
             migrationBuilder.DropTable(
-                name: "TravelExperienceOptions");
+                name: "travel_experience");
         }
     }
 }

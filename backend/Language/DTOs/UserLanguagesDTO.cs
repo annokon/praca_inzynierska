@@ -2,5 +2,5 @@
 
 public class UserLanguagesDTO
 {
-    public List<string> Languages { get; set; } = new();
+    public List<LanguageDTO> Languages { get; set; } = new();
 }

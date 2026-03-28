@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using backend.Language.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Language;
+namespace backend.Language.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -32,24 +33,10 @@ public class LanguagesController : ControllerBase
         return Ok(new { message = "Languages updated." });
     }
 
-    [HttpGet("languages")]
+    [HttpGet]
     public async Task<IActionResult> GetAllLanguages()
     {
         var langs = await _languageService.GetAllLanguagesAsync();
-        return Ok(langs);
-    }
-    
-    [HttpGet("languages/pl")]
-    public async Task<IActionResult> GetAllLanguagesPL()
-    {
-        var langs = await _languageService.GetAllLanguagesPlAsync();
-        return Ok(langs);
-    }
-
-    [HttpGet("languages/en")]
-    public async Task<IActionResult> GetAllLanguagesEN()
-    {
-        var langs = await _languageService.GetAllLanguagesEnAsync();
         return Ok(langs);
     }
 }

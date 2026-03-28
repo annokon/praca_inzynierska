@@ -266,7 +266,7 @@ public class UserService : IUserService
             Location = user.Location,
             Bio = user.Bio,
             Languages = user.UserLanguages?
-                .Select(ul => ul.Language.LanguageNamePL)
+                .Select(ul => ul.Language.LanguageName)
                 .ToList() ?? []
         };
     }
