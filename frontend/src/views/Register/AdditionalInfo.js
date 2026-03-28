@@ -388,7 +388,7 @@ export default function AdditionalInfo() {
     }
 
     async function handleFinish() {
-        const userId = user?.id;
+        const userId = localStorage.getItem("userId");
 
         if (!userId) {
             console.error("Brak ID użytkownika");
@@ -425,7 +425,7 @@ export default function AdditionalInfo() {
 
         try {
             const res = await fetch(`http://localhost:5292/api/users/${userId}/additional`, {
-                method: "POST",
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },

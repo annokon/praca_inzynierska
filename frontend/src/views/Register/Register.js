@@ -40,13 +40,7 @@ export default function Register() {
                 method: "POST",
                 credentials: "include",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    username,
-                    displayName,
-                    email,
-                    birthDate,
-                    password
-                })
+                body: JSON.stringify({ username, displayName, email, birthDate, password })
             });
 
             const data = await res.json();
@@ -56,6 +50,7 @@ export default function Register() {
                 return;
             }
 
+            localStorage.setItem("userId", data.id);
             localStorage.setItem("verifyEmail", email);
 
             await fetch("http://localhost:5292/api/email/send", {
