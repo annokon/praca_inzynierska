@@ -396,42 +396,35 @@ export default function AdditionalInfo() {
         }
 
         const payload = {
-            languages: skipLanguages
-                ? null
-                : selectedLanguages.length > 0
-                    ? selectedLanguages
-                    : null,
-            gender: skipGenderPronouns ? null : gender || null,
-            pronouns: skipGenderPronouns ? null : pronouns || null,
-            personalityType: skipPersonality ? null : personalityType || null,
-            alcoholAttitude: skipSubstances ? null : alcoholAttitude || null,
-            smokingAttitude: skipSubstances ? null : smokingAttitude || null,
-            hasDrivingLicense: skipDrivingLicense ? null : hasDrivingLicense || null,
-            homeLocation: skipLocation
+            genderId: skipGenderPronouns ? null : (gender || null),
+            pronounsId: skipGenderPronouns ? null : (pronouns || null),
+
+            location: skipLocation
                 ? null
                 : selectedLocation
-                    ? selectedLocation.value
+                    ? selectedLocation.value.name
                     : null,
-            travelStyle: skipTravelStyle
-                ? null
-                : selectedTravelStyles.length > 0
-                    ? selectedTravelStyles
-                    : null,
-            travelExperience: skipTravelExperience ? null : (travelExperience || null),
-            interests: skipInterests
-                ? null
-                : selectedInterests.length > 0
-                    ? selectedInterests
-                    : null,
-            preferredTransport: skipTransport
-                ? null
-                : selectedTransport.length > 0
-                    ? selectedTransport
-                    : null,
+
+            personalityTypeId: skipPersonality ? null : (personalityType || null),
+
+            alcoholPreferenceId: skipSubstances ? null : (alcoholAttitude || null),
+            smokingPreferenceId: skipSubstances ? null : (smokingAttitude || null),
+
+            drivingLicenseTypeId: skipDrivingLicense ? null : (hasDrivingLicense || null),
+
+            travelExperienceId: skipTravelExperience ? null : (travelExperience || null),
+
+            languageIds: skipLanguages ? [] : selectedLanguages,
+
+            interestIds: skipInterests ? [] : selectedInterests,
+
+            travelStyleIds: skipTravelStyle ? [] : selectedTravelStyles,
+
+            transportModeIds: skipTransport ? [] : selectedTransport
         };
 
         try {
-            const res = await fetch("http://localhost:5292/api/users/", {
+            const res = await fetch(`http://localhost:5292/api/users/${userId}/additional`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -449,6 +442,7 @@ export default function AdditionalInfo() {
             console.error("Błąd zapisu:", e);
         }
     }
+
     function handlePopupClose() {
         setIsPopupOpen(false);
         window.location.href = "/login";
@@ -1016,7 +1010,7 @@ export default function AdditionalInfo() {
                                     type="button"
                                     className="btn btn--primary"
                                     onClick={handleFinish}
-                                    disabled={selectedTransport.length === 0}
+                                    disabled={!skipTransport && selectedTransport.length === 0}
                                 >
                                     Zakończ
                                 </button>
