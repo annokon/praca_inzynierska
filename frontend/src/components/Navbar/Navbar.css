@@ -76,3 +76,9 @@
 .icon-btn:hover {
     transform: scale(1.1);
 }
+
+.settings-btn {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}

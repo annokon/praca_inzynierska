@@ -44,9 +44,15 @@ export default function Navbar() {
                         )}
 
                         {user && (
-                            <button className="nav-link logout-btn" onClick={handleLogout}>
-                                Wyloguj się
-                            </button>
+                            <>
+                                <Link to="/settings-profile" className="nav-link settings-btn">
+                                    Ustawienia
+                                </Link>
+
+                                <button className="nav-link logout-btn" onClick={handleLogout}>
+                                    Wyloguj się
+                                </button>
+                            </>
                         )}
                     </>
                 )}
