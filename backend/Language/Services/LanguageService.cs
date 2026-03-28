@@ -16,11 +16,33 @@ public class LanguageService : ILanguageService
     {
         var langs = await _languageRepository.GetAllLanguagesAsync();
 
-        return langs.Select(l => new LanguageDTO
+        var all = langs.Select(l => new LanguageDTO
         {
             Id = l.IdLanguage,
             Name = l.LanguageName
-        });
+        }).ToList();
+
+        var popular = new List<string>
+        {
+            "polski",
+            "angielski",
+            "ukraiński",
+            "włoski",
+            "niemiecki",
+            "francuski"
+        };
+
+        var popularFirst = all
+            .Where(l => popular.Contains(l.Name, StringComparer.OrdinalIgnoreCase))
+            .OrderBy(l => popular.IndexOf(l.Name.ToLower()))
+            .ToList();
+
+        var others = all
+            .Where(l => !popular.Contains(l.Name, StringComparer.OrdinalIgnoreCase))
+            .OrderBy(l => l.Name)
+            .ToList();
+
+        return popularFirst.Concat(others);
     }
 
     public async Task<IEnumerable<LanguageDTO>> GetUserLanguagesAsync(int userId)
