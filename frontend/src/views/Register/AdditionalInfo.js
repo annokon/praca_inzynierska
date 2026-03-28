@@ -2,8 +2,11 @@ import {useEffect, useState} from "react";
 import "../../css/login_register.css";
 import SuccessPopup from "../../components/Popup/SuccessPopup";
 import AsyncSelect from 'react-select/async';
+import useAuth from "../../hooks/useAuth";
 
 export default function AdditionalInfo() {
+    const { user, loading } = useAuth();
+
     const [step, setStep] = useState(1);
 
     //języki
@@ -384,7 +387,14 @@ export default function AdditionalInfo() {
         handleFinish();
     }
 
-    function handleFinish() {
+    async function handleFinish() {
+        const userId = user?.id;
+
+        if (!userId) {
+            console.error("Brak ID użytkownika");
+            return;
+        }
+
         const payload = {
             languages: skipLanguages
                 ? null
@@ -420,8 +430,24 @@ export default function AdditionalInfo() {
                     : null,
         };
 
-        console.log("Dane do wysłania do backendu:", payload);
-        setIsPopupOpen(true);
+        try {
+            const res = await fetch("http://localhost:5292/api/users/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                throw new Error("Nie udało się zapisać dodatkowych informacji");
+            }
+
+            setIsPopupOpen(true);
+        } catch (e) {
+            console.error("Błąd zapisu:", e);
+        }
     }
     function handlePopupClose() {
         setIsPopupOpen(false);
