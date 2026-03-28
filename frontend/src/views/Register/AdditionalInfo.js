@@ -69,7 +69,7 @@ export default function AdditionalInfo() {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const res = await fetch("http://localhost:5292/api/options?lang=pl", {
+                const res = await fetch("http://localhost:5292/api/options", {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include"
@@ -95,13 +95,13 @@ export default function AdditionalInfo() {
     useEffect(() => {
         const loadTransportModes = async () => {
             try {
-                const res = await fetch("http://localhost:5292/api/transportmodes?lang=pl");
+                const res = await fetch("http://localhost:5292/api/transportmodes");
 
                 if (!res.ok) throw new Error("Błąd transportów");
 
                 const data = await res.json();
 
-                setTransportOptions(data); // [{id, name}]
+                setTransportOptions(data);
             } catch (e) {
                 console.error("Błąd ładowania transportów", e);
             }
@@ -125,7 +125,7 @@ export default function AdditionalInfo() {
     useEffect(() => {
         const loadTravelStyles = async () => {
             try {
-                const res = await fetch("http://localhost:5292/api/travelstyles?lang=pl");
+                const res = await fetch("http://localhost:5292/api/travelstyles");
 
                 if (!res.ok) throw new Error("Błąd stylów podróży");
 
@@ -163,7 +163,7 @@ export default function AdditionalInfo() {
             const data = await res.json();
 
             return data.map(item => ({
-                label: item.display_name, // co widać
+                label: item.display_name,
                 value: {
                     name: item.display_name,
                     lat: item.lat,
@@ -179,7 +179,7 @@ export default function AdditionalInfo() {
     useEffect(() => {
         const loadLanguages = async () => {
             try {
-                const response = await fetch("http://localhost:5292/api/languages/languages/pl", {
+                const response = await fetch("http://localhost:5292/api/languages", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -187,13 +187,11 @@ export default function AdditionalInfo() {
                     credentials: "include",
                 });
 
-                const text = await response.text();
-
                 if (!response.ok) {
                     throw new Error("Błąd HTTP " + response.status);
                 }
 
-                const data = JSON.parse(text);
+                const data = await response.json();
 
                 setAllLanguages(data);
             } catch (e) {
@@ -206,16 +204,16 @@ export default function AdditionalInfo() {
 
 
     const filteredLanguages = allLanguages.filter((lang) =>
-        lang.toLowerCase().includes(languageSearch.toLowerCase())
+        lang.name.toLowerCase().includes(languageSearch.toLowerCase())
     );
 
     const visibleLanguages = filteredLanguages.slice(0, 6);
 
-    function toggleLanguage(lang) {
+    function toggleLanguage(id) {
         setSelectedLanguages((prev) =>
-            prev.includes(lang)
-                ? prev.filter((l) => l !== lang)
-                : [...prev, lang]
+            prev.includes(id)
+                ? prev.filter((l) => l !== id)
+                : [...prev, id]
         );
     }
 
@@ -230,9 +228,7 @@ export default function AdditionalInfo() {
 
                 const data = await res.json();
 
-                const interestOptions = data.map(i => i.name);
-
-                setAllInterests(interestOptions);
+                setAllInterests(data);
             } catch (e) {
                 console.error("Błąd ładowania zainteresowań", e);
             }
@@ -242,16 +238,16 @@ export default function AdditionalInfo() {
     }, []);
 
     const filteredInterests = allInterests.filter((interest) =>
-        interest.toLowerCase().includes(interestsSearch.toLowerCase())
+        interest.name.toLowerCase().includes(interestsSearch.toLowerCase())
     );
 
     const visibleInterests = filteredInterests.slice(0, 6);
 
-    function toggleInterest(interest) {
+    function toggleInterest(id) {
         setSelectedInterests((prev) =>
-            prev.includes(interest)
-                ? prev.filter((i) => i !== interest)
-                : [...prev, interest]
+            prev.includes(id)
+                ? prev.filter((i) => i !== id)
+                : [...prev, id]
         );
     }
 
@@ -462,17 +458,17 @@ export default function AdditionalInfo() {
                         <div className="pill-group">
                             {visibleLanguages.map((lang) => (
                                 <button
-                                    key={lang}
+                                    key={lang.id}
                                     type="button"
                                     className={
                                         "pill pill--selectable" +
-                                        (selectedLanguages.includes(lang)
+                                        (selectedLanguages.includes(lang.id)
                                             ? " pill--selected"
                                             : "")
                                     }
-                                    onClick={() => toggleLanguage(lang)}
+                                    onClick={() => toggleLanguage(lang.id)}
                                 >
-                                    {lang}
+                                    {lang.name}
                                 </button>
                             ))}
                             {filteredLanguages.length === 0 && (
@@ -903,17 +899,17 @@ export default function AdditionalInfo() {
                         <div className="pill-group">
                             {visibleInterests.map((interest) => (
                                 <button
-                                    key={interest}
+                                    key={interest.id}
                                     type="button"
                                     className={
                                         "pill pill--selectable" +
-                                        (selectedInterests.includes(interest)
+                                        (selectedInterests.includes(interest.id)
                                             ? " pill--selected"
                                             : "")
                                     }
-                                    onClick={() => toggleInterest(interest)}
+                                    onClick={() => toggleInterest(interest.id)}
                                 >
-                                    {interest}
+                                    {interest.name}
                                 </button>
                             ))}
 
