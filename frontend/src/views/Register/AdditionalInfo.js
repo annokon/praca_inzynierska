@@ -437,6 +437,8 @@ export default function AdditionalInfo() {
                 throw new Error("Nie udało się zapisać dodatkowych informacji");
             }
 
+            localStorage.removeItem("userId");
+
             setIsPopupOpen(true);
         } catch (e) {
             console.error("Błąd zapisu:", e);
