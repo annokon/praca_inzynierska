@@ -1,6 +1,7 @@
 ﻿using backend.TransportMode.DTOs;
+using backend.TransportMode.Repositories;
 
-namespace backend.TransportMode;
+namespace backend.TransportMode.Services;
 
 public class TransportModeService : ITransportModeService
 {
@@ -11,16 +12,14 @@ public class TransportModeService : ITransportModeService
         _repository = repository;
     }
 
-    public async Task<List<UserTransportModesDTO>> GetAllAsync(string lang)
+    public async Task<List<UserTransportModesDTO>> GetAllTransportModesAsync()
     {
-        var isPl = lang.ToLower() == "pl";
-
-        var data = await _repository.GetAllAsync();
+        var data = await _repository.GetAllTransportModesAsync();
 
         return data.Select(x => new UserTransportModesDTO
         {
             Id = x.IdTransportMode,
-            Name = isPl ? x.TransportModeNamePl : x.TransportModeNameEn
+            Name = x.TransportModeName
         }).ToList();
     }
 }

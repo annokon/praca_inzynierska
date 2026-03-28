@@ -4,31 +4,28 @@ namespace backend.DTOs;
 
 public class AdditionalDataUserDTO
 {
-    // optional data
-    [MaxLength(20)]
-    public string? Gender { get; set; }
-    
-    [MaxLength(20)]
-    public string? Pronouns { get; set; }
+    public int? GenderId { get; set; }
+
+    public int? PronounsId { get; set; }
 
     [MaxLength(100)]
     public string? Location { get; set; }
 
-    [MaxLength(20)]
-    public string? PersonalityType { get; set; }
+    public int? PersonalityTypeId { get; set; }
 
-    [MaxLength(50)]
-    public string? AlcoholPreference { get; set; }
+    public int? AlcoholPreferenceId { get; set; }
 
-    [MaxLength(50)]
-    public string? SmokingPreference { get; set; }
+    public int? SmokingPreferenceId { get; set; }
 
-    [MaxLength(20)]
-    public string? DrivingLicenseType { get; set; }
+    public int? DrivingLicenseTypeId { get; set; }
 
-    [MaxLength(50)]
-    public string? TravelStyle { get; set; }
+    public int? TravelExperienceId { get; set; }
 
-    [MaxLength(50)]
-    public string? TravelExperience { get; set; }
+    public List<int> LanguageIds { get; set; } = new();
+
+    public List<int> InterestIds { get; set; } = new();
+
+    public List<int> TravelStyleIds { get; set; } = new();
+
+    public List<int> TransportModeIds { get; set; } = new();
 }

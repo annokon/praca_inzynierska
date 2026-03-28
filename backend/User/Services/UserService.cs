@@ -115,23 +115,62 @@ public class UserService : IUserService
     // adding optional data to user during registration
     public async Task<bool> AddAdditionalDataAsync(int idUser, AdditionalDataUserDTO dto)
     {
-        var user = await _userRepository.GetByIdUserAsync(idUser);
+        var user = await _userRepository.GetUserWithRelationsAsync(idUser);
         if (user == null) return false;
-
-        user.Gender.GenderName = dto.Gender;
-        user.Pronouns.PronounName = dto.Pronouns;
-        user.PersonalityType.PersonalityTypeName = dto.PersonalityType;
-        user.AlcoholPreference.AlcoholPreferenceName = dto.AlcoholPreference;
-        user.SmokingPreference.SmokingPreferenceName = dto.SmokingPreference;
-        user.DrivingLicense.DrivingLicenseName = dto.DrivingLicenseType;
+        
+        user.GenderId = dto.GenderId;
+        user.PronounsId = dto.PronounsId;
         user.Location = dto.Location;
-        user.TravelExperience.TravelExperienceName = dto.TravelExperience;
+        user.PersonalityTypeId = dto.PersonalityTypeId;
+        user.AlcoholPreferenceId = dto.AlcoholPreferenceId;
+        user.SmokingPreferenceId = dto.SmokingPreferenceId;
+        user.DrivingLicenseId = dto.DrivingLicenseTypeId;
+        user.TravelExperienceId = dto.TravelExperienceId;
         
-        // TODO add collections: languages, travel style, interests, transport modes
+        user.UserLanguages?.Clear();
+        foreach (var langId in dto.LanguageIds)
+        {
+            user.UserLanguages!.Add(new UserLanguage
+            {
+                IdUser = idUser,
+                IdLanguage = langId
+            });
+        }
         
+        user.UserInterests?.Clear();
+        foreach (var interestId in dto.InterestIds)
+        {
+            user.UserInterests!.Add(new UserInterest
+            {
+                IdUser = idUser,
+                IdInterest = interestId
+            });
+        }
+        
+        user.UserTravelStyles?.Clear();
+        foreach (var styleId in dto.TravelStyleIds)
+        {
+            user.UserTravelStyles!.Add(new UserTravelStyle
+            {
+                IdUser = idUser,
+                IdTravelStyle = styleId
+            });
+        }
+        
+        user.UserTransportModes?.Clear();
+        foreach (var modeId in dto.TransportModeIds)
+        {
+            user.UserTransportModes!.Add(new UserTransportMode
+            {
+                IdUser = idUser,
+                IdTransportMode = modeId
+            });
+        }
+
         user.UpdatedAt = DateTime.UtcNow;
 
         await _userRepository.UpdateAsync(user);
+
         return true;
     }
 

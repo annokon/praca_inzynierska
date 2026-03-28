@@ -1,6 +1,7 @@
 ﻿using backend.TravelStyle.DTOs;
+using backend.TravelStyle.Repositories;
 
-namespace backend.TravelStyle;
+namespace backend.TravelStyle.Services;
 
 public class TravelStyleService : ITravelStyleService
 {
@@ -11,16 +12,14 @@ public class TravelStyleService : ITravelStyleService
         _repository = repository;
     }
 
-    public async Task<List<UserTravelStylesDTO>> GetAllAsync(string lang)
+    public async Task<List<UserTravelStylesDTO>> GetAllTravelStylesAsync()
     {
-        var isPl = lang.ToLower() == "pl";
-
-        var data = await _repository.GetAllAsync();
+        var data = await _repository.GetAllTravelStylesAsync();
 
         return data.Select(x => new UserTravelStylesDTO
         {
             Id = x.IdTravelStyle,
-            Name = isPl ? x.TravelStyleNamePl : x.TravelStyleNameEn
+            Name = x.TravelStyleName
         }).ToList();
     }
 }

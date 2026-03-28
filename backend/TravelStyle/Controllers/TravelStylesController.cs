@@ -1,7 +1,8 @@
 ﻿using backend.TransportMode;
+using backend.TravelStyle.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.TravelStyle;
+namespace backend.TravelStyle.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -15,9 +16,9 @@ public class TravelStylesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] string lang = "en")
+    public async Task<IActionResult> GetAllTravelStyles()
     {
-        var result = await _service.GetAllAsync(lang);
+        var result = await _service.GetAllTravelStylesAsync();
         return Ok(result);
     }
 }

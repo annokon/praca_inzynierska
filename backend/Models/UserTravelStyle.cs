@@ -10,7 +10,7 @@ public class UserTravelStyle
     [Required]
     [ForeignKey(nameof(TravelStyle))]
     public int IdTravelStyle { get; set; }
-    public TravelStyle TravelStyle { get; set; } = null!;
+    public TravelStyle.TravelStyle TravelStyle { get; set; } = null!;
 
     [Column("id_user")]
     [Required]

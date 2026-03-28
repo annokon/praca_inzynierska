@@ -187,27 +187,27 @@ public class DataContext : DbContext
             new TravelExperienceOption { IdTravelExperience = 4, TravelExperienceName = "Backpacker" }
         );
 
-        modelBuilder.Entity<Models.TransportMode>().HasData(
-            new Models.TransportMode { IdTransportMode = 1, TransportModeNameEn = "Car", TransportModeNamePl = "Samochód" },
-            new Models.TransportMode { IdTransportMode = 2, TransportModeNameEn = "Plane", TransportModeNamePl = "Samolot" },
-            new Models.TransportMode { IdTransportMode = 3, TransportModeNameEn = "Train", TransportModeNamePl = "Pociąg" },
-            new Models.TransportMode { IdTransportMode = 4, TransportModeNameEn = "Bus", TransportModeNamePl = "Autobus" },
-            new Models.TransportMode { IdTransportMode = 5, TransportModeNameEn = "Bike", TransportModeNamePl = "Rower" },
-            new Models.TransportMode { IdTransportMode = 6, TransportModeNameEn = "Motorbike", TransportModeNamePl = "Motor" },
-            new Models.TransportMode { IdTransportMode = 7, TransportModeNameEn = "Ferry", TransportModeNamePl = "Prom" }
+        modelBuilder.Entity<TransportMode.TransportMode>().HasData(
+            new TransportMode.TransportMode { IdTransportMode = 1, TransportModeName = "Samochód" },
+            new TransportMode.TransportMode { IdTransportMode = 2, TransportModeName = "Samolot" },
+            new TransportMode.TransportMode { IdTransportMode = 3, TransportModeName = "Pociąg" },
+            new TransportMode.TransportMode { IdTransportMode = 4, TransportModeName = "Autobus" },
+            new TransportMode.TransportMode { IdTransportMode = 5, TransportModeName = "Rower" },
+            new TransportMode.TransportMode { IdTransportMode = 6, TransportModeName = "Motor" },
+            new TransportMode.TransportMode { IdTransportMode = 7, TransportModeName = "Prom" }
         );
         
-        modelBuilder.Entity<Models.TravelStyle>().HasData(
-            new Models.TravelStyle { IdTravelStyle = 1, TravelStyleNameEn = "Spontaneous", TravelStyleNamePl = "Spontaniczny" },
-            new Models.TravelStyle { IdTravelStyle = 2, TravelStyleNameEn = "Partially planned", TravelStyleNamePl = "Trochę zaplanowany" },
-            new Models.TravelStyle { IdTravelStyle = 3, TravelStyleNameEn = "Fully planned", TravelStyleNamePl = "Szczegółowo zaplanowany" },
-            new Models.TravelStyle { IdTravelStyle = 4, TravelStyleNameEn = "All-inclusive", TravelStyleNamePl = "All-inclusive" },
-            new Models.TravelStyle { IdTravelStyle = 5, TravelStyleNameEn = "City break", TravelStyleNamePl = "City break" },
-            new Models.TravelStyle { IdTravelStyle = 6, TravelStyleNameEn = "Road trip", TravelStyleNamePl = "Road trip" },
-            new Models.TravelStyle { IdTravelStyle = 7, TravelStyleNameEn = "Package holiday", TravelStyleNamePl = "Wakacje z biurem podróży" },
-            new Models.TravelStyle { IdTravelStyle = 8, TravelStyleNameEn = "Extreme travel", TravelStyleNamePl = "Podróże ekstremalne" },
-            new Models.TravelStyle { IdTravelStyle = 9, TravelStyleNameEn = "Slow travel", TravelStyleNamePl = "Slow travel" },
-            new Models.TravelStyle { IdTravelStyle = 10, TravelStyleNameEn = "Backpacking", TravelStyleNamePl = "Backpacking" }
+        modelBuilder.Entity<TravelStyle.TravelStyle>().HasData(
+            new TravelStyle.TravelStyle { IdTravelStyle = 1, TravelStyleName = "Spontaniczny" },
+            new TravelStyle.TravelStyle { IdTravelStyle = 2, TravelStyleName = "Trochę zaplanowany" },
+            new TravelStyle.TravelStyle { IdTravelStyle = 3, TravelStyleName = "Szczegółowo zaplanowany" },
+            new TravelStyle.TravelStyle { IdTravelStyle = 4, TravelStyleName = "All-inclusive" },
+            new TravelStyle.TravelStyle { IdTravelStyle = 5, TravelStyleName = "City break" },
+            new TravelStyle.TravelStyle { IdTravelStyle = 6, TravelStyleName = "Road trip" },
+            new TravelStyle.TravelStyle { IdTravelStyle = 7, TravelStyleName = "Wakacje z biurem podróży" },
+            new TravelStyle.TravelStyle { IdTravelStyle = 8, TravelStyleName = "Podróże ekstremalne" },
+            new TravelStyle.TravelStyle { IdTravelStyle = 9, TravelStyleName = "Slow travel" },
+            new TravelStyle.TravelStyle { IdTravelStyle = 10, TravelStyleName = "Backpacking" }
         );
     }
 }

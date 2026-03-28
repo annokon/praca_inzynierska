@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using backend.TransportMode.Services;
+using Microsoft.AspNetCore.Mvc;
 
-namespace backend.TransportMode;
+namespace backend.TransportMode.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -14,9 +15,9 @@ public class TransportModesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] string lang = "en")
+    public async Task<IActionResult> GetAllTransportModes()
     {
-        var result = await _service.GetAllAsync(lang);
+        var result = await _service.GetAllTransportModesAsync();
         return Ok(result);
     }
 }

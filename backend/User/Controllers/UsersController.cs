@@ -5,7 +5,7 @@ using backend.User.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.User;
+namespace backend.User.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -76,16 +76,14 @@ public class UsersController : ControllerBase
 
     // adding optional data to user during registration
     [HttpPut("{id}/additional")]
-    public async Task<IActionResult> AddAdditionalData(int id, [FromBody] AdditionalDataUserDTO dto)
+    public async Task<IActionResult> AddAdditionalData(int id, AdditionalDataUserDTO dto)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        var result = await _userService.AddAdditionalDataAsync(id, dto);
 
-        var updated = await _userService.AddAdditionalDataAsync(id, dto);
-        if (!updated)
-            return NotFound(new { message = "User not found." });
+        if (!result)
+            return NotFound();
 
-        return NoContent();
+        return Ok();
     }
 
 

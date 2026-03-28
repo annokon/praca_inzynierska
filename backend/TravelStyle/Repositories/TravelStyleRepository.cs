@@ -1,7 +1,7 @@
 ﻿using backend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.TravelStyle;
+namespace backend.TravelStyle.Repositories;
 
 public class TravelStyleRepository : ITravelStyleRepository
 {
@@ -12,9 +12,9 @@ public class TravelStyleRepository : ITravelStyleRepository
         _context = context;
     }
 
-    public async Task<List<Models.TravelStyle>> GetAllAsync()
+    public async Task<List<TravelStyle>> GetAllTravelStylesAsync()
     {
-        return await _context.Set<Models.TravelStyle>()
+        return await _context.Set<TravelStyle>()
             .AsNoTracking()
             .OrderBy(x => x.IdTravelStyle)
             .ToListAsync();

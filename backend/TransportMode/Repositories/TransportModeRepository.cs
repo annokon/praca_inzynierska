@@ -1,7 +1,7 @@
 ﻿using backend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.TransportMode;
+namespace backend.TransportMode.Repositories;
 
 public class TransportModeRepository : ITransportModeRepository
 {
@@ -12,9 +12,9 @@ public class TransportModeRepository : ITransportModeRepository
         _context = context;
     }
 
-    public async Task<List<Models.TransportMode>> GetAllAsync()
+    public async Task<List<TransportMode>> GetAllTransportModesAsync()
     {
-        return await _context.Set<Models.TransportMode>()
+        return await _context.Set<TransportMode>()
             .AsNoTracking()
             .OrderBy(x => x.IdTransportMode)
             .ToListAsync();

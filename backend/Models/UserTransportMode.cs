@@ -10,7 +10,7 @@ public class UserTransportMode
     [Required]
     [ForeignKey(nameof(TransportMode))]
     public int IdTransportMode { get; set; }
-    public TransportMode TransportMode { get; set; } = null!;
+    public TransportMode.TransportMode TransportMode { get; set; } = null!;
 
     [Column("id_user")]
     [Required]

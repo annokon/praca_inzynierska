@@ -97,5 +97,15 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> ValidateGender(int dtoGenderId) =>
         await _context.GenderOptions.AnyAsync(g => g.IdGender == dtoGenderId);
+    
+    public async Task<Models.User?> GetUserWithRelationsAsync(int id)
+    {
+        return await _context.Users
+            .Include(u => u.UserLanguages)
+            .Include(u => u.UserInterests)
+            .Include(u => u.UserTravelStyles)
+            .Include(u => u.UserTransportModes)
+            .FirstOrDefaultAsync(u => u.IdUser == id);
+    }
 
 }
