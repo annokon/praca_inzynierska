@@ -14,6 +14,8 @@
     --settings-font-title: clamp(1.3rem, 2.4vw, 1.6rem);
     --settings-font-subtitle: clamp(0.9rem, 1.6vw, 1.05rem);
     --settings-font-item: clamp(0.95rem, 1.7vw, 1.05rem);
+
+    --settings-content-w: clamp(10rem, 20vw, 14rem);
 }
 
 .settings-page {
@@ -55,7 +57,7 @@
 .settings-subtitle::after {
     content: "";
     display: block;
-    width: clamp(10rem, 20vw, 14rem);
+    width: var(--settings-content-w);
     margin: var(--settings-gap-1) auto 0;
     border-top: var(--settings-border);
     opacity: 0.8;
@@ -164,5 +166,157 @@
 
 .settings-spacer {
     height: var(--settings-gap-2);
+}
+.settings-panel--form {
+    max-width: clamp(22rem, 52vw, 34rem);
+}
+
+.settings-form {
+    width: var(--settings-content-w);
+    margin: 0 auto;
+    display: grid;
+    gap: var(--settings-gap-3);
+}
+
+.settings-section {
+    display: grid;
+    gap: var(--settings-gap-2);
+}
+
+.settings-section-title {
+    margin: 0;
+    font-size: var(--settings-font-item);
+    font-weight: 500;
+    line-height: 1.25;
+}
+
+.settings-stack {
+    display: grid;
+    gap: var(--settings-gap-2);
+}
+
+.settings-row {
+    display: grid;
+    gap: var(--settings-gap-2);
+}
+
+.settings-row--split {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+}
+
+.settings-input-trigger {
+    width: max-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-input-trigger input {
+    display: none;
+}
+
+.settings-preview {
+    border: var(--settings-border);
+    border-radius: clamp(0.5rem, 1vw, 0.7rem);
+    background: #fff;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+}
+
+.settings-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.settings-preview--square {
+    width: clamp(5rem, 9vw, 6rem);
+    aspect-ratio: 1 / 1;
+    justify-self: end;
+}
+
+.settings-preview--wide {
+    width: 100%;
+    aspect-ratio: 3 / 1;
+}
+
+.settings-preview-placeholder {
+    color: var(--settings-muted);
+    font-size: 0.9rem;
+}
+
+.settings-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--settings-gap-2);
+    margin-top: var(--settings-gap-2);
+}
+
+.settings-btn--primary {
+    background: #111;
+    color: #fff;
+    border: 0.08rem solid #111;
+}
+
+.settings-btn--primary:hover {
+    opacity: 0.92;
+}
+
+.settings-field {
+    display: grid;
+    gap: var(--settings-gap-1);
+}
+
+.settings-label {
+    font-size: clamp(0.85rem, 1.4vw, 0.95rem);
+    line-height: 1.25;
+    color: var(--settings-text);
+}
+
+.settings-select,
+.settings-input,
+.settings-textarea {
+    width: 100%;
+    min-height: var(--settings-btn-h);
+    padding: 0 clamp(0.75rem, 1.6vw, 0.9rem);
+    border: var(--settings-border);
+    border-radius: clamp(0.5rem, 1.2vw, 0.7rem);
+    background: #fff;
+    color: var(--settings-text);
+    font-size: var(--settings-font-item);
+    font-family: inherit;
+    outline: none;
+}
+
+.settings-textarea {
+    min-height: 7rem;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+    resize: vertical;
+}
+
+.settings-select:focus-visible,
+.settings-input:focus-visible,
+.settings-textarea:focus-visible {
+    outline: 0.12rem solid rgba(0, 0, 0, 0.6);
+    outline-offset: 0.15rem;
+}
+
+@media (max-width: 640px) {
+    .settings-row--split {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-preview--square {
+        justify-self: start;
+    }
+
+    .settings-actions {
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
