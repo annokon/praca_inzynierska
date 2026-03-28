@@ -96,6 +96,6 @@ public class UserRepository : IUserRepository
     }
 
     public async Task<bool> ValidateGender(int dtoGenderId) =>
-        await _context.GenderOptions.AnyAsync(g => g.Id == dtoGenderId);
+        await _context.GenderOptions.AnyAsync(g => g.IdGender == dtoGenderId);
 
 }

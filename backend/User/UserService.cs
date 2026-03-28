@@ -42,9 +42,9 @@ public class UserService : IUserService
             DisplayName = u.DisplayName,
             Email = u.Email,
             BirthDate = u.BirthDate,
-            Gender = u.Gender.NamePl,
+            Gender = u.Gender.GenderName,
             Location = u.Location,
-            PersonalityType = u.PersonalityType.NamePl,
+            PersonalityType = u.PersonalityType?.PersonalityTypeName,
             Bio = u.Bio,
             ProfilePhotoPath = u.ProfilePhotoPath,
             Role = u.Role,
@@ -64,9 +64,9 @@ public class UserService : IUserService
             Username = u.Username,
             DisplayName = u.DisplayName,
             Email = u.Email,
-            Gender = u.Gender.NamePl,
+            Gender = u.Gender.GenderName,
             Location = u.Location,
-            PersonalityType = u.PersonalityType.NamePl,
+            PersonalityType = u.PersonalityType?.PersonalityTypeName,
             Bio = u.Bio,
             ProfilePhotoPath = u.ProfilePhotoPath,
             Role = u.Role,
@@ -106,7 +106,7 @@ public class UserService : IUserService
             Username = user.Username,
             DisplayName = user.DisplayName,
             Email = user.Email,
-            Gender = user.Gender.NamePl,
+            Gender = user.Gender.GenderName,
             IsActive = user.IsActive,
             Role = user.Role
         };
@@ -118,14 +118,14 @@ public class UserService : IUserService
         var user = await _userRepository.GetByIdUserAsync(idUser);
         if (user == null) return false;
 
-        user.Gender.NamePl = dto.Gender;
-        user.Pronouns.NamePl = dto.Pronouns;
-        user.PersonalityType.NamePl = dto.PersonalityType;
-        user.AlcoholPreference.NamePl = dto.AlcoholPreference;
-        user.SmokingPreference.NamePl = dto.SmokingPreference;
-        user.DrivingLicense.NamePl = dto.DrivingLicenseType;
+        user.Gender.GenderName = dto.Gender;
+        user.Pronouns.PronounName = dto.Pronouns;
+        user.PersonalityType.PersonalityTypeName = dto.PersonalityType;
+        user.AlcoholPreference.AlcoholPreferenceName = dto.AlcoholPreference;
+        user.SmokingPreference.SmokingPreferenceName = dto.SmokingPreference;
+        user.DrivingLicense.DrivingLicenseName = dto.DrivingLicenseType;
         user.Location = dto.Location;
-        user.TravelExperience.NamePl = dto.TravelExperience;
+        user.TravelExperience.TravelExperienceName = dto.TravelExperience;
         
         // TODO add collections: languages, travel style, interests, transport modes
         
@@ -144,9 +144,9 @@ public class UserService : IUserService
         user.DisplayName = dto.DisplayName ?? user.DisplayName;
         user.Email = dto.Email ?? user.Email;
         user.Location = dto.Location ?? user.Location;
-        user.Gender.NamePl = dto.Gender ?? user.Gender.NamePl;
+        user.Gender.GenderName = dto.Gender ?? user.Gender.GenderName;
         user.Bio = dto.Bio ?? user.Bio;
-        user.PersonalityType.NamePl = dto.PersonalityType ?? user.PersonalityType.NamePl;
+        user.PersonalityType.PersonalityTypeName = dto.PersonalityType ?? user.PersonalityType.PersonalityTypeName;
         user.UpdatedAt = DateTime.UtcNow;
 
         await _userRepository.UpdateAsync(user);
@@ -240,7 +240,7 @@ public class UserService : IUserService
             Username = u.Username,
             DisplayName = u.DisplayName,
             Email = u.Email,
-            Gender = u.Gender.NamePl,
+            Gender = u.Gender.GenderName,
             Location = u.Location,
             ProfilePhotoPath = u.ProfilePhotoPath,
             Role = u.Role
@@ -260,9 +260,9 @@ public class UserService : IUserService
             DisplayName = user.DisplayName,
             Email = user.Email,
             BirthDate = user.BirthDate.ToString("yyyy-MM-dd"),
-            Gender = user.Gender?.NamePl,
-            Pronouns = user.Pronouns?.NamePl,
-            Personality = user.PersonalityType?.NamePl,
+            Gender = user.Gender?.GenderName,
+            Pronouns = user.Pronouns?.PronounName,
+            Personality = user.PersonalityType?.PersonalityTypeName,
             Location = user.Location,
             Bio = user.Bio,
             Languages = user.UserLanguages?

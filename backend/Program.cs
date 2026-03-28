@@ -5,6 +5,8 @@ using backend.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using backend.CategoriesOptions.Repositories;
+using backend.CategoriesOptions.Services;
 using backend.Interest;
 using backend.Language;
 using backend.TransportMode;
@@ -37,6 +39,8 @@ builder.Services.AddScoped<ITransportModeRepository, TransportModeRepository>();
 builder.Services.AddScoped<ITransportModeService, TransportModeService>();
 builder.Services.AddScoped<ITravelStyleRepository, TravelStyleRepository>();
 builder.Services.AddScoped<ITravelStyleService, TravelStyleService>();
+builder.Services.AddScoped<IOptionsService, OptionsService>();
+builder.Services.AddScoped<IOptionsRepository, OptionsRepository>();
 
 builder.Services.AddHttpClient();
 

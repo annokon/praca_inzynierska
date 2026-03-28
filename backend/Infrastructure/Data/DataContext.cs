@@ -1,5 +1,5 @@
 ﻿using backend.Models;
-using backend.Options;
+using backend.CategoriesOptions.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Infrastructure.Data;
@@ -142,49 +142,49 @@ public class DataContext : DbContext
         });
 
         modelBuilder.Entity<GenderOption>().HasData(
-            new GenderOption { Id = 1, NameEn = "Male", NamePl = "Mężczyzna" },
-            new GenderOption { Id = 2, NameEn = "Female", NamePl = "Kobieta" },
-            new GenderOption { Id = 3, NameEn = "Non-binary", NamePl = "Niebinarny" },
-            new GenderOption { Id = 4, NameEn = "Other", NamePl = "Inne" }
+            new GenderOption { IdGender = 1, GenderName = "Mężczyzna" },
+            new GenderOption { IdGender = 2, GenderName = "Kobieta" },
+            new GenderOption { IdGender = 3, GenderName = "Niebinarny" },
+            new GenderOption { IdGender = 4, GenderName = "Inne" }
         );
 
         modelBuilder.Entity<PronounOption>().HasData(
-            new PronounOption { Id = 1, NameEn = "He/Him", NamePl = "On/Jego" },
-            new PronounOption { Id = 2, NameEn = "She/Her", NamePl = "Ona/Jej" },
-            new PronounOption { Id = 3, NameEn = "They/Them", NamePl = "Oni/Ich" }
+            new PronounOption { IdPronoun = 1, PronounName = "On/Jego" },
+            new PronounOption { IdPronoun = 2, PronounName = "Ona/Jej" },
+            new PronounOption { IdPronoun = 3, PronounName = "Oni/Ich" }
         );
 
         modelBuilder.Entity<PersonalityTypeOption>().HasData(
-            new PersonalityTypeOption { Id = 1, NameEn = "Introvert", NamePl = "Introwertyk" },
-            new PersonalityTypeOption { Id = 2, NameEn = "Extrovert", NamePl = "Ekstrawertyk" },
-            new PersonalityTypeOption { Id = 3, NameEn = "Ambivert", NamePl = "Ambiwertyk" }
+            new PersonalityTypeOption { IdPersonalityType = 1, PersonalityTypeName = "Introwertyk" },
+            new PersonalityTypeOption { IdPersonalityType = 2, PersonalityTypeName = "Ekstrawertyk" },
+            new PersonalityTypeOption { IdPersonalityType = 3, PersonalityTypeName = "Ambiwertyk" }
         );
 
         modelBuilder.Entity<AlcoholPreferenceOption>().HasData(
-            new AlcoholPreferenceOption { Id = 1, NameEn = "Does not drink but does not mind", NamePl = "Nie piję i nie przeszkadza mi" },
-            new AlcoholPreferenceOption { Id = 2, NameEn = "Social drinker", NamePl = "Piję okazjonalnie" },
-            new AlcoholPreferenceOption { Id = 3, NameEn = "Regular drinker", NamePl = "Piję regularnie" },
-            new AlcoholPreferenceOption { Id = 4, NameEn = "Does not tolerate alcohol", NamePl = "Nie toleruję" }
+            new AlcoholPreferenceOption { IdAlcoholPreference = 1, AlcoholPreferenceName = "Nie piję i nie przeszkadza mi" },
+            new AlcoholPreferenceOption { IdAlcoholPreference = 2, AlcoholPreferenceName = "Piję okazjonalnie" },
+            new AlcoholPreferenceOption { IdAlcoholPreference = 3, AlcoholPreferenceName = "Piję regularnie" },
+            new AlcoholPreferenceOption { IdAlcoholPreference = 4, AlcoholPreferenceName = "Nie toleruję" }
         );
 
         modelBuilder.Entity<SmokingPreferenceOption>().HasData(
-            new SmokingPreferenceOption { Id = 1, NameEn = "Non-smoker but does not mind", NamePl = "Nie palę i nie przeszkadza mi" },
-            new SmokingPreferenceOption { Id = 2, NameEn = "Occasional smoker", NamePl = "Palę okazjonalnie" },
-            new SmokingPreferenceOption { Id = 3, NameEn = "Smoker", NamePl = "Palę" },
-            new SmokingPreferenceOption { Id = 4, NameEn = "Does not tolerate smoking", NamePl = "Nie toleruję" }
+            new SmokingPreferenceOption { IdSmokingPreference = 1, SmokingPreferenceName = "Nie palę i nie przeszkadza mi" },
+            new SmokingPreferenceOption { IdSmokingPreference = 2, SmokingPreferenceName = "Palę okazjonalnie" },
+            new SmokingPreferenceOption { IdSmokingPreference = 3, SmokingPreferenceName = "Palę" },
+            new SmokingPreferenceOption { IdSmokingPreference = 4, SmokingPreferenceName = "Nie toleruję" }
         );
 
         modelBuilder.Entity<DrivingLicenseOption>().HasData(
-            new DrivingLicenseOption { Id = 1, NameEn = "Yes, international", NamePl = "Posiadam międzynarodowe" },
-            new DrivingLicenseOption { Id = 2, NameEn = "No", NamePl = "Nie posiadam" },
-            new DrivingLicenseOption { Id = 3, NameEn = "Other", NamePl = "Inne" }
+            new DrivingLicenseOption { IdDrivingLicense = 1, DrivingLicenseName = "Posiadam międzynarodowe" },
+            new DrivingLicenseOption { IdDrivingLicense = 2, DrivingLicenseName = "Nie posiadam" },
+            new DrivingLicenseOption { IdDrivingLicense = 3, DrivingLicenseName = "Inne" }
         );
 
         modelBuilder.Entity<TravelExperienceOption>().HasData(
-            new TravelExperienceOption { Id = 1, NameEn = "Beginner", NamePl = "Początkujący" },
-            new TravelExperienceOption { Id = 2, NameEn = "Intermediate", NamePl = "Średniozaawansowany" },
-            new TravelExperienceOption { Id = 3, NameEn = "Experienced", NamePl = "Zaawansowany" },
-            new TravelExperienceOption { Id = 4, NameEn = "Backpacker", NamePl = "Backpacker" }
+            new TravelExperienceOption { IdTravelExperience = 1, TravelExperienceName = "Początkujący" },
+            new TravelExperienceOption { IdTravelExperience = 2, TravelExperienceName = "Średniozaawansowany" },
+            new TravelExperienceOption { IdTravelExperience = 3, TravelExperienceName = "Zaawansowany" },
+            new TravelExperienceOption { IdTravelExperience = 4, TravelExperienceName = "Backpacker" }
         );
 
         modelBuilder.Entity<Models.TransportMode>().HasData(
