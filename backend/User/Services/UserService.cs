@@ -289,7 +289,7 @@ public class UserService : IUserService
     
     public async Task<UserProfileDTO?> GetProfileAsync(int id)
     {
-        var user = await _userRepository.GetUserWithLanguagesAsync(id);
+        var user = await _userRepository.GetUserWithRelationsAsync(id);
         if (user == null) return null;
 
         return new UserProfileDTO
@@ -299,14 +299,37 @@ public class UserService : IUserService
             DisplayName = user.DisplayName,
             Email = user.Email,
             BirthDate = user.BirthDate.ToString("yyyy-MM-dd"),
+
             Gender = user.Gender?.GenderName,
             Pronouns = user.Pronouns?.PronounName,
             Personality = user.PersonalityType?.PersonalityTypeName,
             Location = user.Location,
             Bio = user.Bio,
+
             Languages = user.UserLanguages?
+                .Where(ul => ul.Language != null)
                 .Select(ul => ul.Language.LanguageName)
-                .ToList() ?? []
+                .ToList() ?? new List<string>(),
+
+            Interests = user.UserInterests?
+                .Where(ui => ui.Interest != null)
+                .Select(ui => ui.Interest.InterestName)
+                .ToList() ?? new List<string>(),
+
+            Transport = user.UserTransportModes?
+                .Where(ut => ut.TransportMode != null)
+                .Select(ut => ut.TransportMode.TransportModeName)
+                .ToList() ?? new List<string>(),
+
+            TravelStyles = user.UserTravelStyles?
+                .Where(ts => ts.TravelStyle != null)
+                .Select(ts => ts.TravelStyle.TravelStyleName)
+                .ToList() ?? new List<string>(),
+
+            TravelExperience = user.TravelExperience?.TravelExperienceName,
+            DrivingLicense = user.DrivingLicense?.DrivingLicenseName,
+            Alcohol = user.AlcoholPreference?.AlcoholPreferenceName,
+            Smoking = user.SmokingPreference?.SmokingPreferenceName,
         };
     }
 

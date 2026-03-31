@@ -15,4 +15,12 @@ public class UserProfileDTO
     public string? Bio { get; set; }
 
     public List<string> Languages { get; set; } = [];
+    public List<string> Interests { get; set; } = [];
+    public List<string> Transport { get; set; } = [];
+    public List<string> TravelStyles { get; set; } = [];
+
+    public string? TravelExperience { get; set; }
+    public string? DrivingLicense { get; set; }
+    public string? Alcohol { get; set; }
+    public string? Smoking { get; set; }
 }

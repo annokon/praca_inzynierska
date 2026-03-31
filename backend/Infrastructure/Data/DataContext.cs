@@ -125,7 +125,7 @@ public class DataContext : DbContext
                 .HasForeignKey(utm => utm.IdUser)
                 .OnDelete(DeleteBehavior.Cascade);
         });
-        
+
         modelBuilder.Entity<UserTravelStyle>(entity =>
         {
             entity.HasKey(uts => new { uts.IdTravelStyle, uts.IdUser });
@@ -161,14 +161,16 @@ public class DataContext : DbContext
         );
 
         modelBuilder.Entity<AlcoholPreferenceOption>().HasData(
-            new AlcoholPreferenceOption { IdAlcoholPreference = 1, AlcoholPreferenceName = "Nie piję i nie przeszkadza mi" },
+            new AlcoholPreferenceOption
+                { IdAlcoholPreference = 1, AlcoholPreferenceName = "Nie piję i nie przeszkadza mi" },
             new AlcoholPreferenceOption { IdAlcoholPreference = 2, AlcoholPreferenceName = "Piję okazjonalnie" },
             new AlcoholPreferenceOption { IdAlcoholPreference = 3, AlcoholPreferenceName = "Piję regularnie" },
             new AlcoholPreferenceOption { IdAlcoholPreference = 4, AlcoholPreferenceName = "Nie toleruję" }
         );
 
         modelBuilder.Entity<SmokingPreferenceOption>().HasData(
-            new SmokingPreferenceOption { IdSmokingPreference = 1, SmokingPreferenceName = "Nie palę i nie przeszkadza mi" },
+            new SmokingPreferenceOption
+                { IdSmokingPreference = 1, SmokingPreferenceName = "Nie palę i nie przeszkadza mi" },
             new SmokingPreferenceOption { IdSmokingPreference = 2, SmokingPreferenceName = "Palę okazjonalnie" },
             new SmokingPreferenceOption { IdSmokingPreference = 3, SmokingPreferenceName = "Palę" },
             new SmokingPreferenceOption { IdSmokingPreference = 4, SmokingPreferenceName = "Nie toleruję" }
@@ -196,7 +198,7 @@ public class DataContext : DbContext
             new TransportMode.TransportMode { IdTransportMode = 6, TransportModeName = "Motor" },
             new TransportMode.TransportMode { IdTransportMode = 7, TransportModeName = "Prom" }
         );
-        
+
         modelBuilder.Entity<TravelStyle.TravelStyle>().HasData(
             new TravelStyle.TravelStyle { IdTravelStyle = 1, TravelStyleName = "Spontaniczny" },
             new TravelStyle.TravelStyle { IdTravelStyle = 2, TravelStyleName = "Trochę zaplanowany" },

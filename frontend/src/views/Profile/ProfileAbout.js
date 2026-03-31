@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import "../../css/profile.css";
 
-function Pill({ children }) {
+function Pill({children}) {
     return <span className="pill">{children}</span>;
 }
 
-function InfoLine({ title, value }) {
+function InfoLine({title, value}) {
     return (
         <div className="info-line">
             <div className="info-line__title">{title}</div>
@@ -16,7 +16,7 @@ function InfoLine({ title, value }) {
     );
 }
 
-function InfoGroup({ title, items = [] }) {
+function InfoGroup({title, items = []}) {
     return (
         <div className="info-group">
             <div className="info-group__title">{title}</div>
@@ -55,9 +55,9 @@ export default function ProfileAbout() {
     }, []);
 
     const menuSections = [
-        { id: "about", label: "O mnie" },
-        { id: "languages", label: "Języki" },
-        { id: "additional", label: "Dodatkowe informacje" },
+        {id: "about", label: "O mnie"},
+        {id: "languages", label: "Języki"},
+        {id: "additional", label: "Dodatkowe informacje"},
     ];
 
     const scrollTo = (id) => {
@@ -99,12 +99,12 @@ export default function ProfileAbout() {
                 <section id="about" className="card">
                     <h2 className="section-title">O mnie</h2>
 
-                    <InfoLine title="Płeć" value={profile.gender} />
-                    <InfoLine title="Zaimki" value={profile.pronouns} />
-                    <InfoLine title="Osobowość" value={profile.personality} />
-                    <InfoLine title="Miejsce zamieszkania" value={profile.location} />
+                    <InfoLine title="Płeć" value={profile.gender}/>
+                    <InfoLine title="Zaimki" value={profile.pronouns}/>
+                    <InfoLine title="Osobowość" value={profile.personality}/>
+                    <InfoLine title="Miejsce zamieszkania" value={profile.location}/>
 
-                    <div className="spacer" />
+                    <div className="spacer"/>
 
                     <h3 className="section-subtitle">Opis</h3>
                     <div className="desc-box">{profile.bio}</div>
@@ -124,13 +124,13 @@ export default function ProfileAbout() {
                 <section id="additional" className="card">
                     <h2 className="section-title">Dodatkowe informacje</h2>
 
-                    <InfoGroup title="Zainteresowania" items={profile.additional?.interests} />
-                    <InfoGroup title="Transport" items={profile.additional?.transport} />
-                    <InfoGroup title="Styl podróżowania" items={profile.additional?.travelStyle} />
-                    <InfoGroup title="Doświadczenie" items={profile.additional?.experience} />
-                    <InfoGroup title="Prawo jazdy" items={profile.additional?.drivingLicense} />
-                    <InfoGroup title="Alkohol" items={profile.additional?.alcohol} />
-                    <InfoGroup title="Papierosy" items={profile.additional?.smoking} />
+                    <InfoGroup title="Zainteresowania" items={profile.interests}/>
+                    <InfoGroup title="Transport" items={profile.transport}/>
+                    <InfoGroup title="Styl podróżowania" items={profile.travelStyles}/>
+                    <InfoLine title="Doświadczenie" value={profile.travelExperience}/>
+                    <InfoLine title="Prawo jazdy" value={profile.drivingLicense}/>
+                    <InfoLine title="Alkohol" value={profile.alcohol}/>
+                    <InfoLine title="Papierosy" value={profile.smoking}/>
                 </section>
             </main>
         </div>

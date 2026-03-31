@@ -101,10 +101,26 @@ public class UserRepository : IUserRepository
     public async Task<Models.User?> GetUserWithRelationsAsync(int id)
     {
         return await _context.Users
-            .Include(u => u.UserLanguages)
+            .Include(u => u.Gender)
+            .Include(u => u.Pronouns)
+            .Include(u => u.PersonalityType)
+            .Include(u => u.TravelExperience)
+            .Include(u => u.DrivingLicense)
+            .Include(u => u.AlcoholPreference)
+            .Include(u => u.SmokingPreference)
+
+            .Include(u => u.UserLanguages)!
+            .ThenInclude(ul => ul.Language)
+
             .Include(u => u.UserInterests)
+            .ThenInclude(ui => ui.Interest)
+
             .Include(u => u.UserTravelStyles)
+            .ThenInclude(uts => uts.TravelStyle)
+
             .Include(u => u.UserTransportModes)
+            .ThenInclude(ut => ut.TransportMode)
+
             .FirstOrDefaultAsync(u => u.IdUser == id);
     }
 
