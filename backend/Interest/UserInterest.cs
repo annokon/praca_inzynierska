@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace backend.Models;
+namespace backend.Interest;
 
 [Table("user_interest")]
 public class UserInterest
@@ -16,5 +16,5 @@ public class UserInterest
     [Required]
     [ForeignKey(nameof(User))]
     public int IdUser { get; set; }
-    public User User { get; set; } = null!;
+    public User.User User { get; set; } = null!;
 }

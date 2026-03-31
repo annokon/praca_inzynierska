@@ -1,6 +1,7 @@
 ﻿using backend.Interest.DTOs;
+using backend.Interest.Repositories;
 
-namespace backend.Interest;
+namespace backend.Interest.Services;
 
 public class InterestService : IInterestService
 {
@@ -41,7 +42,7 @@ public class InterestService : IInterestService
             if (await _repo.ExistsByNameAsync(name))
                 continue;
 
-            await _repo.AddAsync(new Models.Interest
+            await _repo.AddAsync(new Interest
             {
                 InterestName = name
             });

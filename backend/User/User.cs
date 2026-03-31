@@ -1,9 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using backend.CategoriesOptions.Models;
+using backend.Interest;
+using backend.Language;
+using backend.Models;
+using backend.TransportMode;
+using backend.TravelStyle;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Models;
+namespace backend.User;
 
 [Index(nameof(Email), IsUnique = true)]
 [Index(nameof(Username), IsUnique = true)]

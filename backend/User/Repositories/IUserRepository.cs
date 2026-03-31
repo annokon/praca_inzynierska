@@ -1,18 +1,18 @@
 ﻿using backend.Models;
 
-namespace backend.User;
+namespace backend.User.Repositories;
 
 public interface IUserRepository
 {
-    Task<IEnumerable<Models.User>> GetAllAsync();
-    Task<Models.User?> GetByIdUserAsync(int idUser);
-    Task AddAsync(Models.User user);
-    Task UpdateAsync(Models.User user);
-    Task DeleteAsync(Models.User user);
+    Task<IEnumerable<User>> GetAllAsync();
+    Task<User?> GetByIdUserAsync(int idUser);
+    Task AddAsync(User user);
+    Task UpdateAsync(User user);
+    Task DeleteAsync(User user);
     Task<bool> ExistsByEmailAsync(string email);
     Task<bool> ExistsByUsernameAsync(string username);
-    Task<Models.User?> GetUserWithLanguagesAsync(int idUser);
-    Task<Models.User?> GetByEmailOrUsernameAsync(string login);
+    Task<User?> GetUserWithLanguagesAsync(int idUser);
+    Task<User?> GetByEmailOrUsernameAsync(string login);
     Task<bool> ValidateGender(int dtoGenderId);
-    Task<Models.User?> GetUserWithRelationsAsync(int id);
+    Task<User?> GetUserWithRelationsAsync(int id);
 }

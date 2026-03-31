@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace backend.Models;
+namespace backend.TravelStyle;
 
 [Table("user_travel_style")]
 public class UserTravelStyle
@@ -10,11 +10,11 @@ public class UserTravelStyle
     [Required]
     [ForeignKey(nameof(TravelStyle))]
     public int IdTravelStyle { get; set; }
-    public TravelStyle.TravelStyle TravelStyle { get; set; } = null!;
+    public TravelStyle TravelStyle { get; set; } = null!;
 
     [Column("id_user")]
     [Required]
     [ForeignKey(nameof(User))]
     public int IdUser { get; set; }
-    public User User { get; set; } = null!;
+    public User.User User { get; set; } = null!;
 }

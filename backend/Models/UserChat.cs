@@ -16,5 +16,5 @@ public class UserChat
     [Required]
     [ForeignKey(nameof(User))]
     public int IdUser { get; set; }
-    public User User { get; set; } = null!;
+    public User.User User { get; set; } = null!;
 }

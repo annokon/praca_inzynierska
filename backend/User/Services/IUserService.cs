@@ -1,9 +1,6 @@
-﻿using backend.DTOs;
-using backend.DTOs.UserDTOs;
-using backend.Models;
-using backend.User.DTOs;
+﻿using backend.User.DTOs;
 
-namespace backend.User;
+namespace backend.User.Services;
 
 public interface IUserService
 {

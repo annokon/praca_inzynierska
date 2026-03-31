@@ -11,16 +11,16 @@ public class BlockedUser
     [ForeignKey(nameof(Blocker))]
     public int IdUserBlocker { get; set; }
     
-    [InverseProperty(nameof(User.UsersBlockingThisUser))]
-    public User Blocker { get; set; } = null!;
+    [InverseProperty(nameof(User.User.UsersBlockingThisUser))]
+    public User.User Blocker { get; set; } = null!;
     
     [Column("id_user_blocked")]
     [Required]
     [ForeignKey(nameof(Blocked))]
     public int IdUserBlocked { get; set; }
     
-    [InverseProperty(nameof(User.BlockedUsers))]
-    public User Blocked { get; set; } = null!;
+    [InverseProperty(nameof(User.User.BlockedUsers))]
+    public User.User Blocked { get; set; } = null!;
 
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

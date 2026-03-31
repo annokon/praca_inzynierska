@@ -1,8 +1,7 @@
 ﻿using backend.Infrastructure.Data;
-using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.User;
+namespace backend.User.Repositories;
 
 public class UserRepository : IUserRepository
 {
@@ -15,32 +14,32 @@ public class UserRepository : IUserRepository
 
     
     // get all users
-    Task<IEnumerable<Models.User>> IUserRepository.GetAllAsync()
+    Task<IEnumerable<User>> IUserRepository.GetAllAsync()
     {
         return GetAllAsync();
     }
     
-    public async Task<IEnumerable<Models.User>> GetAllAsync() =>
+    public async Task<IEnumerable<User>> GetAllAsync() =>
         await _context.Users.AsNoTracking().ToListAsync();
 
     
     // get user by id
-    Task<Models.User?> IUserRepository.GetByIdUserAsync(int idUser)
+    Task<User?> IUserRepository.GetByIdUserAsync(int idUser)
     {
         return GetByIdUserAsync(idUser);
     }
     
-    public async Task<Models.User?> GetByIdUserAsync(int idUser) =>
+    public async Task<User?> GetByIdUserAsync(int idUser) =>
         await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUser);
 
     
     // add new user
-    Task IUserRepository.AddAsync(Models.User user)
+    Task IUserRepository.AddAsync(User user)
     {
         return AddAsync(user);
     }
     
-    public async Task AddAsync(Models.User user)
+    public async Task AddAsync(User user)
     {
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -48,12 +47,12 @@ public class UserRepository : IUserRepository
 
     
     // update user
-    Task IUserRepository.UpdateAsync(Models.User user)
+    Task IUserRepository.UpdateAsync(User user)
     {
         return UpdateAsync(user);
     }
 
-    public async Task UpdateAsync(Models.User user)
+    public async Task UpdateAsync(User user)
     {
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
@@ -61,12 +60,12 @@ public class UserRepository : IUserRepository
     
     
     // delete user
-    Task IUserRepository.DeleteAsync(Models.User user)
+    Task IUserRepository.DeleteAsync(User user)
     {
         return DeleteAsync(user);
     }
     
-    public async Task DeleteAsync(Models.User user)
+    public async Task DeleteAsync(User user)
     {
         //TODO
     }
@@ -81,13 +80,13 @@ public class UserRepository : IUserRepository
         await _context.Users.AnyAsync(u => u.Username == username);
 
     
-    public async Task<Models.User?> GetByEmailOrUsernameAsync(string login)
+    public async Task<User?> GetByEmailOrUsernameAsync(string login)
     {
         return await _context.Users
             .FirstOrDefaultAsync(u => u.Email == login || u.Username == login);
     }
     
-    public async Task<Models.User?> GetUserWithLanguagesAsync(int idUser)
+    public async Task<User?> GetUserWithLanguagesAsync(int idUser)
     {
         return await _context.Users
             .Include(u => u.UserLanguages)!
@@ -98,7 +97,7 @@ public class UserRepository : IUserRepository
     public async Task<bool> ValidateGender(int dtoGenderId) =>
         await _context.GenderOptions.AnyAsync(g => g.IdGender == dtoGenderId);
     
-    public async Task<Models.User?> GetUserWithRelationsAsync(int id)
+    public async Task<User?> GetUserWithRelationsAsync(int id)
     {
         return await _context.Users
             .Include(u => u.Gender)

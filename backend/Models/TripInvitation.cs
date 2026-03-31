@@ -14,22 +14,22 @@ public class TripInvitation
     [Required]
     [ForeignKey(nameof(Trip))]
     public int TripId { get; set; }
-    public Trip Trip { get; set; } = null!;
+    public Trip.Trip Trip { get; set; } = null!;
 
     // user inviting
     [Column("id_user_inviting")]
     [ForeignKey(nameof(InvitingUser))]
     public int? IdUserInviting { get; set; }
     
-    [InverseProperty(nameof(User.TripInvitationsSent))]
-    public User InvitingUser { get; set; } = null!;
+    [InverseProperty(nameof(User.User.TripInvitationsSent))]
+    public User.User InvitingUser { get; set; } = null!;
 
     // user invited
     [Column("id_user_invited")]
     [ForeignKey(nameof(InvitedUser))]
     public int? IdUserInvited { get; set; }
-    [InverseProperty(nameof(User.TripInvitationsReceived))]
-    public User InvitedUser { get; set; } = null!;
+    [InverseProperty(nameof(User.User.TripInvitationsReceived))]
+    public User.User InvitedUser { get; set; } = null!;
 
     [Column("status")]
     [Required]

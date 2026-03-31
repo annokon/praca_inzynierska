@@ -1,6 +1,7 @@
 ﻿using backend.Security;
+using backend.User.Repositories;
 
-namespace backend.User;
+namespace backend.User.Services;
 
 public class EmailVerificationService : IEmailVerificationService
 {

@@ -1,4 +1,4 @@
-﻿namespace backend.DTOs.UserDTOs;
+﻿namespace backend.User.DTOs;
 
 public class UserDTO
 {

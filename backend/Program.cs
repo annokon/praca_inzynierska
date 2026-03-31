@@ -7,13 +7,16 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using backend.CategoriesOptions.Repositories;
 using backend.CategoriesOptions.Services;
-using backend.Interest;
+using backend.Interest.Repositories;
+using backend.Interest.Services;
 using backend.Language.Repositories;
 using backend.Language.Services;
 using backend.TransportMode.Repositories;
 using backend.TransportMode.Services;
 using backend.TravelStyle.Repositories;
 using backend.TravelStyle.Services;
+using backend.User.Repositories;
+using backend.User.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -125,7 +128,7 @@ using (var scope = app.Services.CreateScope())
     
     if (!db.Users.Any())
     {
-        db.Users.Add(new backend.Models.User
+        db.Users.Add(new User
         {
             Username = "testuser",
             DisplayName = "Test User",

@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using backend.Interest.Services;
+using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Interest;
+namespace backend.Interest.Controllers;
 
 [ApiController]
 [Route("api/interests")]

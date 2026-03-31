@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backend.Models;
 
-namespace backend.Models;
+namespace backend.Trip;
 
 [Table("trip")]
 public class Trip

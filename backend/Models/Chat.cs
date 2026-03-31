@@ -17,7 +17,7 @@ public class Chat
     [Column("id_trip")]
     [ForeignKey(nameof(Trip))]
     public int? IdTrip { get; set; }
-    public Trip? Trip { get; set; }
+    public Trip.Trip? Trip { get; set; }
 
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

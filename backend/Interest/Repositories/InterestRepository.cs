@@ -1,7 +1,7 @@
 ﻿using backend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Interest;
+namespace backend.Interest.Repositories;
 
 public class InterestRepository : IInterestRepository
 {
@@ -12,8 +12,8 @@ public class InterestRepository : IInterestRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Models.Interest>> GetAllAsync() =>
-        await _context.Set<Models.Interest>()
+    public async Task<IEnumerable<Interest>> GetAllAsync() =>
+        await _context.Set<Interest>()
             .AsNoTracking()
             .OrderBy(i => i.IdInterest)
             .ToListAsync();
@@ -24,7 +24,7 @@ public class InterestRepository : IInterestRepository
     public async Task<bool> ExistsByNameAsync(string name) =>
         await _context.Interests.AnyAsync(i => i.InterestName == name);
 
-    public async Task AddAsync(Models.Interest interest)
+    public async Task AddAsync(Interest interest)
     {
         _context.Interests.Add(interest);
         await _context.SaveChangesAsync();

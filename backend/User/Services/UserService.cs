@@ -1,33 +1,25 @@
-﻿using System.Text.Json;
-using backend.DTOs;
-using backend.DTOs.UserDTOs;
-using backend.Models;
+﻿using backend.Interest;
+using backend.Language;
 using backend.Security;
-using backend.User;
+using backend.TransportMode;
+using backend.TravelStyle;
 using backend.User.DTOs;
-using Microsoft.AspNetCore.Http.HttpResults;
+using backend.User.Repositories;
 
-namespace backend.User;
+namespace backend.User.Services;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly PasswordHasher _passwordHasher;
     private readonly JwtService _jwt;
-    private readonly HttpClient _httpClient;
-    private readonly string _apiUrl;
-    private readonly string _apiKey;
 
     public UserService(IUserRepository userRepository, PasswordHasher passwordHasher, 
-        JwtService jwt, HttpClient httpClient, IConfiguration configuration)
+        JwtService jwt)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
         _jwt = jwt;
-        _httpClient = httpClient;
-        
-        _apiUrl = configuration["ExternalApi:LanguagesApiUrl"]!;
-        _apiKey = configuration["ExternalApi:ApiKey"]!;
     }
 
 
@@ -84,7 +76,7 @@ public class UserService : IUserService
         if (await _userRepository.ValidateGender(dto.GenderId))
             throw new Exception("Invalid gender option.");
         
-        var user = new backend.Models.User
+        var user = new User
         {
             IdUser = dto.IdUser,
             Username = dto.Username,
@@ -223,7 +215,7 @@ public class UserService : IUserService
         if (dto.Password.Length < 8)
             return RegisterResult.Fail("Hasło musi mieć co najmniej 8 znaków.");
 
-        var user = new backend.Models.User
+        var user = new User
         {
             Username = dto.Username.Trim(),
             DisplayName = dto.DisplayName.Trim(),

@@ -1,4 +1,4 @@
-﻿namespace backend.User;
+﻿namespace backend.User.Services;
 
 public interface IEmailVerificationService
 {

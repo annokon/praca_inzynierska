@@ -1,5 +1,9 @@
 ﻿using backend.Models;
 using backend.CategoriesOptions.Models;
+using backend.Interest;
+using backend.Language;
+using backend.TransportMode;
+using backend.TravelStyle;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Infrastructure.Data;
@@ -10,10 +14,10 @@ public class DataContext : DbContext
     {
     }
 
-    public DbSet<Models.User> Users => Set<Models.User>();
+    public DbSet<User.User> Users => Set<User.User>();
     public DbSet<Language.Language> Languages => Set<Language.Language>();
     public DbSet<UserLanguage> UserLanguages => Set<UserLanguage>();
-    public DbSet<Models.Interest> Interests => Set<Models.Interest>();
+    public DbSet<Interest.Interest> Interests => Set<Interest.Interest>();
     public DbSet<GenderOption> GenderOptions => Set<GenderOption>();
     public DbSet<PronounOption> PronounOptions => Set<PronounOption>();
     public DbSet<PersonalityTypeOption> PersonalityTypeOptions => Set<PersonalityTypeOption>();

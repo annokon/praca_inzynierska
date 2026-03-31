@@ -14,14 +14,14 @@ public class TripPhoto
     [Required]
     [ForeignKey(nameof(Trip))]
     public int IdTrip { get; set; }
-    public Trip Trip { get; set; } = null!;
+    public Trip.Trip Trip { get; set; } = null!;
 
     //user that added photo
     [Column("uploaded_by")]
     [Required]
     [ForeignKey(nameof(UploadedByUser))]
     public int UploadedBy { get; set; }
-    public User UploadedByUser { get; set; } = null!;
+    public User.User UploadedByUser { get; set; } = null!;
 
     [Column("photo_path")]
     [Required]

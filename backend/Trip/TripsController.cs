@@ -1,5 +1,4 @@
-﻿using backend.DTOs;
-using backend.Trip.DTOs;
+﻿using backend.Trip.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Trip;

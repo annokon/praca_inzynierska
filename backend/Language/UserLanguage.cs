@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace backend.Models;
+namespace backend.Language;
 
 [Table("user_language")]
 public class UserLanguage
@@ -10,11 +10,11 @@ public class UserLanguage
     [Required]
     [ForeignKey(nameof(Language))]
     public int IdLanguage { get; set; }
-    public Language.Language Language { get; set; } = null!;
+    public Language Language { get; set; } = null!;
 
     [Column("id_user")]
     [Required]
     [ForeignKey(nameof(User))]
     public int IdUser { get; set; }
-    public User User { get; set; } = null!;
+    public User.User User { get; set; } = null!;
 }

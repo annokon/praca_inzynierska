@@ -1,6 +1,6 @@
 ﻿using backend.Interest.DTOs;
 
-namespace backend.Interest;
+namespace backend.Interest.Services;
 
 public interface IInterestService
 {

@@ -17,16 +17,16 @@ public class Review
     
     
     [ForeignKey(nameof(IdUserReviewer))]
-    [InverseProperty(nameof(User.ReviewsWritten))]
-    public User Reviewer { get; set; } = null!;
+    [InverseProperty(nameof(User.User.ReviewsWritten))]
+    public User.User Reviewer { get; set; } = null!;
     
     [Column("id_user_reviewed")]
     [ForeignKey(nameof(ReviewedUser))]
     public int? IdUserReviewed { get; set; }
     
     [ForeignKey(nameof(IdUserReviewed))]
-    [InverseProperty(nameof(User.ReviewsReceived))]
-    public User ReviewedUser { get; set; } = null!;
+    [InverseProperty(nameof(User.User.ReviewsReceived))]
+    public User.User ReviewedUser { get; set; } = null!;
 
     [Column("rating")]
     [Range(1, 10)]

@@ -1,7 +1,8 @@
 ﻿using backend.User.DTOs;
+using backend.User.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.User;
+namespace backend.User.Controllers;
 
 [ApiController]
 [Route("api/email")]

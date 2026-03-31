@@ -13,7 +13,7 @@ public class SearchFilter
     [Column("id_user")]
     [ForeignKey(nameof(User))]
     public int? IdUser { get; set; }
-    public User User { get; set; } = null!;
+    public User.User User { get; set; } = null!;
 
     [Column("name_search_filter")]
     [Required]

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace backend.Models;
+namespace backend.TransportMode;
 
 [Table("user_transport_mode")]
 public class UserTransportMode
@@ -10,11 +10,11 @@ public class UserTransportMode
     [Required]
     [ForeignKey(nameof(TransportMode))]
     public int IdTransportMode { get; set; }
-    public TransportMode.TransportMode TransportMode { get; set; } = null!;
+    public TransportMode TransportMode { get; set; } = null!;
 
     [Column("id_user")]
     [Required]
     [ForeignKey(nameof(User))]
     public int IdUser { get; set; }
-    public User User { get; set; } = null!;
+    public User.User User { get; set; } = null!;
 }

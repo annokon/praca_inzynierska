@@ -16,12 +16,12 @@ public class Favourite
     public int? IdUser { get; set; }
     
     [InverseProperty(nameof(User.FavouritesGiven))]
-    public User User { get; set; } = null!;
+    public User.User User { get; set; } = null!;
 
     // user added to favourites
     [Column("id_user_favourite")]
     [ForeignKey(nameof(FavouriteUser))]
     public int? IdUserFavourite { get; set; }
     [InverseProperty(nameof(User.FavouritesReceived))]
-    public User FavouriteUser { get; set; } = null!;
+    public User.User FavouriteUser { get; set; } = null!;
 }
