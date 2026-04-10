@@ -9,7 +9,7 @@ export default function SettingsProfile() {
         {
             key: "main",
             items: [
-                { key: "edit", label: "Edytuj dane", onClick: () => navigate("/settings-change-data") },
+                { key: "edit", label: "Edytuj dane", onClick: () => navigate("/settings-edit-data") },
                 { key: "look", label: "Zmień wygląd profilu", onClick: () => navigate("/settings-appearance") },
                 { key: "lang", label: "Zmień język", onClick: () => navigate("/settings-language") },
                 { key: "currency", label: "Zmień walutę", onClick: () => navigate("/settings-currency") },

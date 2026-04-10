@@ -17,10 +17,14 @@ import TripsFavFilters from "./views/TripsFavFilters";
 import SettingsChangeAdditionalnfo from "./views/Settings/SettingsChangeAdditionalInfo/SettingsChangeAdditionalnfo";
 import RequireAuth from "./routing/RequireAuth";
 import SettingsProfile from "./views/Settings/SettingsProfile/SettingsProfile";
-import SettingsChangeData from "./views/Settings/SettingsChangeData/SettingsChangeData";
+import SettingsEditData from "./views/Settings/SettingsEditData/SettingsEditData";
 import SettingsAppearance from "./views/Settings/SettingsProfile/SettingsAppearance";
 import SettingsCurrency from "./views/Settings/SettingsProfile/SettingsCurrency";
-import SettingsEditUsername from "./views/Settings/SettingsChangeData/SettingsChangeUsername";
+import SettingsEditUsername from "./views/Settings/SettingsEditData/SettingsEditUsername";
+import SettingsEditDisplayName from "./views/Settings/SettingsEditData/SettingsEditDisplayName";
+import SettingsEditBirthDate from "./views/Settings/SettingsEditData/SettingsEditBirthdate";
+import SettingsEditLanguages from "./views/Settings/SettingsEditData/SettingsEditLanguages";
+import SettingsEditGender from "./views/Settings/SettingsEditData/SettingsEditGender";
 
 function App() {
     return (
@@ -45,11 +49,15 @@ function App() {
                     <Route path="/fav-filters" element={<TripsFavFilters />} />
                     <Route element={<RequireAuth />}>
                         <Route path="/settings-profile" element={<SettingsProfile />} />
-                        <Route path="/settings-change-data" element={<SettingsChangeData />} />
+                        <Route path="/settings-edit-data" element={<SettingsEditData />} />
                         <Route path="/settings-info" element={<SettingsChangeAdditionalnfo />} />
                         <Route path="/settings-appearance" element={<SettingsAppearance />} />
                         <Route path="/settings-currency" element={<SettingsCurrency />} />
                         <Route path="/settings-edit-username" element={<SettingsEditUsername />} />
+                        <Route path="/settings-edit-display-name" element={<SettingsEditDisplayName />} />
+                        <Route path="/settings-edit-birthdate" element={<SettingsEditBirthDate />} />
+                        <Route path="/settings-edit-languages" element={<SettingsEditLanguages />} />
+                        <Route path="/settings-edit-gender" element={<SettingsEditGender />} />
                     </Route>
                 </Routes>
             </BrowserRouter>

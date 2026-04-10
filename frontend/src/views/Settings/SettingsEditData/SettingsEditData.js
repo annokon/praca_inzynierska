@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Settings from "../Settings";
 
-export default function SettingsChangeData() {
+export default function SettingsEditData() {
     const navigate = useNavigate();
 
     const items = [
