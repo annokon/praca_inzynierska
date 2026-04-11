@@ -4,12 +4,39 @@ import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
 import "../../../css/login_register.css";
 
-function getUserLanguageIds(user) {
+function getUserLanguageIds(user, allLanguages) {
     if (!user) return [];
 
     if (Array.isArray(user.languages)) {
         return user.languages
-            .map((lang) => lang.id ?? lang.languageId)
+            .map((lang) => {
+                if (typeof lang === "number") {
+                    return lang;
+                }
+
+                if (typeof lang === "string") {
+                    const matched = allLanguages.find(
+                        (option) =>
+                            option.name.trim().toLowerCase() === lang.trim().toLowerCase()
+                    );
+                    return matched?.id;
+                }
+
+                if (typeof lang === "object" && lang !== null) {
+                    if (lang.id != null) return lang.id;
+                    if (lang.languageId != null) return lang.languageId;
+
+                    if (lang.name) {
+                        const matched = allLanguages.find(
+                            (option) =>
+                                option.name.trim().toLowerCase() === lang.name.trim().toLowerCase()
+                        );
+                        return matched?.id;
+                    }
+                }
+
+                return null;
+            })
             .filter(Boolean);
     }
 
@@ -63,12 +90,12 @@ export default function SettingsEditLanguages() {
     }, []);
 
     useEffect(() => {
-        if (!user) return;
+        if (!user || allLanguages.length === 0) return;
 
-        const ids = getUserLanguageIds(user);
+        const ids = getUserLanguageIds(user, allLanguages);
         setInitialLanguageIds(ids);
         setSelectedLanguages(ids);
-    }, [user]);
+    }, [user, allLanguages]);
 
     const currentLanguages = useMemo(() => {
         return allLanguages.filter(
@@ -166,13 +193,6 @@ export default function SettingsEditLanguages() {
     const handleRemove = async () => {
         setStatus("");
 
-        const userId = user?.id || localStorage.getItem("userId");
-
-        if (!userId) {
-            setStatus("Nie udało się pobrać ID użytkownika.");
-            return;
-        }
-
         if (selectedLanguages.length === 0) {
             setStatus("Nie masz ustawionych języków.");
             return;
@@ -181,7 +201,7 @@ export default function SettingsEditLanguages() {
         try {
             setStatus("Usuwanie...");
 
-            const res = await fetch(`http://localhost:5292/api/users/me`, {
+            const res = await fetch(`http://localhost:5292/api/users/languages`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
