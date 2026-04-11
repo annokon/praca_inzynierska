@@ -22,7 +22,7 @@ import SettingsAppearance from "./views/Settings/SettingsProfile/SettingsAppeara
 import SettingsCurrency from "./views/Settings/SettingsProfile/SettingsCurrency";
 import SettingsEditUsername from "./views/Settings/SettingsEditData/SettingsEditUsername";
 import SettingsEditDisplayName from "./views/Settings/SettingsEditData/SettingsEditDisplayName";
-import SettingsEditBirthDate from "./views/Settings/SettingsEditData/SettingsEditBirthdate";
+import SettingsEditBirthDate from "./views/Settings/SettingsEditData/SettingsEditBirthDate";
 import SettingsEditLanguages from "./views/Settings/SettingsEditData/SettingsEditLanguages";
 import SettingsEditGender from "./views/Settings/SettingsEditData/SettingsEditGender";
 import SettingsEditPronouns from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditPronouns";
