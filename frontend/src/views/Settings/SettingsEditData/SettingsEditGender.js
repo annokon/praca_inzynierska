@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
@@ -8,19 +8,35 @@ export default function SettingsEditGender() {
     const { user, setUser, loading } = useContext(AuthContext);
 
     const [genderOptions, setGenderOptions] = useState([]);
-    const [selectedGender, setSelectedGender] = useState("");
+    const [selectedGenderId, setSelectedGenderId] = useState("");
     const [status, setStatus] = useState("");
-    const [selectionInitialized, setSelectionInitialized] = useState(false);
-
-    const currentGenderId =
-        user?.genderId ??
-        user?.gender?.id ??
-        "";
+    const [initialized, setInitialized] = useState(false);
 
     const currentGenderName =
-        user?.gender?.name ??
-        user?.genderName ??
-        "";
+        typeof user?.gender === "string"
+            ? user.gender
+            : user?.gender?.name || "";
+
+    const initialGenderId = useMemo(() => {
+        if (!user || genderOptions.length === 0) return "";
+
+        if (user?.gender?.id != null) {
+            return String(user.gender.id);
+        }
+
+        const genderName =
+            typeof user?.gender === "string"
+                ? user.gender
+                : user?.gender?.name;
+
+        if (!genderName) return "";
+
+        const matched = genderOptions.find(
+            (option) => option.name.trim().toLowerCase() === genderName.trim().toLowerCase()
+        );
+
+        return matched ? String(matched.id) : "";
+    }, [user, genderOptions]);
 
     useEffect(() => {
         const fetchOptions = async () => {
@@ -47,11 +63,47 @@ export default function SettingsEditGender() {
     }, []);
 
     useEffect(() => {
-        if (selectionInitialized) return;
+        if (!user || genderOptions.length === 0 || initialized) return;
 
-        setSelectedGender(currentGenderId ? String(currentGenderId) : "");
-        setSelectionInitialized(true);
-    }, [currentGenderId, selectionInitialized]);
+        if (user?.gender?.id) {
+            setSelectedGenderId(String(user.gender.id));
+            setInitialized(true);
+            return;
+        }
+
+        const genderName =
+            typeof user?.gender === "string"
+                ? user.gender
+                : user?.gender?.name;
+
+        if (genderName) {
+            const matchedOption = genderOptions.find(
+                (option) => option.name.trim().toLowerCase() === genderName.trim().toLowerCase()
+            );
+
+            if (matchedOption) {
+                setSelectedGenderId(String(matchedOption.id));
+                setInitialized(true);
+                return;
+            }
+        }
+
+        setSelectedGenderId(String(genderOptions[0].id));
+        setInitialized(true);
+    }, [user, genderOptions, initialized]);
+
+    const refreshUser = async () => {
+        const meRes = await fetch("http://localhost:5292/api/users/me", {
+            credentials: "include"
+        });
+
+        if (!meRes.ok) {
+            throw new Error("Nie udało się odświeżyć danych użytkownika.");
+        }
+
+        const meData = await meRes.json();
+        setUser(meData);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -65,38 +117,55 @@ export default function SettingsEditGender() {
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    genderId: selectedGender ? Number(selectedGender) : null
+                    genderId: selectedGenderId ? Number(selectedGenderId) : null
                 })
             });
 
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
+                console.error("Błąd zapisu płci:", res.status, data);
                 setStatus(data.message || "Nie udało się zmienić płci.");
                 return;
             }
 
-            const selectedOption = genderOptions.find(
-                (option) => String(option.id) === String(selectedGender)
-            );
+            await refreshUser();
+            navigate(-1);
+        } catch (err) {
+            console.error(err);
+            setStatus("Wystąpił błąd połączenia z serwerem.");
+        }
+    };
 
-            if (data && Object.keys(data).length > 0) {
-                setUser(data);
-            } else {
-                setUser((prev) =>
-                    prev
-                        ? {
-                            ...prev,
-                            genderId: selectedGender ? Number(selectedGender) : null,
-                            gender: selectedOption
-                                ? { id: selectedOption.id, name: selectedOption.name }
-                                : null,
-                            genderName: selectedOption ? selectedOption.name : null
-                        }
-                        : prev
-                );
+    const handleRemove = async () => {
+        setStatus("");
+
+        if (!initialGenderId) {
+            setStatus("Nie masz ustawionej płci.");
+            return;
+        }
+
+        try {
+            setStatus("Usuwanie...");
+
+            const res = await fetch("http://localhost:5292/api/users/gender", {
+                method: "PUT",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    genderId: null
+                })
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                console.error("Błąd usuwania płci:", res.status, data);
+                setStatus(data.message || "Nie udało się usunąć płci.");
+                return;
             }
 
+            await refreshUser();
             navigate(-1);
         } catch (err) {
             console.error(err);
@@ -127,13 +196,12 @@ export default function SettingsEditGender() {
                             </label>
                             <select
                                 id="gender"
-                                value={selectedGender}
+                                value={selectedGenderId}
                                 className="form-input"
-                                onChange={(e) => setSelectedGender(e.target.value)}
+                                onChange={(e) => setSelectedGenderId(e.target.value)}
                             >
-                                <option value="">Select</option>
                                 {genderOptions.map((g) => (
-                                    <option key={g.id} value={g.id}>
+                                    <option key={g.id} value={String(g.id)}>
                                         {g.name}
                                     </option>
                                 ))}
@@ -151,9 +219,18 @@ export default function SettingsEditGender() {
                         </button>
 
                         <button
+                            type="button"
+                            className="settings-btn settings-btn--ghost"
+                            onClick={handleRemove}
+                            disabled={loading}
+                        >
+                            Usuń
+                        </button>
+
+                        <button
                             type="submit"
                             className="settings-btn settings-btn--primary"
-                            disabled={loading}
+                            disabled={loading || !initialized}
                         >
                             Zatwierdź
                         </button>

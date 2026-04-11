@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
@@ -7,7 +7,9 @@ export default function SettingsEditBirthDate() {
     const navigate = useNavigate();
     const { user, setUser, loading } = useContext(AuthContext);
 
+    const [newBirthDate, setNewBirthDate] = useState("");
     const [status, setStatus] = useState("");
+    const [initialized, setInitialized] = useState(false);
 
     const currentBirthDate = user?.birthDate || "";
 
@@ -40,8 +42,30 @@ export default function SettingsEditBirthDate() {
         return `${day}.${month}.${year}`;
     };
 
-    const initialBirthDate = formatBirthDate(currentBirthDate, "input");
-    const [newBirthDate, setNewBirthDate] = useState(initialBirthDate);
+    const initialBirthDate = useMemo(() => {
+        return formatBirthDate(currentBirthDate, "input");
+    }, [currentBirthDate]);
+
+    useEffect(() => {
+        if (initialized) return;
+        if (loading) return;
+
+        setNewBirthDate(initialBirthDate);
+        setInitialized(true);
+    }, [initialBirthDate, initialized, loading]);
+
+    const refreshUser = async () => {
+        const meRes = await fetch("http://localhost:5292/api/users/me", {
+            credentials: "include"
+        });
+
+        if (!meRes.ok) {
+            throw new Error("Nie udało się odświeżyć danych użytkownika.");
+        }
+
+        const meData = await meRes.json();
+        setUser(meData);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -55,7 +79,7 @@ export default function SettingsEditBirthDate() {
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/birth-date", {
+            const res = await fetch("http://localhost:5292/api/users/birthdate", {
                 method: "PUT",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -67,18 +91,15 @@ export default function SettingsEditBirthDate() {
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
+                console.error("Błąd zapisu daty urodzenia:", res.status, data);
                 setStatus(data.message || "Nie udało się zmienić daty urodzenia.");
                 return;
             }
 
-            if (data) {
-                setUser(data);
-            } else {
-                setUser((prev) => (prev ? { ...prev, birthDate: newBirthDate } : prev));
-            }
-
+            await refreshUser();
             navigate(-1);
         } catch (err) {
+            console.error(err);
             setStatus("Wystąpił błąd połączenia z serwerem.");
         }
     };
@@ -130,7 +151,7 @@ export default function SettingsEditBirthDate() {
                         <button
                             type="submit"
                             className="settings-btn settings-btn--primary"
-                            disabled={loading}
+                            disabled={loading || !initialized}
                         >
                             Zatwierdź
                         </button>
