@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
@@ -8,18 +8,35 @@ export default function SettingsEditSmoking() {
     const { user, setUser, loading } = useContext(AuthContext);
 
     const [smokingOptions, setSmokingOptions] = useState([]);
-    const [smokingAttitude, setSmokingAttitude] = useState("");
+    const [selectedSmokingId, setSelectedSmokingId] = useState("");
     const [status, setStatus] = useState("");
-
-    const currentSmokingId =
-        user?.smokingPreferenceId ??
-        user?.smokingPreference?.id ??
-        "";
+    const [initialized, setInitialized] = useState(false);
 
     const currentSmokingName =
-        user?.smokingPreference?.name ??
-        user?.smokingPreferenceName ??
-        "";
+        typeof user?.smoking === "string"
+            ? user.smoking
+            : user?.smoking?.name || "";
+
+    const initialSmokingId = useMemo(() => {
+        if (!user || smokingOptions.length === 0) return "";
+
+        if (user?.smoking?.id != null) {
+            return String(user.smoking.id);
+        }
+
+        const smokingName =
+            typeof user?.smoking === "string"
+                ? user.smoking
+                : user?.smoking?.name;
+
+        if (!smokingName) return "";
+
+        const matched = smokingOptions.find(
+            (option) => option.name.trim().toLowerCase() === smokingName.trim().toLowerCase()
+        );
+
+        return matched ? String(matched.id) : "";
+    }, [user, smokingOptions]);
 
     useEffect(() => {
         const fetchOptions = async () => {
@@ -36,7 +53,6 @@ export default function SettingsEditSmoking() {
 
                 const data = await res.json();
                 setSmokingOptions(data.smoking || []);
-                setSmokingAttitude(currentSmokingId ? String(currentSmokingId) : "");
             } catch (err) {
                 console.error("Błąd ładowania stosunku do papierosów:", err);
                 setStatus("Nie udało się pobrać listy opcji.");
@@ -44,7 +60,53 @@ export default function SettingsEditSmoking() {
         };
 
         fetchOptions();
-    }, [currentSmokingId]);
+    }, []);
+
+    useEffect(() => {
+        if (!user || smokingOptions.length === 0 || initialized) return;
+
+        if (user?.smoking?.id) {
+            setSelectedSmokingId(String(user.smoking.id));
+            setInitialized(true);
+            return;
+        }
+
+        const smokingName =
+            typeof user?.smoking === "string"
+                ? user.smoking
+                : user?.smoking?.name;
+
+        if (smokingName) {
+            const matchedOption = smokingOptions.find(
+                (option) => option.name.trim().toLowerCase() === smokingName.trim().toLowerCase()
+            );
+
+            if (matchedOption) {
+                setSelectedSmokingId(String(matchedOption.id));
+                setInitialized(true);
+                return;
+            }
+        }
+
+        if (smokingOptions.length > 0) {
+            setSelectedSmokingId(String(smokingOptions[0].id));
+        }
+
+        setInitialized(true);
+    }, [user, smokingOptions, initialized]);
+
+    const refreshUser = async () => {
+        const meRes = await fetch("http://localhost:5292/api/users/me", {
+            credentials: "include"
+        });
+
+        if (!meRes.ok) {
+            throw new Error("Nie udało się odświeżyć danych użytkownika.");
+        }
+
+        const meData = await meRes.json();
+        setUser(meData);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -58,38 +120,19 @@ export default function SettingsEditSmoking() {
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    smokingPreferenceId: smokingAttitude ? Number(smokingAttitude) : null
+                    smokingId: selectedSmokingId ? Number(selectedSmokingId) : null
                 })
             });
 
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
+                console.error("Błąd zapisu stosunku do papierosów:", res.status, data);
                 setStatus(data.message || "Nie udało się zmienić stosunku do papierosów.");
                 return;
             }
 
-            const selectedOption = smokingOptions.find(
-                (option) => String(option.id) === String(smokingAttitude)
-            );
-
-            if (data && Object.keys(data).length > 0) {
-                setUser(data);
-            } else {
-                setUser((prev) =>
-                    prev
-                        ? {
-                            ...prev,
-                            smokingPreferenceId: smokingAttitude ? Number(smokingAttitude) : null,
-                            smokingPreference: selectedOption
-                                ? { id: selectedOption.id, name: selectedOption.name }
-                                : null,
-                            smokingPreferenceName: selectedOption ? selectedOption.name : null
-                        }
-                        : prev
-                );
-            }
-
+            await refreshUser();
             navigate(-1);
         } catch (err) {
             console.error(err);
@@ -100,11 +143,6 @@ export default function SettingsEditSmoking() {
     const handleRemove = async () => {
         setStatus("");
 
-        if (!currentSmokingId) {
-            setStatus("Nie masz ustawionego stosunku do papierosów.");
-            return;
-        }
-
         try {
             setStatus("Usuwanie...");
 
@@ -113,32 +151,19 @@ export default function SettingsEditSmoking() {
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    smokingPreferenceId: null
+                    smokingId: null
                 })
             });
 
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
+                console.error("Błąd usuwania stosunku do papierosów:", res.status, data);
                 setStatus(data.message || "Nie udało się usunąć stosunku do papierosów.");
                 return;
             }
 
-            if (data && Object.keys(data).length > 0) {
-                setUser(data);
-            } else {
-                setUser((prev) =>
-                    prev
-                        ? {
-                            ...prev,
-                            smokingPreferenceId: null,
-                            smokingPreference: null,
-                            smokingPreferenceName: null
-                        }
-                        : prev
-                );
-            }
-
+            await refreshUser();
             navigate(-1);
         } catch (err) {
             console.error(err);
@@ -169,13 +194,12 @@ export default function SettingsEditSmoking() {
                             </label>
                             <select
                                 id="smokingAttitude"
-                                value={smokingAttitude}
+                                value={selectedSmokingId}
                                 className="form-input"
-                                onChange={(e) => setSmokingAttitude(e.target.value)}
+                                onChange={(e) => setSelectedSmokingId(e.target.value)}
                             >
-                                <option value="">Select</option>
                                 {smokingOptions.map((s) => (
-                                    <option key={s.id} value={s.id}>
+                                    <option key={s.id} value={String(s.id)}>
                                         {s.name}
                                     </option>
                                 ))}
@@ -204,7 +228,7 @@ export default function SettingsEditSmoking() {
                         <button
                             type="submit"
                             className="settings-btn settings-btn--primary"
-                            disabled={loading}
+                            disabled={loading || !initialized}
                         >
                             Zatwierdź
                         </button>
