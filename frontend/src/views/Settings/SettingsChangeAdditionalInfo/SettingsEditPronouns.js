@@ -51,11 +51,6 @@ export default function SettingsEditPronouns() {
         e.preventDefault();
         setStatus("");
 
-        if (String(pronoun) === String(currentPronounsId || "")) {
-            setStatus("Nowe zaimki są takie same jak obecne.");
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 

@@ -50,11 +50,6 @@ export default function SettingsEditDrivingLicense() {
         e.preventDefault();
         setStatus("");
 
-        if (String(drivingLicense) === String(currentDrivingId || "")) {
-            setStatus("Nowe prawo jazdy jest takie samo jak obecne.");
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 

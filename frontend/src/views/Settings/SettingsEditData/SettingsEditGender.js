@@ -57,11 +57,6 @@ export default function SettingsEditGender() {
         e.preventDefault();
         setStatus("");
 
-        if (selectedGender === String(currentGenderId || "")) {
-            setStatus("Nowa płeć jest taka sama jak obecna.");
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 

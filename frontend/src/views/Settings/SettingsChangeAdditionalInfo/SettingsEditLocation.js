@@ -56,11 +56,6 @@ export default function SettingsEditLocation() {
             return;
         }
 
-        if (selectedLocation.value.name === currentLocation) {
-            setStatus("Nowe miejsce zamieszkania jest takie samo jak obecne.");
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 

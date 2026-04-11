@@ -52,11 +52,6 @@ export default function SettingsEditTravelStyle() {
         e.preventDefault();
         setStatus("");
 
-        if (String(travelStyle) === String(currentTravelStyleId || "")) {
-            setStatus("Nowy preferowany styl podróżowania jest taki sam jak obecny.");
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 

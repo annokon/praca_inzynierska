@@ -26,11 +26,6 @@ export default function SettingsEditAboutMe() {
         e.preventDefault();
         setStatus("");
 
-        if (aboutMe.trim() === currentAboutMe.trim()) {
-            setStatus('Opis jest taki sam jak obecny.');
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 
@@ -73,11 +68,6 @@ export default function SettingsEditAboutMe() {
 
     const handleRemove = async () => {
         setStatus("");
-
-        if (!currentAboutMe) {
-            setStatus('Nie masz jeszcze ustawionej sekcji "o mnie".');
-            return;
-        }
 
         try {
             setStatus("Usuwanie...");

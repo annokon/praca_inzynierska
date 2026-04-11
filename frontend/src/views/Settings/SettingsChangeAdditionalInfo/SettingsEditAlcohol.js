@@ -50,11 +50,6 @@ export default function SettingsEditAlcohol() {
         e.preventDefault();
         setStatus("");
 
-        if (String(alcoholAttitude) === String(currentAlcoholId || "")) {
-            setStatus("Nowy stosunek do alkoholu jest taki sam jak obecny.");
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 

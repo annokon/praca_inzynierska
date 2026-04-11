@@ -51,11 +51,6 @@ export default function SettingsEditPersonality() {
         e.preventDefault();
         setStatus("");
 
-        if (String(personalityType) === String(currentPersonalityId || "")) {
-            setStatus("Nowa osobowość jest taka sama jak obecna.");
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 

@@ -23,11 +23,6 @@ export default function SettingsEditUsername() {
             return;
         }
 
-        // if (trimmedUsername === currentUsername) {
-        //     setStatus("Nowa nazwa użytkownika jest taka sama jak obecna.");
-        //     return;
-        // }
-
         try {
             setStatus("Zapisywanie...");
 

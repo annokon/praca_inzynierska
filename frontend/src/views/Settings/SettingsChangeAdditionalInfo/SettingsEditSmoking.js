@@ -50,11 +50,6 @@ export default function SettingsEditSmoking() {
         e.preventDefault();
         setStatus("");
 
-        if (String(smokingAttitude) === String(currentSmokingId || "")) {
-            setStatus("Nowy stosunek do papierosów jest taki sam jak obecny.");
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 
