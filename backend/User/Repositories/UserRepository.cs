@@ -122,5 +122,10 @@ public class UserRepository : IUserRepository
 
             .FirstOrDefaultAsync(u => u.IdUser == id);
     }
+    
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
 
 }

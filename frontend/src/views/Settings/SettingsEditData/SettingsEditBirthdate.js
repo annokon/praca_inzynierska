@@ -52,10 +52,10 @@ export default function SettingsEditBirthDate() {
             return;
         }
 
-        if (newBirthDate === initialBirthDate) {
-            setStatus("Nowa data urodzenia jest taka sama jak obecna.");
-            return;
-        }
+        // if (newBirthDate === initialBirthDate) {
+        //     setStatus("Nowa data urodzenia jest taka sama jak obecna.");
+        //     return;
+        // }
 
         try {
             setStatus("Zapisywanie...");
