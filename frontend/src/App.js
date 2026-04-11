@@ -74,7 +74,7 @@ function App() {
                         <Route path="/settings-alcohol" element={<SettingsEditAlcohol />} />
                         <Route path="/settings-smoking" element={<SettingsEditSmoking />} />
                         <Route path="/settings-driving-license" element={<SettingsEditDrivingLicense />} />
-                        <Route path="/settings/travel-style" element={<SettingsEditTravelStyle />} />
+                        <Route path="/settings-travel-style" element={<SettingsEditTravelStyle />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
