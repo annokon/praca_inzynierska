@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
@@ -9,18 +9,35 @@ export default function SettingsEditPersonality() {
     const { user, setUser, loading } = useContext(AuthContext);
 
     const [personalityOptions, setPersonalityOptions] = useState([]);
-    const [personalityType, setPersonalityType] = useState("");
+    const [selectedPersonalityId, setSelectedPersonalityId] = useState("");
     const [status, setStatus] = useState("");
-
-    const currentPersonalityId =
-        user?.personalityTypeId ??
-        user?.personalityType?.id ??
-        "";
+    const [initialized, setInitialized] = useState(false);
 
     const currentPersonalityName =
-        user?.personalityType?.name ??
-        user?.personalityTypeName ??
-        "";
+        typeof user?.personality === "string"
+            ? user.personality
+            : user?.personality?.name || "";
+
+    const initialPersonalityId = useMemo(() => {
+        if (!user || personalityOptions.length === 0) return "";
+
+        if (user?.personality?.id != null) {
+            return String(user.personality.id);
+        }
+
+        const personalityName =
+            typeof user?.personality === "string"
+                ? user.personality
+                : user?.personality?.name;
+
+        if (!personalityName) return "";
+
+        const matched = personalityOptions.find(
+            (option) => option.name.trim().toLowerCase() === personalityName.trim().toLowerCase()
+        );
+
+        return matched ? String(matched.id) : "";
+    }, [user, personalityOptions]);
 
     useEffect(() => {
         const fetchOptions = async () => {
@@ -37,7 +54,6 @@ export default function SettingsEditPersonality() {
 
                 const data = await res.json();
                 setPersonalityOptions(data.personalities || []);
-                setPersonalityType(currentPersonalityId ? String(currentPersonalityId) : "");
             } catch (err) {
                 console.error("Błąd ładowania typów osobowości:", err);
                 setStatus("Nie udało się pobrać listy typów osobowości.");
@@ -45,7 +61,53 @@ export default function SettingsEditPersonality() {
         };
 
         fetchOptions();
-    }, [currentPersonalityId]);
+    }, []);
+
+    useEffect(() => {
+        if (!user || personalityOptions.length === 0 || initialized) return;
+
+        if (user?.personality?.id) {
+            setSelectedPersonalityId(String(user.personality.id));
+            setInitialized(true);
+            return;
+        }
+
+        const personalityName =
+            typeof user?.personality === "string"
+                ? user.personality
+                : user?.personality?.name;
+
+        if (personalityName) {
+            const matchedOption = personalityOptions.find(
+                (option) => option.name.trim().toLowerCase() === personalityName.trim().toLowerCase()
+            );
+
+            if (matchedOption) {
+                setSelectedPersonalityId(String(matchedOption.id));
+                setInitialized(true);
+                return;
+            }
+        }
+
+        if (personalityOptions.length > 0) {
+            setSelectedPersonalityId(String(personalityOptions[0].id));
+        }
+
+        setInitialized(true);
+    }, [user, personalityOptions, initialized]);
+
+    const refreshUser = async () => {
+        const meRes = await fetch("http://localhost:5292/api/users/me", {
+            credentials: "include"
+        });
+
+        if (!meRes.ok) {
+            throw new Error("Nie udało się odświeżyć danych użytkownika.");
+        }
+
+        const meData = await meRes.json();
+        setUser(meData);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -54,43 +116,24 @@ export default function SettingsEditPersonality() {
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/personality-type", {
+            const res = await fetch("http://localhost:5292/api/users/personalitytype", {
                 method: "PUT",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    personalityTypeId: personalityType ? Number(personalityType) : null
+                    personalityId: selectedPersonalityId ? Number(selectedPersonalityId) : null
                 })
             });
 
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
+                console.error("Błąd zapisu osobowości:", res.status, data);
                 setStatus(data.message || "Nie udało się zmienić osobowości.");
                 return;
             }
 
-            const selectedOption = personalityOptions.find(
-                (option) => String(option.id) === String(personalityType)
-            );
-
-            if (data && Object.keys(data).length > 0) {
-                setUser(data);
-            } else {
-                setUser((prev) =>
-                    prev
-                        ? {
-                            ...prev,
-                            personalityTypeId: personalityType ? Number(personalityType) : null,
-                            personalityType: selectedOption
-                                ? { id: selectedOption.id, name: selectedOption.name }
-                                : null,
-                            personalityTypeName: selectedOption ? selectedOption.name : null
-                        }
-                        : prev
-                );
-            }
-
+            await refreshUser();
             navigate(-1);
         } catch (err) {
             console.error(err);
@@ -101,45 +144,27 @@ export default function SettingsEditPersonality() {
     const handleRemove = async () => {
         setStatus("");
 
-        if (!currentPersonalityId) {
-            setStatus("Nie masz ustawionej osobowości.");
-            return;
-        }
-
         try {
             setStatus("Usuwanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/personality-type", {
+            const res = await fetch("http://localhost:5292/api/users/personalitytype", {
                 method: "PUT",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    personalityTypeId: null
+                    personalityId: null
                 })
             });
 
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
+                console.error("Błąd usuwania osobowości:", res.status, data);
                 setStatus(data.message || "Nie udało się usunąć osobowości.");
                 return;
             }
 
-            if (data && Object.keys(data).length > 0) {
-                setUser(data);
-            } else {
-                setUser((prev) =>
-                    prev
-                        ? {
-                            ...prev,
-                            personalityTypeId: null,
-                            personalityType: null,
-                            personalityTypeName: null
-                        }
-                        : prev
-                );
-            }
-
+            await refreshUser();
             navigate(-1);
         } catch (err) {
             console.error(err);
@@ -170,13 +195,12 @@ export default function SettingsEditPersonality() {
                             </label>
                             <select
                                 id="personalityType"
-                                value={personalityType}
+                                value={selectedPersonalityId}
                                 className="form-input"
-                                onChange={(e) => setPersonalityType(e.target.value)}
+                                onChange={(e) => setSelectedPersonalityId(e.target.value)}
                             >
-                                <option value="">Select</option>
                                 {personalityOptions.map((p) => (
-                                    <option key={p.id} value={p.id}>
+                                    <option key={p.id} value={String(p.id)}>
                                         {p.name}
                                     </option>
                                 ))}
@@ -206,7 +230,7 @@ export default function SettingsEditPersonality() {
                         <button
                             type="submit"
                             className="settings-btn settings-btn--primary"
-                            disabled={loading}
+                            disabled={loading || !initialized}
                         >
                             Zatwierdź
                         </button>

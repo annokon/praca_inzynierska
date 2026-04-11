@@ -46,16 +46,6 @@ export default function SettingsEditLocation() {
 
         const userId = user?.id || localStorage.getItem("userId");
 
-        if (!userId) {
-            setStatus("Nie udało się pobrać ID użytkownika.");
-            return;
-        }
-
-        if (!selectedLocation) {
-            setStatus("Wybierz nowe miejsce zamieszkania.");
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 
@@ -63,7 +53,7 @@ export default function SettingsEditLocation() {
                 location: selectedLocation.value.name
             };
 
-            const res = await fetch(`http://localhost:5292/api/users/${userId}/additional`, {
+            const res = await fetch(`http://localhost:5292/api/users/location`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -102,18 +92,6 @@ export default function SettingsEditLocation() {
     const handleRemove = async () => {
         setStatus("");
 
-        const userId = user?.id || localStorage.getItem("userId");
-
-        if (!userId) {
-            setStatus("Nie udało się pobrać ID użytkownika.");
-            return;
-        }
-
-        if (!currentLocation) {
-            setStatus("Nie masz ustawionego miejsca zamieszkania.");
-            return;
-        }
-
         try {
             setStatus("Usuwanie...");
 
@@ -121,7 +99,7 @@ export default function SettingsEditLocation() {
                 location: null
             };
 
-            const res = await fetch(`http://localhost:5292/api/users/${userId}/additional`, {
+            const res = await fetch(`http://localhost:5292/api/users/location`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
