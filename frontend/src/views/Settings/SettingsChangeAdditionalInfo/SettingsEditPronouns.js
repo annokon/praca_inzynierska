@@ -2,24 +2,24 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
+import "../../../css/login_register.css";
 
-export default function SettingsEditGender() {
+export default function SettingsEditPronouns() {
     const navigate = useNavigate();
     const { user, setUser, loading } = useContext(AuthContext);
 
-    const [genderOptions, setGenderOptions] = useState([]);
-    const [selectedGender, setSelectedGender] = useState("");
+    const [pronounsOptions, setPronounsOptions] = useState([]);
+    const [pronoun, setPronoun] = useState("");
     const [status, setStatus] = useState("");
-    const [selectionInitialized, setSelectionInitialized] = useState(false);
 
-    const currentGenderId =
-        user?.genderId ??
-        user?.gender?.id ??
+    const currentPronounsId =
+        user?.pronounsId ??
+        user?.pronouns?.id ??
         "";
 
-    const currentGenderName =
-        user?.gender?.name ??
-        user?.genderName ??
+    const currentPronounsName =
+        user?.pronouns?.name ??
+        user?.pronounsName ??
         "";
 
     useEffect(() => {
@@ -36,53 +36,47 @@ export default function SettingsEditGender() {
                 }
 
                 const data = await res.json();
-                setGenderOptions(data.genders || []);
+                setPronounsOptions(data.pronouns || []);
+                setPronoun(currentPronounsId ? String(currentPronounsId) : "");
             } catch (err) {
-                console.error("Błąd ładowania płci:", err);
-                setStatus("Nie udało się pobrać listy płci.");
+                console.error("Błąd ładowania zaimków:", err);
+                setStatus("Nie udało się pobrać listy zaimków.");
             }
         };
 
         fetchOptions();
-    }, []);
-
-    useEffect(() => {
-        if (selectionInitialized) return;
-
-        setSelectedGender(currentGenderId ? String(currentGenderId) : "");
-        setSelectionInitialized(true);
-    }, [currentGenderId, selectionInitialized]);
+    }, [currentPronounsId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus("");
 
-        if (selectedGender === String(currentGenderId || "")) {
-            setStatus("Nowa płeć jest taka sama jak obecna.");
+        if (String(pronoun) === String(currentPronounsId || "")) {
+            setStatus("Nowe zaimki są takie same jak obecne.");
             return;
         }
 
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/gender", {
+            const res = await fetch("http://localhost:5292/api/users/pronouns", {
                 method: "PUT",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    genderId: selectedGender ? Number(selectedGender) : null
+                    pronounsId: pronoun ? Number(pronoun) : null
                 })
             });
 
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
-                setStatus(data.message || "Nie udało się zmienić płci.");
+                setStatus(data.message || "Nie udało się zmienić zaimków.");
                 return;
             }
 
-            const selectedOption = genderOptions.find(
-                (option) => String(option.id) === String(selectedGender)
+            const selectedOption = pronounsOptions.find(
+                (option) => String(option.id) === String(pronoun)
             );
 
             if (data && Object.keys(data).length > 0) {
@@ -92,11 +86,60 @@ export default function SettingsEditGender() {
                     prev
                         ? {
                             ...prev,
-                            genderId: selectedGender ? Number(selectedGender) : null,
-                            gender: selectedOption
+                            pronounsId: pronoun ? Number(pronoun) : null,
+                            pronouns: selectedOption
                                 ? { id: selectedOption.id, name: selectedOption.name }
                                 : null,
-                            genderName: selectedOption ? selectedOption.name : null
+                            pronounsName: selectedOption ? selectedOption.name : null
+                        }
+                        : prev
+                );
+            }
+
+            navigate(-1);
+        } catch (err) {
+            console.error(err);
+            setStatus("Wystąpił błąd połączenia z serwerem.");
+        }
+    };
+
+    const handleRemove = async () => {
+        setStatus("");
+
+        if (!currentPronounsId) {
+            setStatus("Nie masz ustawionych zaimków.");
+            return;
+        }
+
+        try {
+            setStatus("Usuwanie...");
+
+            const res = await fetch("http://localhost:5292/api/users/pronouns", {
+                method: "PUT",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    pronounsId: null
+                })
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                setStatus(data.message || "Nie udało się usunąć zaimków.");
+                return;
+            }
+
+            if (data && Object.keys(data).length > 0) {
+                setUser(data);
+            } else {
+                setUser((prev) =>
+                    prev
+                        ? {
+                            ...prev,
+                            pronounsId: null,
+                            pronouns: null,
+                            pronounsName: null
                         }
                         : prev
                 );
@@ -114,32 +157,32 @@ export default function SettingsEditGender() {
             <section className="settings-panel settings-panel--form" aria-label="Ustawienia">
                 <header className="settings-header">
                     <h1 className="settings-title">Ustawienia</h1>
-                    <p className="settings-subtitle">Edytuj płeć</p>
+                    <p className="settings-subtitle">Edytuj zaimki</p>
                 </header>
 
                 <form className="settings-content settings-form" onSubmit={handleSubmit}>
                     <section className="settings-section">
                         <div className="settings-field">
-                            <label className="settings-label">Obecna płeć</label>
+                            <label className="settings-label">Obecne zaimki</label>
                             <div className="settings-value">
-                                {loading ? "Ładowanie..." : currentGenderName || "Brak danych"}
+                                {loading ? "Ładowanie..." : currentPronounsName || "Brak danych"}
                             </div>
                         </div>
 
                         <div className="form-field">
-                            <label className="form-label" htmlFor="gender">
-                                Wybierz płeć
+                            <label className="form-label" htmlFor="pronouns">
+                                Nowe zaimki
                             </label>
                             <select
-                                id="gender"
-                                value={selectedGender}
+                                id="pronouns"
+                                value={pronoun}
                                 className="form-input"
-                                onChange={(e) => setSelectedGender(e.target.value)}
+                                onChange={(e) => setPronoun(e.target.value)}
                             >
                                 <option value="">Select</option>
-                                {genderOptions.map((g) => (
-                                    <option key={g.id} value={g.id}>
-                                        {g.name}
+                                {pronounsOptions.map((p) => (
+                                    <option key={p.id} value={p.id}>
+                                        {p.name}
                                     </option>
                                 ))}
                             </select>
@@ -151,8 +194,18 @@ export default function SettingsEditGender() {
                             type="button"
                             className="settings-btn settings-btn--ghost"
                             onClick={() => navigate(-1)}
+                            disabled={loading}
                         >
                             Anuluj
+                        </button>
+
+                        <button
+                            type="button"
+                            className="settings-btn settings-btn--ghost"
+                            onClick={handleRemove}
+                            disabled={loading}
+                        >
+                            Usuń
                         </button>
 
                         <button

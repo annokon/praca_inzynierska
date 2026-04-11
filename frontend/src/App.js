@@ -14,7 +14,7 @@ import ProfileReview from "./views/Profile/ProfileReview";
 import ProfileTrips from "./views/Profile/ProfileTrips";
 import ProfileAchievements from "./views/Profile/ProfileAchievements";
 import TripsFavFilters from "./views/TripsFavFilters";
-import SettingsChangeAdditionalnfo from "./views/Settings/SettingsChangeAdditionalInfo/SettingsChangeAdditionalnfo";
+import SettingsEditAdditionalnfo from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditAdditionalnfo";
 import RequireAuth from "./routing/RequireAuth";
 import SettingsProfile from "./views/Settings/SettingsProfile/SettingsProfile";
 import SettingsEditData from "./views/Settings/SettingsEditData/SettingsEditData";
@@ -25,6 +25,14 @@ import SettingsEditDisplayName from "./views/Settings/SettingsEditData/SettingsE
 import SettingsEditBirthDate from "./views/Settings/SettingsEditData/SettingsEditBirthdate";
 import SettingsEditLanguages from "./views/Settings/SettingsEditData/SettingsEditLanguages";
 import SettingsEditGender from "./views/Settings/SettingsEditData/SettingsEditGender";
+import SettingsEditPronouns from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditPronouns";
+import SettingsEditAboutMe from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditAboutMe";
+import SettingsEditLocation from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditLocation";
+import SettingsEditPersonality from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditPersonality";
+import SettingsEditAlcohol from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditAlcohol";
+import SettingsEditSmoking from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditSmoking";
+import SettingsEditDrivingLicense from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditDrivingLicense";
+import SettingsEditTravelStyle from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditTravelStyle";
 
 function App() {
     return (
@@ -50,7 +58,7 @@ function App() {
                     <Route element={<RequireAuth />}>
                         <Route path="/settings-profile" element={<SettingsProfile />} />
                         <Route path="/settings-edit-data" element={<SettingsEditData />} />
-                        <Route path="/settings-info" element={<SettingsChangeAdditionalnfo />} />
+                        <Route path="/settings-info" element={<SettingsEditAdditionalnfo />} />
                         <Route path="/settings-appearance" element={<SettingsAppearance />} />
                         <Route path="/settings-currency" element={<SettingsCurrency />} />
                         <Route path="/settings-edit-username" element={<SettingsEditUsername />} />
@@ -58,6 +66,15 @@ function App() {
                         <Route path="/settings-edit-birthdate" element={<SettingsEditBirthDate />} />
                         <Route path="/settings-edit-languages" element={<SettingsEditLanguages />} />
                         <Route path="/settings-edit-gender" element={<SettingsEditGender />} />
+
+                        <Route path="/settings-pronouns" element={<SettingsEditPronouns />} />
+                        <Route path="/settings-about-me" element={<SettingsEditAboutMe />} />
+                        <Route path="/settings-location" element={<SettingsEditLocation />} />
+                        <Route path="/settings-personality" element={<SettingsEditPersonality />} />
+                        <Route path="/settings-alcohol" element={<SettingsEditAlcohol />} />
+                        <Route path="/settings-smoking" element={<SettingsEditSmoking />} />
+                        <Route path="/settings-driving-license" element={<SettingsEditDrivingLicense />} />
+                        <Route path="/settings/travel-style" element={<SettingsEditTravelStyle />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
