@@ -1,8 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
 import "../../../css/login_register.css";
+
+function getUserLanguageIds(user) {
+    if (!user) return [];
+
+    if (Array.isArray(user.languages)) {
+        return user.languages
+            .map((lang) => lang.id ?? lang.languageId)
+            .filter(Boolean);
+    }
+
+    if (Array.isArray(user.languageIds)) {
+        return user.languageIds.filter(Boolean);
+    }
+
+    if (Array.isArray(user.userLanguages)) {
+        return user.userLanguages
+            .map((lang) => lang.languageId ?? lang.id)
+            .filter(Boolean);
+    }
+
+    return [];
+}
 
 export default function SettingsEditLanguages() {
     const navigate = useNavigate();
@@ -11,6 +33,7 @@ export default function SettingsEditLanguages() {
     const [allLanguages, setAllLanguages] = useState([]);
     const [languageSearch, setLanguageSearch] = useState("");
     const [selectedLanguages, setSelectedLanguages] = useState([]);
+    const [initialLanguageIds, setInitialLanguageIds] = useState([]);
     const [status, setStatus] = useState("");
 
     useEffect(() => {
@@ -42,61 +65,57 @@ export default function SettingsEditLanguages() {
     useEffect(() => {
         if (!user) return;
 
-        if (Array.isArray(user.languages)) {
-            setSelectedLanguages(
-                user.languages
-                    .map((lang) => lang.id ?? lang.languageId)
-                    .filter(Boolean)
-            );
-            return;
-        }
-
-        if (Array.isArray(user.languageIds)) {
-            setSelectedLanguages(user.languageIds);
-            return;
-        }
-
-        if (Array.isArray(user.userLanguages)) {
-            setSelectedLanguages(
-                user.userLanguages
-                    .map((lang) => lang.languageId ?? lang.id)
-                    .filter(Boolean)
-            );
-            return;
-        }
-
-        setSelectedLanguages([]);
+        const ids = getUserLanguageIds(user);
+        setInitialLanguageIds(ids);
+        setSelectedLanguages(ids);
     }, [user]);
 
-    const filteredLanguages = allLanguages.filter((lang) =>
-        lang.name.toLowerCase().includes(languageSearch.toLowerCase())
-    );
+    const currentLanguages = useMemo(() => {
+        return allLanguages.filter(
+            (lang) =>
+                initialLanguageIds.includes(lang.id) &&
+                selectedLanguages.includes(lang.id)
+        );
+    }, [allLanguages, initialLanguageIds, selectedLanguages]);
+
+    const newlySelectedLanguages = useMemo(() => {
+        return allLanguages.filter(
+            (lang) =>
+                !initialLanguageIds.includes(lang.id) &&
+                selectedLanguages.includes(lang.id)
+        );
+    }, [allLanguages, initialLanguageIds, selectedLanguages]);
+
+    const filteredLanguages = useMemo(() => {
+        return allLanguages
+            .filter((lang) =>
+                lang.name.toLowerCase().includes(languageSearch.toLowerCase())
+            )
+            .filter((lang) => !selectedLanguages.includes(lang.id));
+    }, [allLanguages, languageSearch, selectedLanguages]);
 
     const visibleLanguages = filteredLanguages.slice(0, 6);
 
-    function toggleLanguage(id) {
-        setSelectedLanguages((prev) =>
-            prev.includes(id)
-                ? prev.filter((langId) => langId !== id)
-                : [...prev, id]
-        );
+    function handleAddLanguage(id) {
+        setSelectedLanguages((prev) => {
+            if (prev.includes(id)) return prev;
+            return [...prev, id];
+        });
+        setLanguageSearch("");
+    }
+
+    function handleRemoveLanguage(id) {
+        setSelectedLanguages((prev) => prev.filter((langId) => langId !== id));
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus("");
 
-        const userId = user?.id || localStorage.getItem("userId");
-
-        if (!userId) {
-            setStatus("Nie udało się pobrać ID użytkownika.");
-            return;
-        }
-
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch(`http://localhost:5292/api/users/${userId}/additional`, {
+            const res = await fetch(`http://localhost:5292/api/users/languages`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -126,7 +145,12 @@ export default function SettingsEditLanguages() {
                         ? {
                             ...prev,
                             languageIds: selectedLanguages,
-                            languages: selectedLanguageObjects
+                            languages: selectedLanguageObjects,
+                            userLanguages: selectedLanguageObjects.map((lang) => ({
+                                languageId: lang.id,
+                                id: lang.id,
+                                name: lang.name
+                            }))
                         }
                         : prev
                 );
@@ -135,6 +159,64 @@ export default function SettingsEditLanguages() {
             navigate(-1);
         } catch (e) {
             console.error("Błąd zapisu języków:", e);
+            setStatus("Wystąpił błąd połączenia z serwerem.");
+        }
+    };
+
+    const handleRemove = async () => {
+        setStatus("");
+
+        const userId = user?.id || localStorage.getItem("userId");
+
+        if (!userId) {
+            setStatus("Nie udało się pobrać ID użytkownika.");
+            return;
+        }
+
+        if (selectedLanguages.length === 0) {
+            setStatus("Nie masz ustawionych języków.");
+            return;
+        }
+
+        try {
+            setStatus("Usuwanie...");
+
+            const res = await fetch(`http://localhost:5292/api/users/me`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    languageIds: []
+                })
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                setStatus(data.message || "Nie udało się usunąć języków.");
+                return;
+            }
+
+            if (data && Object.keys(data).length > 0) {
+                setUser(data);
+            } else {
+                setUser((prev) =>
+                    prev
+                        ? {
+                            ...prev,
+                            languageIds: [],
+                            languages: [],
+                            userLanguages: []
+                        }
+                        : prev
+                );
+            }
+
+            navigate(-1);
+        } catch (e) {
+            console.error("Błąd usuwania języków:", e);
             setStatus("Wystąpił błąd połączenia z serwerem.");
         }
     };
@@ -150,8 +232,31 @@ export default function SettingsEditLanguages() {
                 <form className="settings-content settings-form" onSubmit={handleSubmit}>
                     <section className="settings-section">
                         <div className="settings-field">
+                            <label className="settings-label">Obecnie wybrane języki</label>
+
+                            <div className="pill-group">
+                                {currentLanguages.length > 0 ? (
+                                    currentLanguages.map((lang) => (
+                                        <button
+                                            key={lang.id}
+                                            type="button"
+                                            className="pill pill--selectable pill--removable"
+                                            onClick={() => handleRemoveLanguage(lang.id)}
+                                            aria-label={`Usuń język ${lang.name}`}
+                                        >
+                                            <span>{lang.name}</span>
+                                            <span className="pill__close" aria-hidden="true">×</span>
+                                        </button>
+                                    ))
+                                ) : (
+                                    <p className="settings-status">Brak obecnie wybranych języków.</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="settings-field">
                             <label className="settings-label" htmlFor="languageSearch">
-                                Zaznacz języki, którymi się posługujesz
+                                Wyszukaj język do dodania
                             </label>
                             <input
                                 id="languageSearch"
@@ -169,19 +274,37 @@ export default function SettingsEditLanguages() {
                                 <button
                                     key={lang.id}
                                     type="button"
-                                    className={
-                                        "pill pill--selectable" +
-                                        (selectedLanguages.includes(lang.id) ? " pill--selected" : "")
-                                    }
-                                    onClick={() => toggleLanguage(lang.id)}
+                                    className="pill pill--selectable"
+                                    onClick={() => handleAddLanguage(lang.id)}
                                 >
                                     {lang.name}
                                 </button>
                             ))}
                         </div>
 
-                        {filteredLanguages.length === 0 && (
+                        {languageSearch && filteredLanguages.length === 0 && (
                             <p className="settings-status">Brak wyników dla podanego wyszukiwania.</p>
+                        )}
+
+                        {newlySelectedLanguages.length > 0 && (
+                            <div className="settings-field">
+                                <label className="settings-label">Nowo zaznaczone języki</label>
+
+                                <div className="pill-group">
+                                    {newlySelectedLanguages.map((lang) => (
+                                        <button
+                                            key={lang.id}
+                                            type="button"
+                                            className="pill pill--selectable pill--removable"
+                                            onClick={() => handleRemoveLanguage(lang.id)}
+                                            aria-label={`Usuń język ${lang.name}`}
+                                        >
+                                            <span>{lang.name}</span>
+                                            <span className="pill__close" aria-hidden="true">×</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         )}
                     </section>
 
@@ -190,8 +313,18 @@ export default function SettingsEditLanguages() {
                             type="button"
                             className="settings-btn settings-btn--ghost"
                             onClick={() => navigate(-1)}
+                            disabled={loading}
                         >
                             Anuluj
+                        </button>
+
+                        <button
+                            type="button"
+                            className="settings-btn settings-btn--ghost"
+                            onClick={handleRemove}
+                            disabled={loading}
+                        >
+                            Usuń
                         </button>
 
                         <button
