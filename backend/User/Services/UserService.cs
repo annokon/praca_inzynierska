@@ -490,5 +490,32 @@ public class UserService(
         });
     }
     
+    public async Task<(bool Success, string? Error)> UpdateLanguagesAsync(int userId, List<int> languageIds)
+    {
+        var user = await userRepository.GetUserWithRelationsAsync(userId);
+
+        if (user == null)
+            return (false, "User not found.");
+        
+        languageIds ??= new List<int>();
+        
+        user.UserLanguages?.Clear();
+        
+        foreach (var langId in languageIds.Distinct())
+        {
+            user.UserLanguages!.Add(new UserLanguage
+            {
+                IdUser = userId,
+                IdLanguage = langId
+            });
+        }
+
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await userRepository.SaveChangesAsync();
+
+        return (true, null);
+    }
+    
     
 }

@@ -253,5 +253,23 @@ public class UsersController : ControllerBase
         return Ok(result.User);
     }
     
+    // update languages
+    [Authorize]
+    [HttpPut("languages")]
+    public async Task<IActionResult> UpdateLanguages([FromBody] UpdateLanguagesDTO dto)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+
+        var (success, error) = await _userService.UpdateLanguagesAsync(userId, dto.LanguageIds);
+
+        if (!success)
+            return BadRequest(new { message = error });
+
+        return Ok(new { message = "Languages updated." });
+    }
+    
     
 }
