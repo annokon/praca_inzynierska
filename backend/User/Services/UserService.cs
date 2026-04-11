@@ -517,5 +517,64 @@ public class UserService(
         return (true, null);
     }
     
+    public async Task<(bool Success, string? Error, UserDTO? User)> UpdatePronounsAsync(int userId, int? pronounsId)
+    {
+        var user = await userRepository.GetByIdUserAsync(userId);
+
+        if (user == null)
+            return (false, "User not found.", null);
+        
+        if (user.PronounsId == pronounsId)
+            return (false, "Nowa wartość jest taka sama jak obecna.", null);
+        
+        user.PronounsId = pronounsId;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await userRepository.SaveChangesAsync();
+
+        return (true, null, new UserDTO
+        {
+            IdUser = user.IdUser,
+            Username = user.Username,
+            DisplayName = user.DisplayName,
+            Pronouns = user.Pronouns?.PronounName
+        });
+    }
+    
+    public async Task<(bool Success, string? Error, UserDTO? User)> UpdateBioAsync(int userId, string? bio)
+    {
+        var user = await userRepository.GetByIdUserAsync(userId);
+
+        if (user == null)
+            return (false, "User not found.", null);
+
+        if (bio != null)
+        {
+            bio = bio.Trim();
+
+            if (string.IsNullOrWhiteSpace(bio))
+                return (false, "Opis nie może być pusty.", null);
+
+            if (bio.Length > 500)
+                return (false, "Opis może mieć maksymalnie 500 znaków.", null);
+        }
+        
+        if (user.Bio == bio)
+            return (false, "Nowy opis jest taki sam jak obecny.", null);
+
+        user.Bio = bio;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await userRepository.SaveChangesAsync();
+
+        return (true, null, new UserDTO
+        {
+            IdUser = user.IdUser,
+            Username = user.Username,
+            DisplayName = user.DisplayName,
+            Bio = user.Bio
+        });
+    }
+    
     
 }

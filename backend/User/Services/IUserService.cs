@@ -19,5 +19,7 @@ public interface IUserService
     Task<(bool Success, string? Error, UserDTO? User)> UpdateBirthDateAsync(int userId, DateOnly birthDate);
     Task<(bool Success, string? Error, UserDTO? User)> UpdateGenderAsync(int userId, int? genderId);
     Task<(bool Success, string? Error)> UpdateLanguagesAsync(int userId, List<int> languageIds);
+    Task<(bool Success, string? Error, UserDTO? User)> UpdatePronounsAsync(int userId, int? pronounsId);
+    Task<(bool Success, string? Error, UserDTO? User)> UpdateBioAsync(int userId, string? bio);
 
 }
