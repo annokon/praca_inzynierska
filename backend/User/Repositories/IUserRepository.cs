@@ -15,4 +15,6 @@ public interface IUserRepository
     Task<User?> GetByEmailOrUsernameAsync(string login);
     Task<bool> ValidateGender(int dtoGenderId);
     Task<User?> GetUserWithRelationsAsync(int id);
+    Task SaveChangesAsync();
+
 }

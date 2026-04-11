@@ -23,10 +23,10 @@ export default function SettingsEditDisplayName() {
             return;
         }
 
-        if (trimmedDisplayName === currentDisplayName) {
-            setStatus("Nowa wyświetlana nazwa jest taka sama jak obecna.");
-            return;
-        }
+        // if (trimmedDisplayName === currentDisplayName) {
+        //     setStatus("Nowa wyświetlana nazwa jest taka sama jak obecna.");
+        //     return;
+        // }
 
         try {
             setStatus("Zapisywanie...");

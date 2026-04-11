@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.RegularExpressions;
 using backend.Security;
 using backend.User.DTOs;
 using backend.User.Services;
@@ -161,4 +162,72 @@ public class UsersController : ControllerBase
     [Authorize(Roles = "admin,mod")]
     [HttpGet("staff")]
     public IActionResult Staff() => Ok("You are an admin or moderator");
+    
+    
+    // update display name
+    [Authorize]
+    [HttpPut("display-name")]
+    public async Task<IActionResult> UpdateDisplayName([FromBody] UpdateDisplayNameDTO dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.DisplayName))
+            return BadRequest(new { message = "Nazwa nie może być pusta." });
+
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var (success, error, user) = await _userService.UpdateDisplayNameAsync(userId, dto.DisplayName);
+
+        if (!success)
+            return BadRequest(new { message = error });
+
+        return Ok(user);
+    }
+    
+    // update username
+    [Authorize]
+    [HttpPut("username")]
+    public async Task<IActionResult> UpdateUsername([FromBody] UpdateUsernameDTO dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Username))
+            return BadRequest(new { message = "Nazwa użytkownika nie może być pusta." });
+
+        var normalizedUsername = dto.Username.Trim().ToLower();
+        
+        if (normalizedUsername.Length < 3)
+            return BadRequest(new { message = "Nazwa użytkownika musi mieć co najmniej 3 znaki." });
+
+        if (normalizedUsername.Length > 20)
+            return BadRequest(new { message = "Nazwa użytkownika nie może być dłuższa niż 20 znaków." });
+        
+        if (!Regex.IsMatch(normalizedUsername, "^[a-z0-9_]+$"))
+            return BadRequest(new { message = "Nazwa użytkownika może zawierać tylko litery, cyfry i podkreślniki." });
+
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var (success, error, user) = await _userService.UpdateUsernameAsync(userId, normalizedUsername);
+
+        if (!success)
+            return BadRequest(new { message = error });
+
+        return Ok(user);
+    }
+    
+    // update birthdate
+    [Authorize]
+    [HttpPut("birth-date")]
+    public async Task<IActionResult> UpdateBirthDate([FromBody] UpdateBirthDateDTO dto)
+    {
+        if (dto.BirthDate == default)
+            return BadRequest(new { message = "Birth date is required." });
+
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var (success, error, user) = await _userService.UpdateBirthDateAsync(userId, dto.BirthDate);
+
+        if (!success)
+            return BadRequest(new { message = error });
+
+        return Ok(user);
+    }
+    
+    
 }
