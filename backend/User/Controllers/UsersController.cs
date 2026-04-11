@@ -172,7 +172,10 @@ public class UsersController : ControllerBase
         if (string.IsNullOrWhiteSpace(dto.DisplayName))
             return BadRequest(new { message = "Nazwa nie może być pusta." });
 
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
 
         var (success, error, user) = await _userService.UpdateDisplayNameAsync(userId, dto.DisplayName);
 
@@ -219,7 +222,10 @@ public class UsersController : ControllerBase
         if (dto.BirthDate == default)
             return BadRequest(new { message = "Birth date is required." });
 
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
 
         var (success, error, user) = await _userService.UpdateBirthDateAsync(userId, dto.BirthDate);
 
@@ -227,6 +233,24 @@ public class UsersController : ControllerBase
             return BadRequest(new { message = error });
 
         return Ok(user);
+    }
+    
+    // update gender
+    [Authorize]
+    [HttpPut("gender")]
+    public async Task<IActionResult> UpdateGender([FromBody] UpdateGenderDTO dto)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+        
+        var result = await _userService.UpdateGenderAsync(userId, dto.GenderId);
+
+        if (!result.Success)
+            return BadRequest(new { error = result.Error });
+
+        return Ok(result.User);
     }
     
     

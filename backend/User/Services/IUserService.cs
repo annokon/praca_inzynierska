@@ -17,5 +17,6 @@ public interface IUserService
     Task<(bool Success, string? Error, UserDTO? User)> UpdateDisplayNameAsync(int userId, string displayName);
     Task<(bool Success, string? Error, UserDTO? User)> UpdateUsernameAsync(int userId, string username);
     Task<(bool Success, string? Error, UserDTO? User)> UpdateBirthDateAsync(int userId, DateOnly birthDate);
+    Task<(bool Success, string? Error, UserDTO? User)> UpdateGenderAsync(int userId, int? genderId);
 
 }
