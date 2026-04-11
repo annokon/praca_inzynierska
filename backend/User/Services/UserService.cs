@@ -331,22 +331,18 @@ public class UserService(
             Bio = user.Bio,
 
             Languages = user.UserLanguages?
-                .Where(ul => ul.Language != null)
                 .Select(ul => ul.Language.LanguageName)
                 .ToList() ?? new List<string>(),
 
             Interests = user.UserInterests?
-                .Where(ui => ui.Interest != null)
                 .Select(ui => ui.Interest.InterestName)
                 .ToList() ?? new List<string>(),
 
             Transport = user.UserTransportModes?
-                .Where(ut => ut.TransportMode != null)
                 .Select(ut => ut.TransportMode.TransportModeName)
                 .ToList() ?? new List<string>(),
 
             TravelStyles = user.UserTravelStyles?
-                .Where(ts => ts.TravelStyle != null)
                 .Select(ts => ts.TravelStyle.TravelStyleName)
                 .ToList() ?? new List<string>(),
 
@@ -398,12 +394,12 @@ public class UserService(
         if (user == null)
             return (false, "User not found.", null);
 
-        username = username?.Trim().ToLower() ?? throw new InvalidOperationException();
+        username = username?.Trim().ToLower();
 
         if (string.IsNullOrWhiteSpace(username))
             return (false, "Nazwa użytkownika jest wymagana.", null);
 
-        if (username.Length < 3 || username.Length > 20)
+        if (username.Length is < 3 or > 20)
             return (false, "Nazwa użytkownika musi mieć 3–20 znaków.", null);
 
         if (!System.Text.RegularExpressions.Regex.IsMatch(username, @"^[a-z0-9._-]+$"))
@@ -415,6 +411,10 @@ public class UserService(
         var exists = await userRepository.ExistsByUsernameAsync(username);
         if (exists)
             return (false, "Ta nazwa użytkownika jest już zajęta.", null);
+        
+        var forbidden = new[] { "admin", "root", "support" };
+        if (forbidden.Contains(username))
+            return (false, "Zawiera niedozwolone słowa.", null);
 
         user.Username = username;
         user.UpdatedAt = DateTime.UtcNow;
@@ -463,6 +463,30 @@ public class UserService(
             Username = user.Username,
             DisplayName = user.DisplayName,
             BirthDate = user.BirthDate
+        });
+    }
+    
+    public async Task<(bool Success, string? Error, UserDTO? User)> UpdateGenderAsync(int userId, int? genderId)
+    {
+        var user = await userRepository.GetByIdUserAsync(userId);
+
+        if (user == null)
+            return (false, "User not found.", null);
+        
+        if (user.GenderId == genderId)
+            return (false, "Nowa wartość jest taka sama jak obecna.", null);
+        
+        user.GenderId = genderId;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await userRepository.SaveChangesAsync();
+
+        return (true, null, new UserDTO
+        {
+            IdUser = user.IdUser,
+            Username = user.Username,
+            DisplayName = user.DisplayName,
+            Gender = user.Gender?.GenderName
         });
     }
     
