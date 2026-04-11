@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
@@ -8,18 +8,35 @@ export default function SettingsEditAlcohol() {
     const { user, setUser, loading } = useContext(AuthContext);
 
     const [alcoholOptions, setAlcoholOptions] = useState([]);
-    const [alcoholAttitude, setAlcoholAttitude] = useState("");
+    const [selectedAlcoholId, setSelectedAlcoholId] = useState("");
     const [status, setStatus] = useState("");
-
-    const currentAlcoholId =
-        user?.alcoholPreferenceId ??
-        user?.alcoholPreference?.id ??
-        "";
+    const [initialized, setInitialized] = useState(false);
 
     const currentAlcoholName =
-        user?.alcoholPreference?.name ??
-        user?.alcoholPreferenceName ??
-        "";
+        typeof user?.alcohol === "string"
+            ? user.alcohol
+            : user?.alcohol?.name || "";
+
+    const initialAlcoholId = useMemo(() => {
+        if (!user || alcoholOptions.length === 0) return "";
+
+        if (user?.alcohol?.id != null) {
+            return String(user.alcohol.id);
+        }
+
+        const alcoholName =
+            typeof user?.alcohol === "string"
+                ? user.alcohol
+                : user?.alcohol?.name;
+
+        if (!alcoholName) return "";
+
+        const matched = alcoholOptions.find(
+            (option) => option.name.trim().toLowerCase() === alcoholName.trim().toLowerCase()
+        );
+
+        return matched ? String(matched.id) : "";
+    }, [user, alcoholOptions]);
 
     useEffect(() => {
         const fetchOptions = async () => {
@@ -36,7 +53,6 @@ export default function SettingsEditAlcohol() {
 
                 const data = await res.json();
                 setAlcoholOptions(data.alcohol || []);
-                setAlcoholAttitude(currentAlcoholId ? String(currentAlcoholId) : "");
             } catch (err) {
                 console.error("Błąd ładowania stosunku do alkoholu:", err);
                 setStatus("Nie udało się pobrać listy opcji.");
@@ -44,7 +60,53 @@ export default function SettingsEditAlcohol() {
         };
 
         fetchOptions();
-    }, [currentAlcoholId]);
+    }, []);
+
+    useEffect(() => {
+        if (!user || alcoholOptions.length === 0 || initialized) return;
+
+        if (user?.alcohol?.id) {
+            setSelectedAlcoholId(String(user.alcohol.id));
+            setInitialized(true);
+            return;
+        }
+
+        const alcoholName =
+            typeof user?.alcohol === "string"
+                ? user.alcohol
+                : user?.alcohol?.name;
+
+        if (alcoholName) {
+            const matchedOption = alcoholOptions.find(
+                (option) => option.name.trim().toLowerCase() === alcoholName.trim().toLowerCase()
+            );
+
+            if (matchedOption) {
+                setSelectedAlcoholId(String(matchedOption.id));
+                setInitialized(true);
+                return;
+            }
+        }
+
+        if (alcoholOptions.length > 0) {
+            setSelectedAlcoholId(String(alcoholOptions[0].id));
+        }
+
+        setInitialized(true);
+    }, [user, alcoholOptions, initialized]);
+
+    const refreshUser = async () => {
+        const meRes = await fetch("http://localhost:5292/api/users/me", {
+            credentials: "include"
+        });
+
+        if (!meRes.ok) {
+            throw new Error("Nie udało się odświeżyć danych użytkownika.");
+        }
+
+        const meData = await meRes.json();
+        setUser(meData);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -58,38 +120,19 @@ export default function SettingsEditAlcohol() {
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    alcoholPreferenceId: alcoholAttitude ? Number(alcoholAttitude) : null
+                    alcoholId: selectedAlcoholId ? Number(selectedAlcoholId) : null
                 })
             });
 
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
+                console.error("Błąd zapisu stosunku do alkoholu:", res.status, data);
                 setStatus(data.message || "Nie udało się zmienić stosunku do alkoholu.");
                 return;
             }
 
-            const selectedOption = alcoholOptions.find(
-                (option) => String(option.id) === String(alcoholAttitude)
-            );
-
-            if (data && Object.keys(data).length > 0) {
-                setUser(data);
-            } else {
-                setUser((prev) =>
-                    prev
-                        ? {
-                            ...prev,
-                            alcoholPreferenceId: alcoholAttitude ? Number(alcoholAttitude) : null,
-                            alcoholPreference: selectedOption
-                                ? { id: selectedOption.id, name: selectedOption.name }
-                                : null,
-                            alcoholPreferenceName: selectedOption ? selectedOption.name : null
-                        }
-                        : prev
-                );
-            }
-
+            await refreshUser();
             navigate(-1);
         } catch (err) {
             console.error(err);
@@ -100,11 +143,6 @@ export default function SettingsEditAlcohol() {
     const handleRemove = async () => {
         setStatus("");
 
-        if (!currentAlcoholId) {
-            setStatus("Nie masz ustawionego stosunku do alkoholu.");
-            return;
-        }
-
         try {
             setStatus("Usuwanie...");
 
@@ -113,32 +151,19 @@ export default function SettingsEditAlcohol() {
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    alcoholPreferenceId: null
+                    alcoholId: null
                 })
             });
 
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
+                console.error("Błąd usuwania stosunku do alkoholu:", res.status, data);
                 setStatus(data.message || "Nie udało się usunąć stosunku do alkoholu.");
                 return;
             }
 
-            if (data && Object.keys(data).length > 0) {
-                setUser(data);
-            } else {
-                setUser((prev) =>
-                    prev
-                        ? {
-                            ...prev,
-                            alcoholPreferenceId: null,
-                            alcoholPreference: null,
-                            alcoholPreferenceName: null
-                        }
-                        : prev
-                );
-            }
-
+            await refreshUser();
             navigate(-1);
         } catch (err) {
             console.error(err);
@@ -169,13 +194,12 @@ export default function SettingsEditAlcohol() {
                             </label>
                             <select
                                 id="alcoholAttitude"
-                                value={alcoholAttitude}
+                                value={selectedAlcoholId}
                                 className="form-input"
-                                onChange={(e) => setAlcoholAttitude(e.target.value)}
+                                onChange={(e) => setSelectedAlcoholId(e.target.value)}
                             >
-                                <option value="">Select</option>
                                 {alcoholOptions.map((a) => (
-                                    <option key={a.id} value={a.id}>
+                                    <option key={a.id} value={String(a.id)}>
                                         {a.name}
                                     </option>
                                 ))}
@@ -204,7 +228,7 @@ export default function SettingsEditAlcohol() {
                         <button
                             type="submit"
                             className="settings-btn settings-btn--primary"
-                            disabled={loading}
+                            disabled={loading || !initialized}
                         >
                             Zatwierdź
                         </button>

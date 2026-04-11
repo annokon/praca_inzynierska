@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
@@ -7,11 +7,26 @@ export default function SettingsEditAboutMe() {
     const navigate = useNavigate();
     const { user, setUser, loading } = useContext(AuthContext);
 
-    const currentAboutMe = user?.aboutMe ?? user?.bio ?? "";
-    const [aboutMe, setAboutMe] = useState(currentAboutMe);
+    const [aboutMe, setAboutMe] = useState("");
     const [status, setStatus] = useState("");
+    const [initialized, setInitialized] = useState(false);
 
     const maxLength = 500;
+
+    const currentAboutMe = user?.bio ?? user?.aboutMe ?? "";
+
+    const initialAboutMe = useMemo(() => {
+        return currentAboutMe || "";
+    }, [currentAboutMe]);
+
+    useEffect(() => {
+        if (initialized) return;
+        if (loading) return;
+
+        setAboutMe(initialAboutMe);
+        setInitialized(true);
+    }, [initialAboutMe, initialized, loading]);
+
     const remaining = maxLength - aboutMe.length;
 
     const handleChange = (e) => {
@@ -22,6 +37,19 @@ export default function SettingsEditAboutMe() {
         }
     };
 
+    const refreshUser = async () => {
+        const meRes = await fetch("http://localhost:5292/api/users/me", {
+            credentials: "include"
+        });
+
+        if (!meRes.ok) {
+            throw new Error("Nie udało się odświeżyć danych użytkownika.");
+        }
+
+        const meData = await meRes.json();
+        setUser(meData);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus("");
@@ -29,7 +57,7 @@ export default function SettingsEditAboutMe() {
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/about-me", {
+            const res = await fetch("http://localhost:5292/api/users/aboutme", {
                 method: "PUT",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -41,24 +69,12 @@ export default function SettingsEditAboutMe() {
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
+                console.error('Błąd zapisu sekcji "o mnie":', res.status, data);
                 setStatus(data.message || 'Nie udało się zapisać sekcji "o mnie".');
                 return;
             }
 
-            if (data && Object.keys(data).length > 0) {
-                setUser(data);
-            } else {
-                setUser((prev) =>
-                    prev
-                        ? {
-                            ...prev,
-                            aboutMe: aboutMe.trim(),
-                            bio: aboutMe.trim()
-                        }
-                        : prev
-                );
-            }
-
+            await refreshUser();
             navigate(-1);
         } catch (err) {
             console.error(err);
@@ -72,7 +88,7 @@ export default function SettingsEditAboutMe() {
         try {
             setStatus("Usuwanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/about-me", {
+            const res = await fetch("http://localhost:5292/api/users/aboutme", {
                 method: "PUT",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -84,24 +100,12 @@ export default function SettingsEditAboutMe() {
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
+                console.error('Błąd usuwania sekcji "o mnie":', res.status, data);
                 setStatus(data.message || 'Nie udało się usunąć sekcji "o mnie".');
                 return;
             }
 
-            if (data && Object.keys(data).length > 0) {
-                setUser(data);
-            } else {
-                setUser((prev) =>
-                    prev
-                        ? {
-                            ...prev,
-                            aboutMe: "",
-                            bio: ""
-                        }
-                        : prev
-                );
-            }
-
+            await refreshUser();
             navigate(-1);
         } catch (err) {
             console.error(err);
@@ -156,7 +160,7 @@ export default function SettingsEditAboutMe() {
                         <button
                             type="submit"
                             className="settings-btn settings-btn--primary"
-                            disabled={loading}
+                            disabled={loading || !initialized}
                         >
                             Zatwierdź
                         </button>
