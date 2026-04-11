@@ -271,5 +271,41 @@ public class UsersController : ControllerBase
         return Ok(new { message = "Languages updated." });
     }
     
+    // update pronouns
+    [Authorize]
+    [HttpPut("pronouns")]
+    public async Task<IActionResult> UpdatePronouns([FromBody] UpdatePronounsDTO dto)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+        
+        var result = await _userService.UpdatePronounsAsync(userId, dto.PronounsId);
+
+        if (!result.Success)
+            return BadRequest(new { error = result.Error });
+
+        return Ok(result.User);
+    }
+    
+    // update bio
+    [Authorize]
+    [HttpPut("aboutme")]
+    public async Task<IActionResult> UpdateBio([FromBody] UpdateBioDTO dto)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+
+        var (success, error, user) = await _userService.UpdateBioAsync(userId, dto.AboutMe);
+
+        if (!success)
+            return BadRequest(new { message = error });
+
+        return Ok(user);
+    }
+    
     
 }
