@@ -79,8 +79,8 @@ export default function SettingsEditBirthDate() {
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/birthdate", {
-                method: "PUT",
+            const res = await fetch("http://localhost:5292/api/users/me", {
+                method: "PATCH",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

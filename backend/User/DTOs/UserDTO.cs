@@ -17,7 +17,6 @@ public class UserDTO
     public string? AlcoholPreference { get; set; }
     public string? SmokingPreference { get; set; }
     public string? DrivingLicenseType { get; set; }
-    public string? TravelStyle { get; set; }
     public string? TravelExperience { get; set; }
     public string? Bio { get; set; }
     public string? ProfilePhotoPath { get; set; }

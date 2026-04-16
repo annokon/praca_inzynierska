@@ -115,8 +115,8 @@ export default function SettingsEditSmoking() {
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/smoking", {
-                method: "PUT",
+            const res = await fetch("http://localhost:5292/api/users/me", {
+                method: "PATCH",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -146,12 +146,12 @@ export default function SettingsEditSmoking() {
         try {
             setStatus("Usuwanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/smoking", {
-                method: "PUT",
+            const res = await fetch("http://localhost:5292/api/users/me", {
+                method: "PATCH",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    smokingId: null
+                    smokingId: -1
                 })
             });
 

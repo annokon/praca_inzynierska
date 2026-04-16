@@ -26,8 +26,8 @@ export default function SettingsEditDisplayName() {
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/display-name", {
-                method: "PUT",
+            const res = await fetch("http://localhost:5292/api/users/me", {
+                method: "PATCH",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

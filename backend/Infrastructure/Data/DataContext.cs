@@ -18,6 +18,8 @@ public class DataContext : DbContext
     public DbSet<Language.Language> Languages => Set<Language.Language>();
     public DbSet<UserLanguage> UserLanguages => Set<UserLanguage>();
     public DbSet<Interest.Interest> Interests => Set<Interest.Interest>();
+    public DbSet<TravelStyle.TravelStyle> TravelStyles => Set<TravelStyle.TravelStyle>();
+    public DbSet<TransportMode.TransportMode> TransportModes => Set<TransportMode.TransportMode>();
     public DbSet<GenderOption> GenderOptions => Set<GenderOption>();
     public DbSet<PronounOption> PronounOptions => Set<PronounOption>();
     public DbSet<PersonalityTypeOption> PersonalityTypeOptions => Set<PersonalityTypeOption>();

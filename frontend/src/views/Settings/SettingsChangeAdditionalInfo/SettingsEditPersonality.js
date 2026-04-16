@@ -116,8 +116,8 @@ export default function SettingsEditPersonality() {
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/personalitytype", {
-                method: "PUT",
+            const res = await fetch("http://localhost:5292/api/users/me", {
+                method: "PATCH",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -147,12 +147,12 @@ export default function SettingsEditPersonality() {
         try {
             setStatus("Usuwanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/personalitytype", {
-                method: "PUT",
+            const res = await fetch("http://localhost:5292/api/users/me", {
+                method: "PATCH",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    personalityId: null
+                    personalityId: -1
                 })
             });
 

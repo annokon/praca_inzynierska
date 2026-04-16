@@ -142,8 +142,8 @@ export default function SettingsEditLanguages() {
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch(`http://localhost:5292/api/users/languages`, {
-                method: "PUT",
+            const res = await fetch(`http://localhost:5292/api/users/me`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -201,8 +201,8 @@ export default function SettingsEditLanguages() {
         try {
             setStatus("Usuwanie...");
 
-            const res = await fetch(`http://localhost:5292/api/users/languages`, {
-                method: "PUT",
+            const res = await fetch(`http://localhost:5292/api/users/me`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },

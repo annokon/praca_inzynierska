@@ -57,8 +57,8 @@ export default function SettingsEditAboutMe() {
         try {
             setStatus("Zapisywanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/aboutme", {
-                method: "PUT",
+            const res = await fetch("http://localhost:5292/api/users/me", {
+                method: "PATCH",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -88,12 +88,12 @@ export default function SettingsEditAboutMe() {
         try {
             setStatus("Usuwanie...");
 
-            const res = await fetch("http://localhost:5292/api/users/aboutme", {
-                method: "PUT",
+            const res = await fetch("http://localhost:5292/api/users/me", {
+                method: "PATCH",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    aboutMe: null
+                    aboutMe: "-1"
                 })
             });
 

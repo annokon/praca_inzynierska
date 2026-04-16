@@ -14,12 +14,5 @@ public interface IUserService
     Task<LoginResult> LoginAsync(LoginUserDTO dto);
     Task<UserDTO?> GetByIdAsync(int id);
     Task<UserProfileDTO?> GetProfileAsync(int id);
-    Task<(bool Success, string? Error, UserDTO? User)> UpdateDisplayNameAsync(int userId, string displayName);
-    Task<(bool Success, string? Error, UserDTO? User)> UpdateUsernameAsync(int userId, string username);
-    Task<(bool Success, string? Error, UserDTO? User)> UpdateBirthDateAsync(int userId, DateOnly birthDate);
-    Task<(bool Success, string? Error, UserDTO? User)> UpdateGenderAsync(int userId, int? genderId);
-    Task<(bool Success, string? Error)> UpdateLanguagesAsync(int userId, List<int> languageIds);
-    Task<(bool Success, string? Error, UserDTO? User)> UpdatePronounsAsync(int userId, int? pronounsId);
-    Task<(bool Success, string? Error, UserDTO? User)> UpdateBioAsync(int userId, string? bio);
-
+    Task<(bool Success, string? Error, UserDTO? User)> UpdateProfileAsync(int userId, UpdateUserProfileDTO dto);
 }

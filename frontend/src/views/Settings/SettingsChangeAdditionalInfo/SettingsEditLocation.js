@@ -53,8 +53,8 @@ export default function SettingsEditLocation() {
                 location: selectedLocation.value.name
             };
 
-            const res = await fetch(`http://localhost:5292/api/users/location`, {
-                method: "PUT",
+            const res = await fetch(`http://localhost:5292/api/users/me`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -96,11 +96,11 @@ export default function SettingsEditLocation() {
             setStatus("Usuwanie...");
 
             const payload = {
-                location: null
+                location: "-1"
             };
 
-            const res = await fetch(`http://localhost:5292/api/users/location`, {
-                method: "PUT",
+            const res = await fetch(`http://localhost:5292/api/users/me`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },

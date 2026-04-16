@@ -18,8 +18,17 @@ public class UsersController : ControllerBase
     {
         _userService = userService;
     }
+    
+    private int GetUserId()
+    {
+        var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        if (!int.TryParse(claim, out var userId))
+            throw new UnauthorizedAccessException("Missing user id claim");
 
+        return int.Parse(claim);
+    }
+    
     // get all users
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -99,7 +108,7 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 
-    
+
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterUserDTO dto)
     {
@@ -116,6 +125,7 @@ public class UsersController : ControllerBase
         });
     }
 
+    
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginUserDTO dto)
     {
@@ -130,6 +140,7 @@ public class UsersController : ControllerBase
         return Ok(new { message = "Logged in", role = result.Role });
     }
 
+    
     [Authorize]
     [HttpPost("logout")]
     public IActionResult Logout()
@@ -138,7 +149,7 @@ public class UsersController : ControllerBase
         return Ok(new { message = "Logged out" });
     }
 
-    
+
     // my data
     [Authorize]
     [HttpGet("me")]
@@ -153,159 +164,30 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
+    
     // admin
     [Authorize(Roles = "admin")]
     [HttpGet("admin-only")]
     public IActionResult Admin() => Ok("You are an admin only");
 
+    
     // mod
     [Authorize(Roles = "admin,mod")]
     [HttpGet("staff")]
     public IActionResult Staff() => Ok("You are an admin or moderator");
     
     
-    // update display name
-    [Authorize]
-    [HttpPut("display-name")]
-    public async Task<IActionResult> UpdateDisplayName([FromBody] UpdateDisplayNameDTO dto)
+    // PATCH /api/users/me
+    [HttpPatch("me")]
+    public async Task<IActionResult> UpdateMe([FromBody] UpdateUserProfileDTO dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.DisplayName))
-            return BadRequest(new { message = "Nazwa nie może być pusta." });
+        var userId = GetUserId();
 
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (!int.TryParse(userIdClaim, out var userId))
-            return Unauthorized();
-
-        var (success, error, user) = await _userService.UpdateDisplayNameAsync(userId, dto.DisplayName);
-
-        if (!success)
-            return BadRequest(new { message = error });
-
-        return Ok(user);
-    }
-    
-    // update username
-    [Authorize]
-    [HttpPut("username")]
-    public async Task<IActionResult> UpdateUsername([FromBody] UpdateUsernameDTO dto)
-    {
-        if (string.IsNullOrWhiteSpace(dto.Username))
-            return BadRequest(new { message = "Nazwa użytkownika nie może być pusta." });
-
-        var normalizedUsername = dto.Username.Trim().ToLower();
-        
-        if (normalizedUsername.Length < 3)
-            return BadRequest(new { message = "Nazwa użytkownika musi mieć co najmniej 3 znaki." });
-
-        if (normalizedUsername.Length > 20)
-            return BadRequest(new { message = "Nazwa użytkownika nie może być dłuższa niż 20 znaków." });
-        
-        if (!Regex.IsMatch(normalizedUsername, "^[a-z0-9_]+$"))
-            return BadRequest(new { message = "Nazwa użytkownika może zawierać tylko litery, cyfry i podkreślniki." });
-
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var (success, error, user) = await _userService.UpdateUsernameAsync(userId, normalizedUsername);
-
-        if (!success)
-            return BadRequest(new { message = error });
-
-        return Ok(user);
-    }
-    
-    // update birthdate
-    [Authorize]
-    [HttpPut("birth-date")]
-    public async Task<IActionResult> UpdateBirthDate([FromBody] UpdateBirthDateDTO dto)
-    {
-        if (dto.BirthDate == default)
-            return BadRequest(new { message = "Birth date is required." });
-
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (!int.TryParse(userIdClaim, out var userId))
-            return Unauthorized();
-
-        var (success, error, user) = await _userService.UpdateBirthDateAsync(userId, dto.BirthDate);
-
-        if (!success)
-            return BadRequest(new { message = error });
-
-        return Ok(user);
-    }
-    
-    // update gender
-    [Authorize]
-    [HttpPut("gender")]
-    public async Task<IActionResult> UpdateGender([FromBody] UpdateGenderDTO dto)
-    {
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (!int.TryParse(userIdClaim, out var userId))
-            return Unauthorized();
-        
-        var result = await _userService.UpdateGenderAsync(userId, dto.GenderId);
+        var result = await _userService.UpdateProfileAsync(userId, dto);
 
         if (!result.Success)
-            return BadRequest(new { error = result.Error });
+            return BadRequest(new { message = result.Error });
 
         return Ok(result.User);
     }
-    
-    // update languages
-    [Authorize]
-    [HttpPut("languages")]
-    public async Task<IActionResult> UpdateLanguages([FromBody] UpdateLanguagesDTO dto)
-    {
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (!int.TryParse(userIdClaim, out var userId))
-            return Unauthorized();
-
-        var (success, error) = await _userService.UpdateLanguagesAsync(userId, dto.LanguageIds);
-
-        if (!success)
-            return BadRequest(new { message = error });
-
-        return Ok(new { message = "Languages updated." });
-    }
-    
-    // update pronouns
-    [Authorize]
-    [HttpPut("pronouns")]
-    public async Task<IActionResult> UpdatePronouns([FromBody] UpdatePronounsDTO dto)
-    {
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (!int.TryParse(userIdClaim, out var userId))
-            return Unauthorized();
-        
-        var result = await _userService.UpdatePronounsAsync(userId, dto.PronounsId);
-
-        if (!result.Success)
-            return BadRequest(new { error = result.Error });
-
-        return Ok(result.User);
-    }
-    
-    // update bio
-    [Authorize]
-    [HttpPut("aboutme")]
-    public async Task<IActionResult> UpdateBio([FromBody] UpdateBioDTO dto)
-    {
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (!int.TryParse(userIdClaim, out var userId))
-            return Unauthorized();
-
-        var (success, error, user) = await _userService.UpdateBioAsync(userId, dto.AboutMe);
-
-        if (!success)
-            return BadRequest(new { message = error });
-
-        return Ok(user);
-    }
-    
-    
 }

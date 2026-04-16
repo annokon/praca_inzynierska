@@ -127,5 +127,42 @@ public class UserRepository : IUserRepository
     {
         await _context.SaveChangesAsync();
     }
+    
+    public async Task<bool> ValidatePersonalityType(int personalityId) =>
+        await _context.PersonalityTypeOptions.AnyAsync(p => p.IdPersonalityType == personalityId);
+    
+    public async Task<bool> ValidateAlcoholPreference(int alcoholId) =>
+        await _context.AlcoholPreferenceOptions.AnyAsync(a => a.IdAlcoholPreference == alcoholId);
+    
+    public async Task<bool> ValidateSmokingPreference(int smokingId) =>
+        await _context.SmokingPreferenceOptions.AnyAsync(s => s.IdSmokingPreference == smokingId);
+    
+    public async Task<bool> ValidatePronouns(int pronounsId) =>
+        await _context.PronounOptions.AnyAsync(p => p.IdPronoun == pronounsId);
+
+    public async Task<bool> ValidateDrivingLicense(int drivingLicenseId) =>
+        await _context.DrivingLicenseOptions.AnyAsync(d => d.IdDrivingLicense == drivingLicenseId);
+
+    public async Task<bool> ValidateTravelExperience(int travelExperienceId) =>
+        await _context.TravelExperienceOptions.AnyAsync(t => t.IdTravelExperience == travelExperienceId);
+    
+    public async Task<bool> ValidateInterest(int id) =>
+        await _context.Interests.AnyAsync(i => i.IdInterest == id);
+
+    public async Task<bool> ValidateTravelStyle(int id) =>
+        await _context.TravelStyles.AnyAsync(t => t.IdTravelStyle == id);
+
+    public async Task<bool> ValidateTransportMode(int id) =>
+        await _context.TransportModes.AnyAsync(t => t.IdTransportMode == id);
+    
+    public async Task<bool> ValidateLanguages(List<int> ids)
+    {
+        var distinct = ids.Distinct().ToList();
+
+        var count = await _context.Languages
+            .CountAsync(l => distinct.Contains(l.IdLanguage));
+
+        return count == distinct.Count;
+    }
 
 }
