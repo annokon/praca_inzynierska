@@ -15,4 +15,8 @@ public interface IUserService
     Task<UserDTO?> GetByIdAsync(int id);
     Task<UserProfileDTO?> GetProfileAsync(int id);
     Task<(bool Success, string? Error, UserDTO? User)> UpdateProfileAsync(int userId, UpdateUserProfileDTO dto);
+    Task<(bool Success, string? Error, string? ProfilePath, string? BannerPath)>
+        UpdateImagesAsync(int userId, IFormFile? profileImage, IFormFile? bannerImage);
+
+    Task<UserImagesDTO?> GetUserImagesAsync(int userId);
 }

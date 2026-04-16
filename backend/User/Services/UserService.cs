@@ -748,4 +748,75 @@ public class UserService(
             Bio = user.Bio
         });
     }
+    
+    public async Task<(bool Success, string? Error, string? ProfilePath, string? BannerPath)>
+        UpdateImagesAsync(int userId, IFormFile? profileImage, IFormFile? bannerImage)
+    {
+        var user = await userRepository.GetByIdUserAsync(userId);
+        if (user == null)
+            return (false, "User not found", null, null);
+
+        var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        Directory.CreateDirectory(uploadsDir);
+
+        string? profilePath = null;
+        string? bannerPath = null;
+
+        // =====================
+        // PROFILE IMAGE
+        // =====================
+        if (profileImage != null)
+        {
+            if (!profileImage.ContentType.StartsWith("image/"))
+                return (false, "Invalid profile image", null, null);
+
+            var fileName = $"profile_{userId}_{Guid.NewGuid()}{Path.GetExtension(profileImage.FileName)}";
+            var filePath = Path.Combine(uploadsDir, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await profileImage.CopyToAsync(stream);
+            }
+
+            profilePath = $"/uploads/{fileName}";
+            user.ProfilePhotoPath = profilePath;
+        }
+
+        // =====================
+        // BANNER IMAGE
+        // =====================
+        if (bannerImage != null)
+        {
+            if (!bannerImage.ContentType.StartsWith("image/"))
+                return (false, "Invalid banner image", null, null);
+
+            var fileName = $"banner_{userId}_{Guid.NewGuid()}{Path.GetExtension(bannerImage.FileName)}";
+            var filePath = Path.Combine(uploadsDir, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await bannerImage.CopyToAsync(stream);
+            }
+
+            bannerPath = $"/uploads/{fileName}";
+            user.BackgroundPhotoPath = bannerPath;
+        }
+
+        user.UpdatedAt = DateTime.UtcNow;
+        await userRepository.SaveChangesAsync();
+
+        return (true, null, profilePath, bannerPath);
+    }
+    
+    public async Task<UserImagesDTO?> GetUserImagesAsync(int userId)
+    {
+        var user = await userRepository.GetByIdUserAsync(userId);
+        if (user == null) return null;
+
+        return new UserImagesDTO
+        {
+            Profile = user.ProfilePhotoPath,
+            Banner = user.BackgroundPhotoPath
+        };
+    }
 }

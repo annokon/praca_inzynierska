@@ -19,6 +19,9 @@ export default function ProfileHeader({
                                           username,
                                           isMe,
 
+                                          profileImage,
+                                          bannerImage,
+
                                           liked = false,
                                           onLikeClick,
 
@@ -37,27 +40,42 @@ export default function ProfileHeader({
 
     return (
         <header className="ph-wrap">
+            <div
+                className="ph-banner"
+                style={{
+                    backgroundImage: bannerImage
+                        ? `url(http://localhost:5292/${bannerImage})`
+                        : "none"
+                }}
+            />
             <div className="ph-inner">
                 <div className="ph-left">
                     <div className="ph-avatar" aria-hidden="true">
-                        <svg
-                            viewBox="0 0 24 24"
-                            width="34"
-                            height="34"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5Z"
-                                fill="currentColor"
+                        {profileImage ? (
+                            <img
+                                src={`http://localhost:5292/${profileImage}`}
+                                alt="avatar"
                             />
-                            <path
-                                d="M4 22c0-4.418 3.582-8 8-8s8 3.582 8 8"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                            />
-                        </svg>
+                        ) : (
+                            <svg
+                                viewBox="0 0 24 24"
+                                width="34"
+                                height="34"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5Z"
+                                    fill="currentColor"
+                                />
+                                <path
+                                    d="M4 22c0-4.418 3.582-8 8-8s8 3.582 8 8"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                        )}
                     </div>
 
                     <div className="ph-meta">

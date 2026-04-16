@@ -35,13 +35,30 @@ export default function SettingsAppearance() {
         return () => URL.revokeObjectURL(objectUrl);
     }, [bannerFile]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("Nowe profilowe:", profileFile);
-        console.log("Nowy banner:", bannerFile);
+        const formData = new FormData();
 
-        navigate(-1);
+        if (profileFile) formData.append("profileImage", profileFile);
+        if (bannerFile) formData.append("bannerImage", bannerFile);
+
+        try {
+            const res = await fetch("http://localhost:5292/api/users/me/images", {
+                method: "POST",
+                body: formData,
+                credentials: "include",
+            });
+
+            if (!res.ok) throw new Error("Upload failed");
+
+            const data = await res.json();
+            console.log(data);
+
+            navigate(-1);
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (

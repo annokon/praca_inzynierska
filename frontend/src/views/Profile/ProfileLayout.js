@@ -24,6 +24,7 @@ function calculateAge(birthDate) {
 
 export default function ProfileLayout() {
     const [profile, setProfile] = useState(null);
+    const [images, setImages] = useState({profile: null, banner: null});
     const [loading, setLoading] = useState(true);
 
     const topRef = useRef(null);
@@ -43,6 +44,7 @@ export default function ProfileLayout() {
                 const data = await res.json();
 
                 setProfile({
+                    id: data.id,
                     name: data.displayName,
                     username: data.username,
                     email: data.email,
@@ -58,6 +60,19 @@ export default function ProfileLayout() {
                     languages: data.languages ?? [],
                     additional: data.additional ?? {},
                 });
+
+                const imgRes = await fetch(`http://localhost:5292/api/users/${data.id}/images`, {
+                    credentials: "include",
+                });
+
+                if (imgRes.ok) {
+                    const imgData = await imgRes.json();
+
+                    setImages({
+                        profile: imgData.profile,
+                        banner: imgData.banner
+                    });
+                }
 
             } catch (e) {
                 console.error("Błąd pobierania profilu", e);
@@ -109,6 +124,8 @@ export default function ProfileLayout() {
                     username={profile.username}
                     isMe={isMe}
                     rating={4.8}    //TODO
+                    profileImage={images.profile}
+                    bannerImage={images.banner}
                 />
                 <ProfileTabs isMe={isMe} />
             </div>

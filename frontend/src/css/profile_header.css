@@ -223,3 +223,18 @@
         min-width: 0;
     }
 }
+
+.ph-banner {
+    width: 100%;
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 0 16px 16px;
+}
+
+.ph-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}

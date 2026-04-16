@@ -190,4 +190,29 @@ public class UsersController : ControllerBase
 
         return Ok(result.User);
     }
+    
+    [Authorize]
+    [HttpPost("me/images")]
+    public async Task<IActionResult> UploadImages(IFormFile? profileImage, IFormFile? bannerImage)
+    {
+        var userId = GetUserId();
+
+        var result = await _userService.UpdateImagesAsync(userId, profileImage, bannerImage);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok(result);
+    }
+    
+    [HttpGet("{id}/images")]
+    public async Task<IActionResult> GetUserImages(int id)
+    {
+        var user = await _userService.GetUserImagesAsync(id);
+
+        if (user == null)
+            return NotFound(new { message = "User not found" });
+
+        return Ok(user);
+    }
 }

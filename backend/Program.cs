@@ -111,6 +111,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseStaticFiles();
+
 // sample data
 using (var scope = app.Services.CreateScope())
 {
