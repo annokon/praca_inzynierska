@@ -33,6 +33,9 @@ import SettingsEditAlcohol from "./views/Settings/SettingsChangeAdditionalInfo/S
 import SettingsEditSmoking from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditSmoking";
 import SettingsEditDrivingLicense from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditDrivingLicense";
 import SettingsEditTravelStyle from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditTravelStyle";
+import SettingsEditInterests from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditInterests";
+import SettingsEditTransportMode from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditTransportMode";
+import SettingsEditTravelExperience from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditTravelExperience";
 
 function App() {
     return (
@@ -75,6 +78,9 @@ function App() {
                         <Route path="/settings-smoking" element={<SettingsEditSmoking />} />
                         <Route path="/settings-driving-license" element={<SettingsEditDrivingLicense />} />
                         <Route path="/settings-travel-style" element={<SettingsEditTravelStyle />} />
+                        <Route path="/settings-interests" element={<SettingsEditInterests />} />
+                        <Route path="/settings-transport" element={<SettingsEditTransportMode />} />
+                        <Route path="/settings-experience" element={<SettingsEditTravelExperience />} />
                     </Route>
                 </Routes>
             </BrowserRouter>

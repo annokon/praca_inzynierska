@@ -1,35 +1,50 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
 import "../../../css/login_register.css";
 
-function getUserTravelStyleIds(user, allTravelStyles) {
+function getUserTransportModeIds(user, allTransportModes) {
     if (!user) return [];
 
-    if (Array.isArray(user.travelStyles)) {
-        return user.travelStyles
-            .map((style) => {
-                if (typeof style === "number") return style;
+    if (Array.isArray(user.transport)) {
+        return user.transport
+            .map((modeName) => {
+                if (typeof modeName !== "string") return null;
 
-                if (typeof style === "string") {
-                    const matched = allTravelStyles.find(
+                const matched = allTransportModes.find(
+                    (option) =>
+                        option.name.trim().toLowerCase() === modeName.trim().toLowerCase()
+                );
+
+                return matched?.id ?? null;
+            })
+            .filter(Boolean);
+    }
+
+    if (Array.isArray(user.transportModes)) {
+        return user.transportModes
+            .map((mode) => {
+                if (typeof mode === "number") return mode;
+
+                if (typeof mode === "string") {
+                    const matched = allTransportModes.find(
                         (option) =>
-                            option.name.trim().toLowerCase() === style.trim().toLowerCase()
+                            option.name.trim().toLowerCase() === mode.trim().toLowerCase()
                     );
-                    return matched?.id;
+                    return matched?.id ?? null;
                 }
 
-                if (typeof style === "object" && style !== null) {
-                    if (style.id != null) return style.id;
-                    if (style.travelStyleId != null) return style.travelStyleId;
+                if (typeof mode === "object" && mode !== null) {
+                    if (mode.id != null) return mode.id;
+                    if (mode.transportModeId != null) return mode.transportModeId;
 
-                    if (style.name) {
-                        const matched = allTravelStyles.find(
+                    if (mode.name) {
+                        const matched = allTransportModes.find(
                             (option) =>
-                                option.name.trim().toLowerCase() === style.name.trim().toLowerCase()
+                                option.name.trim().toLowerCase() === mode.name.trim().toLowerCase()
                         );
-                        return matched?.id;
+                        return matched?.id ?? null;
                     }
                 }
 
@@ -38,43 +53,39 @@ function getUserTravelStyleIds(user, allTravelStyles) {
             .filter(Boolean);
     }
 
-    if (Array.isArray(user.travelStyleIds)) {
-        return user.travelStyleIds.filter(Boolean);
+    if (Array.isArray(user.transportModeIds)) {
+        return user.transportModeIds.filter(Boolean);
     }
 
-    if (Array.isArray(user.userTravelStyles)) {
-        return user.userTravelStyles
-            .map((style) => style.travelStyleId ?? style.id)
+    if (Array.isArray(user.userTransportModes)) {
+        return user.userTransportModes
+            .map((mode) => mode.transportModeId ?? mode.id)
             .filter(Boolean);
     }
 
-    if (user.travelStyleId != null) {
-        return [user.travelStyleId];
+    if (user.transportModeId != null) {
+        return [user.transportModeId];
     }
 
-    if (user.preferredTravelStyleId != null) {
-        return [user.preferredTravelStyleId];
-    }
-
-    if (user.travelStyle?.id != null) {
-        return [user.travelStyle.id];
+    if (user.transportMode?.id != null) {
+        return [user.transportMode.id];
     }
 
     return [];
 }
 
-export default function SettingsEditTravelStyle() {
+export default function SettingsEditTransportMode() {
     const navigate = useNavigate();
     const { user, setUser, loading } = useContext(AuthContext);
 
-    const [allTravelStyles, setAllTravelStyles] = useState([]);
-    const [selectedTravelStyles, setSelectedTravelStyles] = useState([]);
+    const [allTransportModes, setAllTransportModes] = useState([]);
+    const [selectedTransportModes, setSelectedTransportModes] = useState([]);
     const [status, setStatus] = useState("");
 
     useEffect(() => {
-        const loadTravelStyles = async () => {
+        const loadTransportModes = async () => {
             try {
-                const response = await fetch("http://localhost:5292/api/travelstyles", {
+                const response = await fetch("http://localhost:5292/api/transportmodes", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"
@@ -87,27 +98,27 @@ export default function SettingsEditTravelStyle() {
                 }
 
                 const data = await response.json();
-                setAllTravelStyles(data || []);
+                setAllTransportModes(data || []);
             } catch (e) {
-                console.error("Błąd ładowania stylów podróżowania:", e);
-                setStatus("Nie udało się pobrać listy stylów podróżowania.");
+                console.error("Błąd ładowania środków transportu:", e);
+                setStatus("Nie udało się pobrać listy środków transportu.");
             }
         };
 
-        loadTravelStyles();
+        loadTransportModes();
     }, []);
 
     useEffect(() => {
-        if (!user || allTravelStyles.length === 0) return;
+        if (!user || allTransportModes.length === 0) return;
 
-        const ids = getUserTravelStyleIds(user, allTravelStyles);
-        setSelectedTravelStyles(ids);
-    }, [user, allTravelStyles]);
+        const ids = getUserTransportModeIds(user, allTransportModes);
+        setSelectedTransportModes(ids);
+    }, [user, allTransportModes]);
 
-    function handleToggleTravelStyle(id) {
-        setSelectedTravelStyles((prev) => {
+    function handleToggleTransportMode(id) {
+        setSelectedTransportModes((prev) => {
             if (prev.includes(id)) {
-                return prev.filter((styleId) => styleId !== id);
+                return prev.filter((modeId) => modeId !== id);
             }
 
             return [...prev, id];
@@ -146,21 +157,21 @@ export default function SettingsEditTravelStyle() {
                 },
                 credentials: "include",
                 body: JSON.stringify({
-                    travelStyleIds: selectedTravelStyles
+                    transportModeIds: selectedTransportModes
                 })
             });
 
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
-                setStatus(data.message || "Nie udało się zapisać stylów podróżowania.");
+                setStatus(data.message || "Nie udało się zapisać środków transportu.");
                 return;
             }
 
             await refreshUser();
             navigate(-1);
         } catch (e) {
-            console.error("Błąd zapisu stylów podróżowania:", e);
+            console.error("Błąd zapisu środków transportu:", e);
             setStatus("Wystąpił błąd połączenia z serwerem.");
         }
     };
@@ -168,8 +179,8 @@ export default function SettingsEditTravelStyle() {
     const handleRemoveAll = async () => {
         setStatus("");
 
-        if (selectedTravelStyles.length === 0) {
-            setStatus("Nie masz ustawionych stylów podróżowania.");
+        if (selectedTransportModes.length === 0) {
+            setStatus("Nie masz ustawionych środków transportu.");
             return;
         }
 
@@ -183,21 +194,21 @@ export default function SettingsEditTravelStyle() {
                 },
                 credentials: "include",
                 body: JSON.stringify({
-                    travelStyleIds: []
+                    transportModeIds: []
                 })
             });
 
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
-                setStatus(data.message || "Nie udało się usunąć stylów podróżowania.");
+                setStatus(data.message || "Nie udało się usunąć środków transportu.");
                 return;
             }
 
             await refreshUser();
             navigate(-1);
         } catch (e) {
-            console.error("Błąd usuwania stylów podróżowania:", e);
+            console.error("Błąd usuwania środków transportu:", e);
             setStatus("Wystąpił błąd połączenia z serwerem.");
         }
     };
@@ -207,30 +218,30 @@ export default function SettingsEditTravelStyle() {
             <section className="settings-panel settings-panel--form" aria-label="Ustawienia">
                 <header className="settings-header">
                     <h1 className="settings-title">Ustawienia</h1>
-                    <p className="settings-subtitle">Edytuj style podróżowania</p>
+                    <p className="settings-subtitle">Edytuj preferowane środki transportu</p>
                 </header>
 
                 <form className="settings-content settings-form" onSubmit={handleSubmit}>
                     <section className="settings-section">
                         <div className="settings-field">
                             <label className="settings-label">
-                                Wybierz style podróżowania
+                                Wybierz preferowane środki transportu
                             </label>
 
                             <div className="pill-group">
-                                {allTravelStyles.length > 0 ? (
-                                    allTravelStyles.map((style) => {
-                                        const isSelected = selectedTravelStyles.includes(style.id);
+                                {allTransportModes.length > 0 ? (
+                                    allTransportModes.map((mode) => {
+                                        const isSelected = selectedTransportModes.includes(mode.id);
 
                                         return (
                                             <button
-                                                key={style.id}
+                                                key={mode.id}
                                                 type="button"
                                                 className={`pill pill--selectable ${isSelected ? "pill--selected" : ""}`}
-                                                onClick={() => handleToggleTravelStyle(style.id)}
+                                                onClick={() => handleToggleTransportMode(mode.id)}
                                                 aria-pressed={isSelected}
                                             >
-                                                <span>{style.name}</span>
+                                                <span>{mode.name}</span>
                                                 {isSelected && (
                                                     <span className="pill__close" aria-hidden="true">
                                                         ×
@@ -241,7 +252,7 @@ export default function SettingsEditTravelStyle() {
                                     })
                                 ) : (
                                     <p className="settings-status">
-                                        Brak dostępnych stylów podróżowania.
+                                        Brak dostępnych środków transportu.
                                     </p>
                                 )}
                             </div>
