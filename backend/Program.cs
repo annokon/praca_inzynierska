@@ -120,7 +120,7 @@ app.MapControllers();
 var placeholdersSource = Path.Combine(
     app.Environment.ContentRootPath,
     "Resources",
-    "placeholders"
+    "Placeholders"
 );
 
 var placeholdersTarget = Path.Combine(
