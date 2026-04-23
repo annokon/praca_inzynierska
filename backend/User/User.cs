@@ -125,11 +125,11 @@ public class User
 
     [Column("is_blocked")]
     public bool IsBlocked { get; set; } = false;
-    
+
     [Column("currency")]
     [Required]
     [MaxLength(3)]
-    public string? Currency { get; set; }
+    public string Currency { get; set; } = null!;
 
     [Column("system_language")]
     [Required]

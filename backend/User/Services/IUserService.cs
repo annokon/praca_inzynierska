@@ -19,4 +19,6 @@ public interface IUserService
         UpdateImagesAsync(int userId, IFormFile? profileImage, IFormFile? bannerImage);
 
     Task<UserImagesDTO?> GetUserImagesAsync(int userId);
+    Task<(bool Success, string? Error)> UpdateCurrencyAsync(int userId, string currency);
+    Task<List<string>> GetAvailableCurrenciesAsync();
 }

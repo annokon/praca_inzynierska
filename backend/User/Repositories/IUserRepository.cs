@@ -26,5 +26,6 @@ public interface IUserRepository
     Task<bool> ValidateTravelStyle(int id);
     Task<bool> ValidateTransportMode(int id);
     Task<bool> ValidateLanguages(List<int> ids);
+    Task<bool> UpdateCurrencyAsync(int userId, string currency);
 
 }
