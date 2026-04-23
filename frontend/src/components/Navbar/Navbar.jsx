@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Navbar.css";
 import logo from "../../assets/logo.png";
 import useAuth from "../../hooks/useAuth";
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
     const { user, loading } = useAuth();
+    const navigate = useNavigate();
+
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [showResults, setShowResults] = useState(false);
+    const searchRef = useRef(null);
 
     const handleLogout = async () => {
         await fetch("http://localhost:5292/api/users/logout", {
@@ -13,6 +19,79 @@ export default function Navbar() {
             credentials: "include"
         });
         window.location.reload();
+    };
+
+    useEffect(() => {
+        const timeout = setTimeout(async () => {
+            const trimmed = searchValue.trim();
+
+            if (trimmed.length < 3) {
+                setSearchResults([]);
+                setShowResults(false);
+                return;
+            }
+
+            try {
+                const res = await fetch(
+                    `http://localhost:5292/api/users/search?query=${encodeURIComponent(trimmed)}&limit=10`,
+                    {
+                        method: "GET",
+                        credentials: "include"
+                    }
+                );
+
+                if (!res.ok) {
+                    setSearchResults([]);
+                    setShowResults(false);
+                    return;
+                }
+
+                const data = await res.json();
+
+                const users = Array.isArray(data) ? data : [];
+                setSearchResults(users.slice(0, 10));
+                setShowResults(true);
+            } catch (err) {
+                console.error("Błąd wyszukiwania użytkowników:", err);
+                setSearchResults([]);
+                setShowResults(false);
+            }
+        }, 300);
+
+        return () => clearTimeout(timeout);
+    }, [searchValue]);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setShowResults(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleSelectUser = (username) => {
+        setSearchValue(username);
+        setShowResults(false);
+        navigate(`/profile/${username}/about-user`);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const trimmed = searchValue.trim();
+        if (!trimmed) return;
+
+        setShowResults(false);
+        navigate(`/profile/${trimmed}/about-user`);
+    };
+
+    const handleClear = () => {
+        setSearchValue("");
+        setSearchResults([]);
+        setShowResults(false);
     };
 
     return (
@@ -32,9 +111,43 @@ export default function Navbar() {
             </div>
 
             <div className="navbar-right">
-                <div className="search-box">
-                    <input type="text" placeholder="Wyszukaj użytkownika" />
-                    <button>&times;</button>
+                <div className="search-box-wrapper" ref={searchRef}>
+                    <form className="search-box" onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            placeholder="Wyszukaj użytkownika"
+                            value={searchValue}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                            onFocus={() => {
+                                if (searchResults.length > 0) {
+                                    setShowResults(true);
+                                }
+                            }}
+                        />
+                        <button type="button" onClick={handleClear}>
+                            &times;
+                        </button>
+                    </form>
+
+                    {showResults && (
+                        <div className="search-results">
+                            {searchResults.length > 0 ? (
+                                searchResults.map((searchedUser) => (
+                                    <div
+                                        key={searchedUser.id || searchedUser.username}
+                                        className="search-result-item"
+                                        onClick={() => handleSelectUser(searchedUser.username)}
+                                    >
+                                        {searchedUser.username}
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="search-result-empty">
+                                    Brak użytkowników o podanej nazwie
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {loading ? null : (
