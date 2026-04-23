@@ -294,6 +294,43 @@ namespace backend.Migrations
                         });
                 });
 
+            modelBuilder.Entity("backend.Interest.Interest", b =>
+                {
+                    b.Property<int>("IdInterest")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_interest");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdInterest"));
+
+                    b.Property<string>("InterestName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("interest_name");
+
+                    b.HasKey("IdInterest");
+
+                    b.ToTable("interest");
+                });
+
+            modelBuilder.Entity("backend.Interest.UserInterest", b =>
+                {
+                    b.Property<int>("IdInterest")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_interest");
+
+                    b.Property<int>("IdUser")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_user");
+
+                    b.HasKey("IdInterest", "IdUser");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("user_interest");
+                });
+
             modelBuilder.Entity("backend.Language.Language", b =>
                 {
                     b.Property<int>("IdLanguage")
@@ -312,6 +349,23 @@ namespace backend.Migrations
                     b.HasKey("IdLanguage");
 
                     b.ToTable("language");
+                });
+
+            modelBuilder.Entity("backend.Language.UserLanguage", b =>
+                {
+                    b.Property<int>("IdLanguage")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_language");
+
+                    b.Property<int>("IdUser")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_user");
+
+                    b.HasKey("IdLanguage", "IdUser");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("user_language");
                 });
 
             modelBuilder.Entity("backend.Models.Badge", b =>
@@ -419,26 +473,6 @@ namespace backend.Migrations
                     b.HasIndex("IdUserFavourite");
 
                     b.ToTable("favourite");
-                });
-
-            modelBuilder.Entity("backend.Models.Interest", b =>
-                {
-                    b.Property<int>("IdInterest")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id_interest");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdInterest"));
-
-                    b.Property<string>("InterestName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("interest_name");
-
-                    b.HasKey("IdInterest");
-
-                    b.ToTable("interest");
                 });
 
             modelBuilder.Entity("backend.Models.Message", b =>
@@ -619,82 +653,6 @@ namespace backend.Migrations
                     b.ToTable("search_filter");
                 });
 
-            modelBuilder.Entity("backend.Models.Trip", b =>
-                {
-                    b.Property<int>("IdTrip")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id_trip");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTrip"));
-
-                    b.Property<decimal>("BudgetAmount")
-                        .HasColumnType("numeric")
-                        .HasColumnName("budget_amount");
-
-                    b.Property<string>("BudgetCurrency")
-                        .IsRequired()
-                        .HasMaxLength(3)
-                        .HasColumnType("character varying(3)")
-                        .HasColumnName("budget_currency");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)")
-                        .HasColumnName("description");
-
-                    b.Property<string>("Destination")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("destination");
-
-                    b.Property<int>("DurationDays")
-                        .HasColumnType("integer")
-                        .HasColumnName("duration_days");
-
-                    b.Property<DateOnly?>("EndDate")
-                        .HasColumnType("date")
-                        .HasColumnName("end_date");
-
-                    b.Property<bool>("IsArchived")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_archived");
-
-                    b.Property<bool>("IsReported")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_reported");
-
-                    b.Property<DateOnly?>("StartDate")
-                        .HasColumnType("date")
-                        .HasColumnName("start_date");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("title");
-
-                    b.Property<string>("TravelType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("travel_type");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("IdTrip");
-
-                    b.ToTable("trip");
-                });
-
             modelBuilder.Entity("backend.Models.TripInvitation", b =>
                 {
                     b.Property<int>("IdTripInvitation")
@@ -778,182 +736,6 @@ namespace backend.Migrations
                     b.ToTable("trip_photo");
                 });
 
-            modelBuilder.Entity("backend.Models.User", b =>
-                {
-                    b.Property<int>("IdUser")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id_user");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdUser"));
-
-                    b.Property<int?>("AlcoholPreferenceId")
-                        .HasMaxLength(50)
-                        .HasColumnType("integer")
-                        .HasColumnName("alcohol_preference");
-
-                    b.Property<string>("BackgroundPhotoPath")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("background_photo_path");
-
-                    b.Property<string>("Bio")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("bio");
-
-                    b.Property<DateOnly>("BirthDate")
-                        .HasColumnType("date")
-                        .HasColumnName("birth_date");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasMaxLength(3)
-                        .HasColumnType("character varying(3)")
-                        .HasColumnName("currency");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("delete_date");
-
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("display_name");
-
-                    b.Property<int?>("DrivingLicenseId")
-                        .HasMaxLength(20)
-                        .HasColumnType("integer")
-                        .HasColumnName("driving_license_type");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(320)
-                        .HasColumnType("character varying(320)")
-                        .HasColumnName("email");
-
-                    b.Property<int>("EmailVerificationAttempts")
-                        .HasColumnType("integer")
-                        .HasColumnName("email_verification_attempts");
-
-                    b.Property<string>("EmailVerificationCodeHash")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("email_verification_code_hash");
-
-                    b.Property<DateTime?>("EmailVerificationExpiresAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("email_verification_expires_at");
-
-                    b.Property<bool>("EmailVerified")
-                        .HasColumnType("boolean")
-                        .HasColumnName("email_verified");
-
-                    b.Property<int?>("GenderId")
-                        .HasMaxLength(20)
-                        .HasColumnType("integer")
-                        .HasColumnName("gender");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_active");
-
-                    b.Property<bool>("IsBlocked")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_blocked");
-
-                    b.Property<string>("Location")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("location");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("password_hash");
-
-                    b.Property<int?>("PersonalityTypeId")
-                        .HasMaxLength(20)
-                        .HasColumnType("integer")
-                        .HasColumnName("personality_type");
-
-                    b.Property<string>("ProfilePhotoPath")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("profile_photo_path");
-
-                    b.Property<int?>("PronounsId")
-                        .HasMaxLength(20)
-                        .HasColumnType("integer")
-                        .HasColumnName("pronouns");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("role");
-
-                    b.Property<int?>("SmokingPreferenceId")
-                        .HasMaxLength(50)
-                        .HasColumnType("integer")
-                        .HasColumnName("smoking_preference");
-
-                    b.Property<string>("SystemLanguage")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("system_language");
-
-                    b.Property<bool>("ToBeDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("to_be_deleted");
-
-                    b.Property<int?>("TravelExperienceId")
-                        .HasMaxLength(50)
-                        .HasColumnType("integer")
-                        .HasColumnName("travel_experience");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("username");
-
-                    b.HasKey("IdUser");
-
-                    b.HasIndex("AlcoholPreferenceId");
-
-                    b.HasIndex("DrivingLicenseId");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("GenderId");
-
-                    b.HasIndex("PersonalityTypeId");
-
-                    b.HasIndex("PronounsId");
-
-                    b.HasIndex("SmokingPreferenceId");
-
-                    b.HasIndex("TravelExperienceId");
-
-                    b.HasIndex("Username")
-                        .IsUnique();
-
-                    b.ToTable("user");
-                });
-
             modelBuilder.Entity("backend.Models.UserBadge", b =>
                 {
                     b.Property<int>("IdUser")
@@ -986,74 +768,6 @@ namespace backend.Migrations
                     b.HasIndex("IdUser");
 
                     b.ToTable("user_chat");
-                });
-
-            modelBuilder.Entity("backend.Models.UserInterest", b =>
-                {
-                    b.Property<int>("IdInterest")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_interest");
-
-                    b.Property<int>("IdUser")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_user");
-
-                    b.HasKey("IdInterest", "IdUser");
-
-                    b.HasIndex("IdUser");
-
-                    b.ToTable("user_interest");
-                });
-
-            modelBuilder.Entity("backend.Models.UserLanguage", b =>
-                {
-                    b.Property<int>("IdLanguage")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_language");
-
-                    b.Property<int>("IdUser")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_user");
-
-                    b.HasKey("IdLanguage", "IdUser");
-
-                    b.HasIndex("IdUser");
-
-                    b.ToTable("user_language");
-                });
-
-            modelBuilder.Entity("backend.Models.UserTransportMode", b =>
-                {
-                    b.Property<int>("IdTransportMode")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_transport_mode");
-
-                    b.Property<int>("IdUser")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_user");
-
-                    b.HasKey("IdTransportMode", "IdUser");
-
-                    b.HasIndex("IdUser");
-
-                    b.ToTable("user_transport_mode");
-                });
-
-            modelBuilder.Entity("backend.Models.UserTravelStyle", b =>
-                {
-                    b.Property<int>("IdTravelStyle")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_travel_style");
-
-                    b.Property<int>("IdUser")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_user");
-
-                    b.HasKey("IdTravelStyle", "IdUser");
-
-                    b.HasIndex("IdUser");
-
-                    b.ToTable("user_travel_style");
                 });
 
             modelBuilder.Entity("backend.TransportMode.TransportMode", b =>
@@ -1111,6 +825,23 @@ namespace backend.Migrations
                             IdTransportMode = 7,
                             TransportModeName = "Prom"
                         });
+                });
+
+            modelBuilder.Entity("backend.TransportMode.UserTransportMode", b =>
+                {
+                    b.Property<int>("IdTransportMode")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_transport_mode");
+
+                    b.Property<int>("IdUser")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_user");
+
+                    b.HasKey("IdTransportMode", "IdUser");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("user_transport_mode");
                 });
 
             modelBuilder.Entity("backend.TravelStyle.TravelStyle", b =>
@@ -1185,15 +916,309 @@ namespace backend.Migrations
                         });
                 });
 
+            modelBuilder.Entity("backend.TravelStyle.UserTravelStyle", b =>
+                {
+                    b.Property<int>("IdTravelStyle")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_travel_style");
+
+                    b.Property<int>("IdUser")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_user");
+
+                    b.HasKey("IdTravelStyle", "IdUser");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("user_travel_style");
+                });
+
+            modelBuilder.Entity("backend.Trip.Trip", b =>
+                {
+                    b.Property<int>("IdTrip")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_trip");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTrip"));
+
+                    b.Property<decimal>("BudgetAmount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("budget_amount");
+
+                    b.Property<string>("BudgetCurrency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("budget_currency");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Destination")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("destination");
+
+                    b.Property<int>("DurationDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("duration_days");
+
+                    b.Property<DateOnly?>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_archived");
+
+                    b.Property<bool>("IsReported")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_reported");
+
+                    b.Property<DateOnly?>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("title");
+
+                    b.Property<string>("TravelType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("travel_type");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("IdTrip");
+
+                    b.ToTable("trip");
+                });
+
+            modelBuilder.Entity("backend.User.User", b =>
+                {
+                    b.Property<int>("IdUser")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_user");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdUser"));
+
+                    b.Property<int?>("AlcoholPreferenceId")
+                        .HasColumnType("integer")
+                        .HasColumnName("alcohol_preference");
+
+                    b.Property<string>("BackgroundPhotoPath")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("background_photo_path");
+
+                    b.Property<string>("Bio")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("bio");
+
+                    b.Property<DateOnly>("BirthDate")
+                        .HasColumnType("date")
+                        .HasColumnName("birth_date");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("delete_date");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("display_name");
+
+                    b.Property<int?>("DrivingLicenseId")
+                        .HasColumnType("integer")
+                        .HasColumnName("driving_license_type");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)")
+                        .HasColumnName("email");
+
+                    b.Property<int>("EmailVerificationAttempts")
+                        .HasColumnType("integer")
+                        .HasColumnName("email_verification_attempts");
+
+                    b.Property<string>("EmailVerificationCodeHash")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("email_verification_code_hash");
+
+                    b.Property<DateTime?>("EmailVerificationExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("email_verification_expires_at");
+
+                    b.Property<bool>("EmailVerified")
+                        .HasColumnType("boolean")
+                        .HasColumnName("email_verified");
+
+                    b.Property<int?>("GenderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("gender");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_blocked");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("location");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("password_hash");
+
+                    b.Property<int?>("PersonalityTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("personality_type");
+
+                    b.Property<string>("ProfilePhotoPath")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("profile_photo_path");
+
+                    b.Property<int?>("PronounsId")
+                        .HasColumnType("integer")
+                        .HasColumnName("pronouns");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("role");
+
+                    b.Property<int?>("SmokingPreferenceId")
+                        .HasColumnType("integer")
+                        .HasColumnName("smoking_preference");
+
+                    b.Property<bool>("ToBeDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("to_be_deleted");
+
+                    b.Property<int?>("TravelExperienceId")
+                        .HasColumnType("integer")
+                        .HasColumnName("travel_experience");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("username");
+
+                    b.HasKey("IdUser");
+
+                    b.HasIndex("AlcoholPreferenceId");
+
+                    b.HasIndex("DrivingLicenseId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("GenderId");
+
+                    b.HasIndex("PersonalityTypeId");
+
+                    b.HasIndex("PronounsId");
+
+                    b.HasIndex("SmokingPreferenceId");
+
+                    b.HasIndex("TravelExperienceId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("user");
+                });
+
+            modelBuilder.Entity("backend.Interest.UserInterest", b =>
+                {
+                    b.HasOne("backend.Interest.Interest", "Interest")
+                        .WithMany("UserInterests")
+                        .HasForeignKey("IdInterest")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.User.User", "User")
+                        .WithMany("UserInterests")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Interest");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.Language.UserLanguage", b =>
+                {
+                    b.HasOne("backend.Language.Language", "Language")
+                        .WithMany("UserLanguages")
+                        .HasForeignKey("IdLanguage")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.User.User", "User")
+                        .WithMany("UserLanguages")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Language");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("backend.Models.BlockedUser", b =>
                 {
-                    b.HasOne("backend.Models.User", "Blocked")
+                    b.HasOne("backend.User.User", "Blocked")
                         .WithMany("UsersBlockingThisUser")
                         .HasForeignKey("IdUserBlocked")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", "Blocker")
+                    b.HasOne("backend.User.User", "Blocker")
                         .WithMany("BlockedUsers")
                         .HasForeignKey("IdUserBlocker")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1206,7 +1231,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Chat", b =>
                 {
-                    b.HasOne("backend.Models.Trip", "Trip")
+                    b.HasOne("backend.Trip.Trip", "Trip")
                         .WithMany()
                         .HasForeignKey("IdTrip");
 
@@ -1215,11 +1240,11 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Favourite", b =>
                 {
-                    b.HasOne("backend.Models.User", "User")
+                    b.HasOne("backend.User.User", "User")
                         .WithMany("FavouritesGiven")
                         .HasForeignKey("IdUser");
 
-                    b.HasOne("backend.Models.User", "FavouriteUser")
+                    b.HasOne("backend.User.User", "FavouriteUser")
                         .WithMany("FavouritesReceived")
                         .HasForeignKey("IdUserFavourite");
 
@@ -1236,7 +1261,7 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", "Sender")
+                    b.HasOne("backend.User.User", "Sender")
                         .WithMany()
                         .HasForeignKey("IdUserSender");
 
@@ -1256,7 +1281,7 @@ namespace backend.Migrations
                         .WithOne("Notification")
                         .HasForeignKey("backend.Models.Notification", "IdTripInvitation");
 
-                    b.HasOne("backend.Models.User", "User")
+                    b.HasOne("backend.User.User", "User")
                         .WithMany("Notifications")
                         .HasForeignKey("IdUser");
 
@@ -1275,11 +1300,11 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Review", b =>
                 {
-                    b.HasOne("backend.Models.User", "ReviewedUser")
+                    b.HasOne("backend.User.User", "ReviewedUser")
                         .WithMany("ReviewsReceived")
                         .HasForeignKey("IdUserReviewed");
 
-                    b.HasOne("backend.Models.User", "Reviewer")
+                    b.HasOne("backend.User.User", "Reviewer")
                         .WithMany("ReviewsWritten")
                         .HasForeignKey("IdUserReviewer");
 
@@ -1290,7 +1315,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.SearchFilter", b =>
                 {
-                    b.HasOne("backend.Models.User", "User")
+                    b.HasOne("backend.User.User", "User")
                         .WithMany("SearchFilters")
                         .HasForeignKey("IdUser");
 
@@ -1299,15 +1324,15 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.TripInvitation", b =>
                 {
-                    b.HasOne("backend.Models.User", "InvitedUser")
+                    b.HasOne("backend.User.User", "InvitedUser")
                         .WithMany("TripInvitationsReceived")
                         .HasForeignKey("IdUserInvited");
 
-                    b.HasOne("backend.Models.User", "InvitingUser")
+                    b.HasOne("backend.User.User", "InvitingUser")
                         .WithMany("TripInvitationsSent")
                         .HasForeignKey("IdUserInviting");
 
-                    b.HasOne("backend.Models.Trip", "Trip")
+                    b.HasOne("backend.Trip.Trip", "Trip")
                         .WithMany()
                         .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1322,13 +1347,13 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.TripPhoto", b =>
                 {
-                    b.HasOne("backend.Models.Trip", "Trip")
+                    b.HasOne("backend.Trip.Trip", "Trip")
                         .WithMany("Photos")
                         .HasForeignKey("IdTrip")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", "UploadedByUser")
+                    b.HasOne("backend.User.User", "UploadedByUser")
                         .WithMany("TripPhotosUploaded")
                         .HasForeignKey("UploadedBy")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1339,7 +1364,83 @@ namespace backend.Migrations
                     b.Navigation("UploadedByUser");
                 });
 
-            modelBuilder.Entity("backend.Models.User", b =>
+            modelBuilder.Entity("backend.Models.UserBadge", b =>
+                {
+                    b.HasOne("backend.Models.Badge", "Badge")
+                        .WithMany("UserBadges")
+                        .HasForeignKey("IdBadge")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.User.User", "User")
+                        .WithMany("UserBadges")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Badge");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.Models.UserChat", b =>
+                {
+                    b.HasOne("backend.Models.Chat", "Chat")
+                        .WithMany("UserChats")
+                        .HasForeignKey("IdChat")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.User.User", "User")
+                        .WithMany("UserChats")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.TransportMode.UserTransportMode", b =>
+                {
+                    b.HasOne("backend.TransportMode.TransportMode", "TransportMode")
+                        .WithMany("UserTransportModes")
+                        .HasForeignKey("IdTransportMode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.User.User", "User")
+                        .WithMany("UserTransportModes")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TransportMode");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.TravelStyle.UserTravelStyle", b =>
+                {
+                    b.HasOne("backend.TravelStyle.TravelStyle", "TravelStyle")
+                        .WithMany("UserTravelStyles")
+                        .HasForeignKey("IdTravelStyle")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.User.User", "User")
+                        .WithMany("UserTravelStyles")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TravelStyle");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.User.User", b =>
                 {
                     b.HasOne("backend.CategoriesOptions.Models.AlcoholPreferenceOption", "AlcoholPreference")
                         .WithMany()
@@ -1384,118 +1485,9 @@ namespace backend.Migrations
                     b.Navigation("TravelExperience");
                 });
 
-            modelBuilder.Entity("backend.Models.UserBadge", b =>
+            modelBuilder.Entity("backend.Interest.Interest", b =>
                 {
-                    b.HasOne("backend.Models.Badge", "Badge")
-                        .WithMany("UserBadges")
-                        .HasForeignKey("IdBadge")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("UserBadges")
-                        .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Badge");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("backend.Models.UserChat", b =>
-                {
-                    b.HasOne("backend.Models.Chat", "Chat")
-                        .WithMany("UserChats")
-                        .HasForeignKey("IdChat")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("UserChats")
-                        .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Chat");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("backend.Models.UserInterest", b =>
-                {
-                    b.HasOne("backend.Models.Interest", "Interest")
-                        .WithMany("UserInterests")
-                        .HasForeignKey("IdInterest")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("UserInterests")
-                        .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Interest");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("backend.Models.UserLanguage", b =>
-                {
-                    b.HasOne("backend.Language.Language", "Language")
-                        .WithMany("UserLanguages")
-                        .HasForeignKey("IdLanguage")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("UserLanguages")
-                        .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Language");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("backend.Models.UserTransportMode", b =>
-                {
-                    b.HasOne("backend.TransportMode.TransportMode", "TransportMode")
-                        .WithMany("UserTransportModes")
-                        .HasForeignKey("IdTransportMode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("UserTransportModes")
-                        .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TransportMode");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("backend.Models.UserTravelStyle", b =>
-                {
-                    b.HasOne("backend.TravelStyle.TravelStyle", "TravelStyle")
-                        .WithMany("UserTravelStyles")
-                        .HasForeignKey("IdTravelStyle")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("UserTravelStyles")
-                        .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TravelStyle");
-
-                    b.Navigation("User");
+                    b.Navigation("UserInterests");
                 });
 
             modelBuilder.Entity("backend.Language.Language", b =>
@@ -1515,19 +1507,9 @@ namespace backend.Migrations
                     b.Navigation("UserChats");
                 });
 
-            modelBuilder.Entity("backend.Models.Interest", b =>
-                {
-                    b.Navigation("UserInterests");
-                });
-
             modelBuilder.Entity("backend.Models.Message", b =>
                 {
                     b.Navigation("Notifications");
-                });
-
-            modelBuilder.Entity("backend.Models.Trip", b =>
-                {
-                    b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("backend.Models.TripInvitation", b =>
@@ -1535,7 +1517,22 @@ namespace backend.Migrations
                     b.Navigation("Notification");
                 });
 
-            modelBuilder.Entity("backend.Models.User", b =>
+            modelBuilder.Entity("backend.TransportMode.TransportMode", b =>
+                {
+                    b.Navigation("UserTransportModes");
+                });
+
+            modelBuilder.Entity("backend.TravelStyle.TravelStyle", b =>
+                {
+                    b.Navigation("UserTravelStyles");
+                });
+
+            modelBuilder.Entity("backend.Trip.Trip", b =>
+                {
+                    b.Navigation("Photos");
+                });
+
+            modelBuilder.Entity("backend.User.User", b =>
                 {
                     b.Navigation("BlockedUsers");
 
@@ -1570,16 +1567,6 @@ namespace backend.Migrations
                     b.Navigation("UserTravelStyles");
 
                     b.Navigation("UsersBlockingThisUser");
-                });
-
-            modelBuilder.Entity("backend.TransportMode.TransportMode", b =>
-                {
-                    b.Navigation("UserTransportModes");
-                });
-
-            modelBuilder.Entity("backend.TravelStyle.TravelStyle", b =>
-                {
-                    b.Navigation("UserTravelStyles");
                 });
 #pragma warning restore 612, 618
         }

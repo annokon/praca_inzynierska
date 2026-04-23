@@ -285,7 +285,6 @@ public class UserService : IUserService
             UpdatedAt = DateTime.UtcNow,
             Role = "user",
             Currency = "PLN",
-            SystemLanguage = "pl-PL",
             IsActive = true,
 
             ProfilePhotoPath = _placeholderProfilePath,

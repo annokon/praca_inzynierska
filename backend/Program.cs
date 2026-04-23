@@ -7,12 +7,16 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using backend.CategoriesOptions.Repositories;
 using backend.CategoriesOptions.Services;
+using backend.Interest;
 using backend.Interest.Repositories;
 using backend.Interest.Services;
+using backend.Language;
 using backend.Language.Repositories;
 using backend.Language.Services;
+using backend.TransportMode;
 using backend.TransportMode.Repositories;
 using backend.TransportMode.Services;
+using backend.TravelStyle;
 using backend.TravelStyle.Repositories;
 using backend.TravelStyle.Services;
 using backend.User.Repositories;
@@ -130,22 +134,64 @@ using (var scope = app.Services.CreateScope())
     
     if (!db.Users.Any())
     {
-        db.Users.Add(new User
+        var user = new User
         {
             Username = "testuser",
             DisplayName = "Test User",
             Email = "test@example.com",
             PasswordHash = hasher.HashPassword("Test123!"),
+
             BirthDate = new DateOnly(2000, 1, 1),
-            GenderId = 4,
-            IsActive = true,
-            Role = "user",
+
+            GenderId = 1,
+            PronounsId = 1,
+            PersonalityTypeId = 1,
+            AlcoholPreferenceId = 1,
+            SmokingPreferenceId = 1,
+            DrivingLicenseId = 1,
+            TravelExperienceId = 1,
+
+            Location = "Warszawa, województwo mazowieckie, Polska",
+            Bio = "To jest przykładowy użytkownik testowy",
+
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
-            Currency = "PLN",
-            SystemLanguage = "pl"
-        });
 
+            Role = "user",
+            IsActive = true,
+
+            Currency = "PLN",
+            
+            ProfilePhotoPath = "/images/placeholders/profile_picture.png",
+            BackgroundPhotoPath = "/images/placeholders/banner_picture.png",
+            
+            UserLanguages = new List<UserLanguage>
+            {
+                new UserLanguage { IdLanguage = 1 },
+                new UserLanguage { IdLanguage = 2 }
+            },
+
+            UserInterests = new List<UserInterest>
+            {
+                new UserInterest { IdInterest = 1 },
+                new UserInterest { IdInterest = 2 },
+                new UserInterest { IdInterest = 3 }
+            },
+
+            UserTravelStyles = new List<UserTravelStyle>
+            {
+                new UserTravelStyle { IdTravelStyle = 1 },
+                new UserTravelStyle { IdTravelStyle = 2 }
+            },
+
+            UserTransportModes = new List<UserTransportMode>
+            {
+                new UserTransportMode { IdTransportMode = 1 },
+                new UserTransportMode { IdTransportMode = 2 }
+            }
+        };
+
+        db.Users.Add(user);
         db.SaveChanges();
         Console.WriteLine("Seed user added to database.");
     }

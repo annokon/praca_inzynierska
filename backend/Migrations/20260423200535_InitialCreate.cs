@@ -208,14 +208,14 @@ namespace backend.Migrations
                     email = table.Column<string>(type: "character varying(320)", maxLength: 320, nullable: false),
                     password_hash = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     birth_date = table.Column<DateOnly>(type: "date", nullable: false),
-                    gender = table.Column<int>(type: "integer", maxLength: 20, nullable: true),
-                    pronouns = table.Column<int>(type: "integer", maxLength: 20, nullable: true),
+                    gender = table.Column<int>(type: "integer", nullable: true),
+                    pronouns = table.Column<int>(type: "integer", nullable: true),
                     location = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    personality_type = table.Column<int>(type: "integer", maxLength: 20, nullable: true),
-                    alcohol_preference = table.Column<int>(type: "integer", maxLength: 50, nullable: true),
-                    smoking_preference = table.Column<int>(type: "integer", maxLength: 50, nullable: true),
-                    driving_license_type = table.Column<int>(type: "integer", maxLength: 20, nullable: true),
-                    travel_experience = table.Column<int>(type: "integer", maxLength: 50, nullable: true),
+                    personality_type = table.Column<int>(type: "integer", nullable: true),
+                    alcohol_preference = table.Column<int>(type: "integer", nullable: true),
+                    smoking_preference = table.Column<int>(type: "integer", nullable: true),
+                    driving_license_type = table.Column<int>(type: "integer", nullable: true),
+                    travel_experience = table.Column<int>(type: "integer", nullable: true),
                     bio = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     profile_photo_path = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     background_photo_path = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
@@ -230,8 +230,7 @@ namespace backend.Migrations
                     to_be_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     delete_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     is_blocked = table.Column<bool>(type: "boolean", nullable: false),
-                    currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
-                    system_language = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false)
                 },
                 constraints: table =>
                 {

@@ -70,10 +70,6 @@ public class User
     public int? DrivingLicenseId { get; set; }
     public DrivingLicenseOption? DrivingLicense { get; set; }
 
-    // [Column("travel_style")]
-    // [MaxLength(50)] 
-    // public string? TravelStyle { get; set; }
-
     [Column("travel_experience")]
     public int? TravelExperienceId { get; set; }
     public TravelExperienceOption? TravelExperience { get; set; }
@@ -130,11 +126,6 @@ public class User
     [Required]
     [MaxLength(3)]
     public string Currency { get; set; } = null!;
-
-    [Column("system_language")]
-    [Required]
-    [MaxLength(100)]
-    public string? SystemLanguage { get; set; }
     
     //for Review
     [InverseProperty(nameof(Review.Reviewer))]
