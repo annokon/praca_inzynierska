@@ -10,16 +10,34 @@ using backend.User.Repositories;
 
 namespace backend.User.Services;
 
-public class UserService(
-    IUserRepository userRepository,
-    PasswordHasher passwordHasher,
-    JwtService jwt)
-    : IUserService
+public class UserService : IUserService
 {
+    private readonly IUserRepository _repo;
+    private readonly PasswordHasher _passwordHasher;
+    private readonly JwtService _jwt;
+    private readonly IWebHostEnvironment _env;
+    private readonly string _currencyFilePath;
+    
+    public UserService(
+        IUserRepository userRepository, PasswordHasher passwordHasher, JwtService jwt, IWebHostEnvironment env
+        )
+    {
+        _repo = userRepository;
+        _passwordHasher = passwordHasher;
+        _jwt = jwt;
+        _env = env;
+        
+        _currencyFilePath = Path.Combine(
+                env.ContentRootPath,
+                "Resources",
+                "currency_list.txt"
+                );
+    }
+    
     // get all users
     public async Task<IEnumerable<UserDTO>> GetAllAsync()
     {
-        var users = await userRepository.GetAllAsync();
+        var users = await _repo.GetAllAsync();
         return users.Select(u => new UserDTO
         {
             IdUser = u.IdUser,
@@ -40,7 +58,7 @@ public class UserService(
     // get user by username
     public async Task<UserDTO?> GetByIdUserAsync(int idUser)
     {
-        var u = await userRepository.GetByIdUserAsync(idUser);
+        var u = await _repo.GetByIdUserAsync(idUser);
         if (u == null) return null;
 
         return new UserDTO
@@ -62,11 +80,11 @@ public class UserService(
     // create new user
     public async Task<UserDTO> CreateAsync(CreateUserDTO dto)
     {
-        if (await userRepository.ExistsByEmailAsync(dto.Email))
+        if (await _repo.ExistsByEmailAsync(dto.Email))
             throw new Exception("This email is already in use.");
-        if (await userRepository.ExistsByUsernameAsync(dto.Username))
+        if (await _repo.ExistsByUsernameAsync(dto.Username))
             throw new Exception("This username is already taken.");
-        if (await userRepository.ValidateGender(dto.GenderId))
+        if (await _repo.ValidateGender(dto.GenderId))
             throw new Exception("Invalid gender option.");
 
         var user = new User
@@ -75,7 +93,7 @@ public class UserService(
             Username = dto.Username,
             DisplayName = dto.DisplayName,
             Email = dto.Email,
-            PasswordHash = passwordHasher.HashPassword(dto.Password),
+            PasswordHash = _passwordHasher.HashPassword(dto.Password),
             BirthDate = dto.BirthDate,
             GenderId = dto.GenderId,
             CreatedAt = DateTime.UtcNow,
@@ -83,7 +101,7 @@ public class UserService(
             Role = "user"
         };
 
-        await userRepository.AddAsync(user);
+        await _repo.AddAsync(user);
 
         return new UserDTO
         {
@@ -100,7 +118,7 @@ public class UserService(
     // adding optional data to user during registration
     public async Task<bool> AddAdditionalDataAsync(int idUser, AdditionalDataUserDTO dto)
     {
-        var user = await userRepository.GetUserWithRelationsAsync(idUser);
+        var user = await _repo.GetUserWithRelationsAsync(idUser);
         if (user == null) return false;
 
         user.GenderId = dto.GenderId;
@@ -154,7 +172,7 @@ public class UserService(
 
         user.UpdatedAt = DateTime.UtcNow;
 
-        await userRepository.UpdateAsync(user);
+        await _repo.UpdateAsync(user);
 
         return true;
     }
@@ -162,7 +180,7 @@ public class UserService(
     // update user data
     public async Task<bool> UpdateAsync(int idUser, UpdateUserDTO dto)
     {
-        var user = await userRepository.GetByIdUserAsync(idUser);
+        var user = await _repo.GetByIdUserAsync(idUser);
         if (user == null) return false;
 
         user.DisplayName = dto.DisplayName ?? user.DisplayName;
@@ -173,7 +191,7 @@ public class UserService(
         user.PersonalityType.PersonalityTypeName = dto.PersonalityType ?? user.PersonalityType.PersonalityTypeName;
         user.UpdatedAt = DateTime.UtcNow;
 
-        await userRepository.UpdateAsync(user);
+        await _repo.UpdateAsync(user);
         return true;
     }
 
@@ -219,10 +237,10 @@ public class UserService(
             return RegisterResult.Fail("Niepoprawny adres email.");
         }
 
-        if (await userRepository.ExistsByEmailAsync(email))
+        if (await _repo.ExistsByEmailAsync(email))
             return RegisterResult.Fail("Ten email jest już zajęty.");
 
-        if (await userRepository.ExistsByUsernameAsync(username))
+        if (await _repo.ExistsByUsernameAsync(username))
             return RegisterResult.Fail("Ta nazwa użytkownika jest już zajęta.");
 
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
@@ -257,7 +275,7 @@ public class UserService(
             DisplayName = displayName,
             Email = email,
             BirthDate = dto.BirthDate,
-            PasswordHash = passwordHasher.HashPassword(password),
+            PasswordHash = _passwordHasher.HashPassword(password),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             Role = "user",
@@ -266,7 +284,7 @@ public class UserService(
             IsActive = true
         };
 
-        await userRepository.AddAsync(user);
+        await _repo.AddAsync(user);
 
         return RegisterResult.SuccessResult(user);
     }
@@ -280,17 +298,17 @@ public class UserService(
 
         var login = dto.Login.Trim();
 
-        var user = await userRepository.GetByEmailOrUsernameAsync(login);
+        var user = await _repo.GetByEmailOrUsernameAsync(login);
 
         if (user == null)
             return LoginResult.Fail("Incorrect login or password.");
 
-        if (!passwordHasher.VerifyPassword(dto.Password, user.PasswordHash))
+        if (!_passwordHasher.VerifyPassword(dto.Password, user.PasswordHash))
             return LoginResult.Fail("Incorrect login or password.");
 
         return LoginResult.SuccessResult(
-            access: jwt.GenerateAccessToken(user),
-            refresh: jwt.GenerateRefreshToken(),
+            access: _jwt.GenerateAccessToken(user),
+            refresh: _jwt.GenerateRefreshToken(),
             role: user.Role
         );
     }
@@ -298,7 +316,7 @@ public class UserService(
     // get user by id
     public async Task<UserDTO?> GetByIdAsync(int id)
     {
-        var u = await userRepository.GetByIdUserAsync(id);
+        var u = await _repo.GetByIdUserAsync(id);
         if (u == null) return null;
 
         return new UserDTO
@@ -317,7 +335,7 @@ public class UserService(
     // get user
     public async Task<UserProfileDTO?> GetProfileAsync(int id)
     {
-        var user = await userRepository.GetUserWithRelationsAsync(id);
+        var user = await _repo.GetUserWithRelationsAsync(id);
         if (user == null) return null;
 
         return new UserProfileDTO
@@ -354,13 +372,15 @@ public class UserService(
             DrivingLicense = user.DrivingLicense?.DrivingLicenseName,
             Alcohol = user.AlcoholPreference?.AlcoholPreferenceName,
             Smoking = user.SmokingPreference?.SmokingPreferenceName,
+            
+            Currency = user.Currency
         };
     }
 
     // update user
     public async Task<(bool Success, string? Error, UserDTO? User)> UpdateProfileAsync(int userId, UpdateUserProfileDTO dto)
     {
-        var user = await userRepository.GetUserWithRelationsAsync(userId);
+        var user = await _repo.GetUserWithRelationsAsync(userId);
         if (user == null)
             return (false, "Użytkownik nie został znaleziony.", null);
 
@@ -409,7 +429,7 @@ public class UserService(
             if (forbidden.Contains(username))
                 return (false, "Zawiera niedozwolone słowa.", null);
 
-            if (await userRepository.ExistsByUsernameAsync(username))
+            if (await _repo.ExistsByUsernameAsync(username))
                 return (false, "Ta nazwa użytkownika jest już zajęta.", null);
 
             user.Username = username;
@@ -426,7 +446,7 @@ public class UserService(
             if (string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase))
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
-            if (await userRepository.ExistsByEmailAsync(email))
+            if (await _repo.ExistsByEmailAsync(email))
                 return (false, "Ten e-mail jest już zajęty.", null);
 
             user.Email = email;
@@ -496,7 +516,7 @@ public class UserService(
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
-                !await userRepository.ValidateGender(value.Value))
+                !await _repo.ValidateGender(value.Value))
                 return (false, "Nieprawidłowa płeć.", null);
             
             user.GenderId = value;
@@ -511,7 +531,7 @@ public class UserService(
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
-                !await userRepository.ValidatePronouns(value.Value))
+                !await _repo.ValidatePronouns(value.Value))
                 return (false, "Nieprawidłowe zaimki.", null);
 
             user.PronounsId = value;
@@ -526,7 +546,7 @@ public class UserService(
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
-                !await userRepository.ValidatePersonalityType(value.Value))
+                !await _repo.ValidatePersonalityType(value.Value))
                 return (false, "Nieprawidłowy typ osobowości.", null);
             
             user.PersonalityTypeId = value;
@@ -541,7 +561,7 @@ public class UserService(
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
-                !await userRepository.ValidateAlcoholPreference(value.Value))
+                !await _repo.ValidateAlcoholPreference(value.Value))
                 return (false, "Nieprawidłowa preferencja alkoholu.", null);
             
             user.AlcoholPreferenceId = value;
@@ -556,7 +576,7 @@ public class UserService(
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
-                !await userRepository.ValidateSmokingPreference(value.Value))
+                !await _repo.ValidateSmokingPreference(value.Value))
                 return (false, "Nieprawidłowa preferencja palenia.", null);
             
             user.SmokingPreferenceId = value;
@@ -571,7 +591,7 @@ public class UserService(
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
-                !await userRepository.ValidateDrivingLicense(value.Value))
+                !await _repo.ValidateDrivingLicense(value.Value))
                 return (false, "Nieprawidłowe prawo jazdy.", null);
             
             user.DrivingLicenseId = value;
@@ -586,7 +606,7 @@ public class UserService(
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
-                !await userRepository.ValidateTravelExperience(value.Value))
+                !await _repo.ValidateTravelExperience(value.Value))
                 return (false, "Nieprawidłowe doświadczenie podróżnicze.", null);
             
             user.TravelExperienceId = value;
@@ -601,7 +621,7 @@ public class UserService(
         {
             var distinct = dto.LanguageIds.Distinct().ToList();
 
-            if (distinct.Any() && !await userRepository.ValidateLanguages(distinct))
+            if (distinct.Any() && !await _repo.ValidateLanguages(distinct))
                 return (false, "Nieprawidłowe języki.", null);
 
             if (user.UserLanguages != null)
@@ -632,7 +652,7 @@ public class UserService(
             var distinct = dto.InterestIds.Distinct().ToList();
 
             foreach (var id in distinct)
-                if (!await userRepository.ValidateInterest(id))
+                if (!await _repo.ValidateInterest(id))
                     return (false, "Nieprawidłowe zainteresowania.", null);
 
             if (user.UserInterests != null)
@@ -663,7 +683,7 @@ public class UserService(
             var distinct = dto.TravelStyleIds.Distinct().ToList();
 
             foreach (var id in distinct)
-                if (!await userRepository.ValidateTravelStyle(id))
+                if (!await _repo.ValidateTravelStyle(id))
                     return (false, "Nieprawidłowe style podróży.", null);
 
             if (user.UserTravelStyles != null)
@@ -694,7 +714,7 @@ public class UserService(
             var distinct = dto.TransportModeIds.Distinct().ToList();
 
             foreach (var id in distinct)
-                if (!await userRepository.ValidateTransportMode(id))
+                if (!await _repo.ValidateTransportMode(id))
                     return (false, "Nieprawidłowe środki transportu.", null);
 
             if (user.UserTransportModes != null)
@@ -728,7 +748,7 @@ public class UserService(
             return (false, "Nie można zaktualizować danych na identyczne.", null);
 
         user.UpdatedAt = DateTime.UtcNow;
-        await userRepository.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
 
         return (true, null, new UserDTO
         {
@@ -752,7 +772,7 @@ public class UserService(
     public async Task<(bool Success, string? Error, string? ProfilePath, string? BannerPath)>
         UpdateImagesAsync(int userId, IFormFile? profileImage, IFormFile? bannerImage)
     {
-        var user = await userRepository.GetByIdUserAsync(userId);
+        var user = await _repo.GetByIdUserAsync(userId);
         if (user == null)
             return (false, "User not found", null, null);
 
@@ -803,14 +823,14 @@ public class UserService(
         }
 
         user.UpdatedAt = DateTime.UtcNow;
-        await userRepository.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
 
         return (true, null, profilePath, bannerPath);
     }
     
     public async Task<UserImagesDTO?> GetUserImagesAsync(int userId)
     {
-        var user = await userRepository.GetByIdUserAsync(userId);
+        var user = await _repo.GetByIdUserAsync(userId);
         if (user == null) return null;
 
         return new UserImagesDTO
@@ -818,5 +838,40 @@ public class UserService(
             Profile = user.ProfilePhotoPath,
             Banner = user.BackgroundPhotoPath
         };
+    }
+    
+    public async Task<(bool Success, string? Error)> UpdateCurrencyAsync(int userId, string currency)
+    {
+        if (string.IsNullOrWhiteSpace(currency) || currency.Length != 3)
+            return (false, "Nieprawidłowy kod waluty.");
+
+        currency = currency.ToUpper();
+
+        var available = await GetAvailableCurrenciesAsync();
+
+        if (!available.Contains(currency))
+            return (false, "Waluta nie jest wspierana.");
+
+        var updated = await _repo.UpdateCurrencyAsync(userId, currency);
+
+        if (!updated)
+            return (false, "Użytkownik nie istnieje.");
+
+        return (true, null);
+    }
+    
+    public async Task<List<string>> GetAvailableCurrenciesAsync()
+    {
+        if (!File.Exists(_currencyFilePath))
+            return new List<string>();
+
+        var lines = await File.ReadAllLinesAsync(_currencyFilePath);
+
+        return lines
+            .Where(l => !string.IsNullOrWhiteSpace(l))
+            .Select(l => l.Trim().ToUpper())
+            .Distinct()
+            .OrderBy(l => l)
+            .ToList();
     }
 }

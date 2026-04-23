@@ -215,4 +215,28 @@ public class UsersController : ControllerBase
 
         return Ok(user);
     }
+    
+    [Authorize]
+    [HttpPatch("me/currency")]
+    public async Task<IActionResult> UpdateCurrency([FromBody] UpdateCurrencyDTO dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var userId = GetUserId();
+
+        var result = await _userService.UpdateCurrencyAsync(userId, dto.Currency);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok(new { message = "Waluta zaktualizowana" });
+    }
+    
+    [HttpGet("currencies")]
+    public async Task<IActionResult> GetCurrencies()
+    {
+        var currencies = await _userService.GetAvailableCurrenciesAsync();
+        return Ok(currencies);
+    }
 }

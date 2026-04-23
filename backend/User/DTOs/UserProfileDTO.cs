@@ -23,4 +23,6 @@ public class UserProfileDTO
     public string? DrivingLicense { get; set; }
     public string? Alcohol { get; set; }
     public string? Smoking { get; set; }
+
+    public string Currency { get; set; } = "";
 }

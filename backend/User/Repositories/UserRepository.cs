@@ -164,5 +164,17 @@ public class UserRepository : IUserRepository
 
         return count == distinct.Count;
     }
+    
+    public async Task<bool> UpdateCurrencyAsync(int userId, string currency)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == userId);
+        if (user == null) return false;
+
+        user.Currency = currency;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
 
 }
