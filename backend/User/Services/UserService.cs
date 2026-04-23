@@ -17,6 +17,8 @@ public class UserService : IUserService
     private readonly JwtService _jwt;
     private readonly IWebHostEnvironment _env;
     private readonly string _currencyFilePath;
+    private readonly string _placeholderProfilePath = "/images/placeholders/profile_picture.png";
+    private readonly string _placeholderBannerPath = "/images/placeholders/banner_picture.png";
 
     public UserService(
         IUserRepository userRepository, PasswordHasher passwordHasher, JwtService jwt, IWebHostEnvironment env
@@ -102,7 +104,7 @@ public class UserService : IUserService
         };
 
         await _repo.AddAsync(user);
-
+        
         return new UserDTO
         {
             IdUser = user.IdUser,
@@ -111,7 +113,10 @@ public class UserService : IUserService
             Email = user.Email,
             Gender = user.Gender.GenderName,
             IsActive = user.IsActive,
-            Role = user.Role
+            Role = user.Role,
+            
+            ProfilePhotoPath = _placeholderProfilePath,
+            BackgroundPhotoPath = _placeholderBannerPath
         };
     }
 
@@ -281,7 +286,10 @@ public class UserService : IUserService
             Role = "user",
             Currency = "PLN",
             SystemLanguage = "pl-PL",
-            IsActive = true
+            IsActive = true,
+
+            ProfilePhotoPath = _placeholderProfilePath,
+            BackgroundPhotoPath = _placeholderBannerPath
         };
 
         await _repo.AddAsync(user);
@@ -836,14 +844,7 @@ public class UserService : IUserService
             {
                 DeleteFileIfExists(user.ProfilePhotoPath);
 
-                var placeholderPath = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "Resources",
-                    "placeholders",
-                    "profile_picture.png"
-                );
-
-                user.ProfilePhotoPath = placeholderPath;
+                user.ProfilePhotoPath = _placeholderProfilePath;
                 profilePath = user.ProfilePhotoPath;
             }
             else
@@ -878,14 +879,7 @@ public class UserService : IUserService
             {
                 DeleteFileIfExists(user.BackgroundPhotoPath);
 
-                var placeholderPath = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "Resources",
-                    "placeholders",
-                    "banner_picture.png"
-                );
-
-                user.BackgroundPhotoPath = placeholderPath;
+                user.BackgroundPhotoPath = _placeholderBannerPath;
                 bannerPath = user.BackgroundPhotoPath;
             }
             else
