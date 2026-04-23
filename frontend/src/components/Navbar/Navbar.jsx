@@ -84,8 +84,17 @@ export default function Navbar() {
         const trimmed = searchValue.trim();
         if (!trimmed) return;
 
-        setShowResults(false);
-        navigate(`/profile/${trimmed}/about-user`);
+        const exactMatch = searchResults.find(
+            (searchedUser) =>
+                searchedUser.username.toLowerCase() === trimmed.toLowerCase()
+        );
+
+        if (exactMatch) {
+            setShowResults(false);
+            navigate(`/profile/${exactMatch.username}/about-user`);
+        } else {
+            setShowResults(true);
+        }
     };
 
     const handleClear = () => {
