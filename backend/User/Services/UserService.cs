@@ -17,23 +17,23 @@ public class UserService : IUserService
     private readonly JwtService _jwt;
     private readonly IWebHostEnvironment _env;
     private readonly string _currencyFilePath;
-    
+
     public UserService(
         IUserRepository userRepository, PasswordHasher passwordHasher, JwtService jwt, IWebHostEnvironment env
-        )
+    )
     {
         _repo = userRepository;
         _passwordHasher = passwordHasher;
         _jwt = jwt;
         _env = env;
-        
+
         _currencyFilePath = Path.Combine(
-                env.ContentRootPath,
-                "Resources",
-                "currency_list.txt"
-                );
+            env.ContentRootPath,
+            "Resources",
+            "currency_list.txt"
+        );
     }
-    
+
     // get all users
     public async Task<IEnumerable<UserDTO>> GetAllAsync()
     {
@@ -372,20 +372,21 @@ public class UserService : IUserService
             DrivingLicense = user.DrivingLicense?.DrivingLicenseName,
             Alcohol = user.AlcoholPreference?.AlcoholPreferenceName,
             Smoking = user.SmokingPreference?.SmokingPreferenceName,
-            
+
             Currency = user.Currency
         };
     }
 
     // update user
-    public async Task<(bool Success, string? Error, UserDTO? User)> UpdateProfileAsync(int userId, UpdateUserProfileDTO dto)
+    public async Task<(bool Success, string? Error, UserDTO? User)> UpdateProfileAsync(int userId,
+        UpdateUserProfileDTO dto)
     {
         var user = await _repo.GetUserWithRelationsAsync(userId);
         if (user == null)
             return (false, "Użytkownik nie został znaleziony.", null);
 
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
-        
+
         var hasAnyChange = false;
 
         // =========================
@@ -401,7 +402,7 @@ public class UserService : IUserService
 
             if (string.Equals(user.DisplayName.Trim(), name, StringComparison.OrdinalIgnoreCase))
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
-            
+
             if (!Regex.IsMatch(name, @"^[a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s._-]+$"))
                 return (false, "Wyświetlana nazwa zawiera niedozwolone znaki.", null);
 
@@ -418,13 +419,13 @@ public class UserService : IUserService
 
             if (string.Equals(user.Username, username, StringComparison.OrdinalIgnoreCase))
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
-            
+
             if (username.Length is < 3 or > 20)
                 return (false, "Nazwa użytkownika musi mieć 3–20 znaków.", null);
-            
+
             if (!Regex.IsMatch(username, @"^[a-z0-9._-]+$"))
                 return (false, "Nazwa użytkownika zawiera niedozwolone znaki.", null);
-            
+
             var forbidden = new[] { "admin", "root", "support" };
             if (forbidden.Contains(username))
                 return (false, "Zawiera niedozwolone słowa.", null);
@@ -440,8 +441,14 @@ public class UserService : IUserService
         {
             var email = dto.Email.Trim().ToLowerInvariant();
 
-            try { _ = new MailAddress(email); }
-            catch { return (false, "Nieprawidłowy e-mail.", null); }
+            try
+            {
+                _ = new MailAddress(email);
+            }
+            catch
+            {
+                return (false, "Nieprawidłowy e-mail.", null);
+            }
 
             if (string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase))
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
@@ -511,14 +518,14 @@ public class UserService : IUserService
         if (dto.GenderId != null)
         {
             var value = dto.GenderId == -1 ? null : dto.GenderId;
-            
+
             if (user.GenderId == value)
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
                 !await _repo.ValidateGender(value.Value))
                 return (false, "Nieprawidłowa płeć.", null);
-            
+
             user.GenderId = value;
             hasAnyChange = true;
         }
@@ -541,14 +548,14 @@ public class UserService : IUserService
         if (dto.PersonalityTypeId != null)
         {
             var value = dto.PersonalityTypeId == -1 ? null : dto.PersonalityTypeId;
-            
+
             if (user.PersonalityTypeId == value)
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
                 !await _repo.ValidatePersonalityType(value.Value))
                 return (false, "Nieprawidłowy typ osobowości.", null);
-            
+
             user.PersonalityTypeId = value;
             hasAnyChange = true;
         }
@@ -556,14 +563,14 @@ public class UserService : IUserService
         if (dto.AlcoholPreferenceId != null)
         {
             var value = dto.AlcoholPreferenceId == -1 ? null : dto.AlcoholPreferenceId;
-            
+
             if (user.AlcoholPreferenceId == value)
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
                 !await _repo.ValidateAlcoholPreference(value.Value))
                 return (false, "Nieprawidłowa preferencja alkoholu.", null);
-            
+
             user.AlcoholPreferenceId = value;
             hasAnyChange = true;
         }
@@ -571,14 +578,14 @@ public class UserService : IUserService
         if (dto.SmokingPreferenceId != null)
         {
             var value = dto.SmokingPreferenceId == -1 ? null : dto.SmokingPreferenceId;
-            
+
             if (user.SmokingPreferenceId == value)
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
                 !await _repo.ValidateSmokingPreference(value.Value))
                 return (false, "Nieprawidłowa preferencja palenia.", null);
-            
+
             user.SmokingPreferenceId = value;
             hasAnyChange = true;
         }
@@ -586,14 +593,14 @@ public class UserService : IUserService
         if (dto.DrivingLicenseId != null)
         {
             var value = dto.DrivingLicenseId == -1 ? null : dto.DrivingLicenseId;
-            
+
             if (user.DrivingLicenseId == value)
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
                 !await _repo.ValidateDrivingLicense(value.Value))
                 return (false, "Nieprawidłowe prawo jazdy.", null);
-            
+
             user.DrivingLicenseId = value;
             hasAnyChange = true;
         }
@@ -601,14 +608,14 @@ public class UserService : IUserService
         if (dto.TravelExperienceId != null)
         {
             var value = dto.TravelExperienceId == -1 ? null : dto.TravelExperienceId;
-            
+
             if (user.TravelExperienceId == value)
                 return (false, "Nie można zaktualizować danych na identyczne.", null);
 
             if (value != null &&
                 !await _repo.ValidateTravelExperience(value.Value))
                 return (false, "Nieprawidłowe doświadczenie podróżnicze.", null);
-            
+
             user.TravelExperienceId = value;
             hasAnyChange = true;
         }
@@ -677,7 +684,7 @@ public class UserService : IUserService
 
             hasAnyChange = true;
         }
-        
+
         if (dto.TravelStyleIds != null)
         {
             var distinct = dto.TravelStyleIds.Distinct().ToList();
@@ -743,7 +750,7 @@ public class UserService : IUserService
         // =========================
         // SAVE
         // =========================
-        
+
         if (!hasAnyChange)
             return (false, "Nie można zaktualizować danych na identyczne.", null);
 
@@ -768,7 +775,34 @@ public class UserService : IUserService
             Bio = user.Bio
         });
     }
-    
+
+    private string EnsureUniqueFileName(string directory, string fileName)
+    {
+        var name = Path.GetFileNameWithoutExtension(fileName);
+        var ext = Path.GetExtension(fileName);
+
+        var newFileName = fileName;
+        var counter = 1;
+
+        while (File.Exists(Path.Combine(directory, newFileName)))
+        {
+            newFileName = $"{name}_{counter}{ext}";
+            counter++;
+        }
+
+        return newFileName;
+    }
+
+    private void DeleteFileIfExists(string? relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath)) return;
+
+        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath.TrimStart('/'));
+
+        if (File.Exists(fullPath))
+            File.Delete(fullPath);
+    }
+
     public async Task<(bool Success, string? Error, string? ProfilePath, string? BannerPath)>
         UpdateImagesAsync(int userId, IFormFile? profileImage, IFormFile? bannerImage)
     {
@@ -776,8 +810,19 @@ public class UserService : IUserService
         if (user == null)
             return (false, "User not found", null, null);
 
-        var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-        Directory.CreateDirectory(uploadsDir);
+        var root = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "wwwroot",
+            "uploads",
+            "users",
+            userId.ToString()
+        );
+
+        var profileDir = Path.Combine(root, "profile");
+        var bannerDir = Path.Combine(root, "banner");
+
+        Directory.CreateDirectory(profileDir);
+        Directory.CreateDirectory(bannerDir);
 
         string? profilePath = null;
         string? bannerPath = null;
@@ -787,19 +832,41 @@ public class UserService : IUserService
         // =====================
         if (profileImage != null)
         {
-            if (!profileImage.ContentType.StartsWith("image/"))
-                return (false, "Invalid profile image", null, null);
-
-            var fileName = $"profile_{userId}_{Guid.NewGuid()}{Path.GetExtension(profileImage.FileName)}";
-            var filePath = Path.Combine(uploadsDir, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            if (profileImage.FileName == "-1")
             {
-                await profileImage.CopyToAsync(stream);
-            }
+                DeleteFileIfExists(user.ProfilePhotoPath);
 
-            profilePath = $"/uploads/{fileName}";
-            user.ProfilePhotoPath = profilePath;
+                var placeholderPath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "Resources",
+                    "placeholders",
+                    "profile_picture.png"
+                );
+
+                user.ProfilePhotoPath = placeholderPath;
+                profilePath = user.ProfilePhotoPath;
+            }
+            else
+            {
+                if (!profileImage.ContentType.StartsWith("image/"))
+                    return (false, "Invalid profile image", null, null);
+
+                DeleteFileIfExists(user.ProfilePhotoPath);
+
+                var originalName = Path.GetFileName(profileImage.FileName);
+                var safeName = $"{Guid.NewGuid()}_{originalName}";
+                var finalName = EnsureUniqueFileName(profileDir, safeName);
+
+                var fullPath = Path.Combine(profileDir, finalName);
+
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await profileImage.CopyToAsync(stream);
+                }
+
+                profilePath = $"/uploads/users/{userId}/profile/{finalName}";
+                user.ProfilePhotoPath = profilePath;
+            }
         }
 
         // =====================
@@ -807,19 +874,41 @@ public class UserService : IUserService
         // =====================
         if (bannerImage != null)
         {
-            if (!bannerImage.ContentType.StartsWith("image/"))
-                return (false, "Invalid banner image", null, null);
-
-            var fileName = $"banner_{userId}_{Guid.NewGuid()}{Path.GetExtension(bannerImage.FileName)}";
-            var filePath = Path.Combine(uploadsDir, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            if (bannerImage.FileName == "-1")
             {
-                await bannerImage.CopyToAsync(stream);
-            }
+                DeleteFileIfExists(user.BackgroundPhotoPath);
 
-            bannerPath = $"/uploads/{fileName}";
-            user.BackgroundPhotoPath = bannerPath;
+                var placeholderPath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "Resources",
+                    "placeholders",
+                    "banner_picture.png"
+                );
+
+                user.BackgroundPhotoPath = placeholderPath;
+                bannerPath = user.BackgroundPhotoPath;
+            }
+            else
+            {
+                if (!bannerImage.ContentType.StartsWith("image/"))
+                    return (false, "Invalid banner image", null, null);
+
+                DeleteFileIfExists(user.BackgroundPhotoPath);
+
+                var originalName = Path.GetFileName(bannerImage.FileName);
+                var safeName = $"{Guid.NewGuid()}_{originalName}";
+                var finalName = EnsureUniqueFileName(bannerDir, safeName);
+
+                var fullPath = Path.Combine(bannerDir, finalName);
+
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await bannerImage.CopyToAsync(stream);
+                }
+
+                bannerPath = $"/uploads/users/{userId}/banner/{finalName}";
+                user.BackgroundPhotoPath = bannerPath;
+            }
         }
 
         user.UpdatedAt = DateTime.UtcNow;
@@ -827,7 +916,7 @@ public class UserService : IUserService
 
         return (true, null, profilePath, bannerPath);
     }
-    
+
     public async Task<UserImagesDTO?> GetUserImagesAsync(int userId)
     {
         var user = await _repo.GetByIdUserAsync(userId);
@@ -839,7 +928,7 @@ public class UserService : IUserService
             Banner = user.BackgroundPhotoPath
         };
     }
-    
+
     public async Task<(bool Success, string? Error)> UpdateCurrencyAsync(int userId, string currency)
     {
         if (string.IsNullOrWhiteSpace(currency) || currency.Length != 3)
@@ -859,7 +948,7 @@ public class UserService : IUserService
 
         return (true, null);
     }
-    
+
     public async Task<List<string>> GetAvailableCurrenciesAsync()
     {
         if (!File.Exists(_currencyFilePath))
