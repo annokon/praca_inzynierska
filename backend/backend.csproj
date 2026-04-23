@@ -26,4 +26,19 @@
       <None Include="wwwroot\images\placeholders\profile_picture.png" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="Resources\placeholders\banner_picture.png">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="Resources\placeholders\profile_picture.png">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\images\placeholders\" />
+    </ItemGroup>
+
 </Project>

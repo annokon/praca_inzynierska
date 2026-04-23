@@ -113,9 +113,40 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseStaticFiles();
 app.MapControllers();
 
-app.UseStaticFiles();
+
+var placeholdersSource = Path.Combine(
+    app.Environment.ContentRootPath,
+    "Resources",
+    "placeholders"
+);
+
+var placeholdersTarget = Path.Combine(
+    app.Environment.WebRootPath,
+    "images",
+    "placeholders"
+);
+
+Directory.CreateDirectory(placeholdersTarget);
+
+var files = new[]
+{
+    "profile_picture.png",
+    "banner_picture.png"
+};
+
+foreach (var file in files)
+{
+    var sourcePath = Path.Combine(placeholdersSource, file);
+    var targetPath = Path.Combine(placeholdersTarget, file);
+
+    if (!File.Exists(targetPath) && File.Exists(sourcePath))
+    {
+        File.Copy(sourcePath, targetPath);
+    }
+}
 
 // sample data
 using (var scope = app.Services.CreateScope())
