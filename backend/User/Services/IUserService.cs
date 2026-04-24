@@ -21,4 +21,5 @@ public interface IUserService
     Task<UserImagesDTO?> GetUserImagesAsync(int userId);
     Task<(bool Success, string? Error)> UpdateCurrencyAsync(int userId, string currency);
     Task<List<string>> GetAvailableCurrenciesAsync();
+    Task<List<UserSearchDTO>> SearchAsync(string query, int limit);
 }

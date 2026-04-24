@@ -956,4 +956,17 @@ public class UserService : IUserService
             .OrderBy(l => l)
             .ToList();
     }
+    
+    public async Task<List<UserSearchDTO>> SearchAsync(string query, int limit)
+    {
+        var users = await _repo.SearchAsync(query, limit);
+
+        return users.Select(u => new UserSearchDTO
+        {
+            Id = u.IdUser,
+            Username = u.Username,
+            DisplayName = u.DisplayName,
+            ProfilePhotoPath = u.ProfilePhotoPath
+        }).ToList();
+    }
 }

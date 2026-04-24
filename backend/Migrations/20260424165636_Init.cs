@@ -9,11 +9,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:PostgresExtension:pg_trgm", ",,");
+
             migrationBuilder.CreateTable(
                 name: "alcohol_preference",
                 columns: table => new
@@ -868,6 +871,13 @@ namespace backend.Migrations
                 column: "alcohol_preference");
 
             migrationBuilder.CreateIndex(
+                name: "ix_user_displayname_trgm",
+                table: "user",
+                column: "display_name")
+                .Annotation("Npgsql:IndexMethod", "gin")
+                .Annotation("Npgsql:IndexOperators", new[] { "gin_trgm_ops" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_user_driving_license_type",
                 table: "user",
                 column: "driving_license_type");
@@ -904,10 +914,11 @@ namespace backend.Migrations
                 column: "travel_experience");
 
             migrationBuilder.CreateIndex(
-                name: "IX_user_username",
+                name: "ix_user_username_trgm",
                 table: "user",
-                column: "username",
-                unique: true);
+                column: "username")
+                .Annotation("Npgsql:IndexMethod", "gin")
+                .Annotation("Npgsql:IndexOperators", new[] { "gin_trgm_ops" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_user_badge_id_badge",

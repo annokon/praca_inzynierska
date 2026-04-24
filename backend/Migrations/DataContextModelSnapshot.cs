@@ -20,6 +20,7 @@ namespace backend.Migrations
                 .HasAnnotation("ProductVersion", "9.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "pg_trgm");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("backend.CategoriesOptions.Models.AlcoholPreferenceOption", b =>
@@ -1151,6 +1152,12 @@ namespace backend.Migrations
 
                     b.HasIndex("AlcoholPreferenceId");
 
+                    b.HasIndex("DisplayName")
+                        .HasDatabaseName("ix_user_displayname_trgm");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("DisplayName"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("DisplayName"), new[] { "gin_trgm_ops" });
+
                     b.HasIndex("DrivingLicenseId");
 
                     b.HasIndex("Email")
@@ -1167,7 +1174,10 @@ namespace backend.Migrations
                     b.HasIndex("TravelExperienceId");
 
                     b.HasIndex("Username")
-                        .IsUnique();
+                        .HasDatabaseName("ix_user_username_trgm");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Username"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("Username"), new[] { "gin_trgm_ops" });
 
                     b.ToTable("user");
                 });

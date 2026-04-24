@@ -165,7 +165,7 @@ using (var scope = app.Services.CreateScope())
     
     if (!db.Users.Any())
     {
-        var user = new User
+        var user1 = new User
         {
             Username = "testuser",
             DisplayName = "Test User",
@@ -221,10 +221,63 @@ using (var scope = app.Services.CreateScope())
                 new UserTransportMode { IdTransportMode = 2 }
             }
         };
+        
+        var user2 = new User
+        {
+            Username = "testuser2",
+            DisplayName = "Second User",
+            Email = "test2@example.com",
+            PasswordHash = hasher.HashPassword("Test123!"),
 
-        db.Users.Add(user);
+            BirthDate = new DateOnly(1998, 5, 15),
+
+            GenderId = 2,
+            PronounsId = 2,
+            PersonalityTypeId = 2,
+            AlcoholPreferenceId = 2,
+            SmokingPreferenceId = 2,
+            DrivingLicenseId = 2,
+            TravelExperienceId = 2,
+
+            Location = "Kraków, województwo małopolskie, Polska",
+            Bio = "Drugi użytkownik testowy",
+
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+
+            Role = "user",
+            IsActive = true,
+
+            Currency = "PLN",
+
+            ProfilePhotoPath = "/images/placeholders/profile_picture.png",
+            BackgroundPhotoPath = "/images/placeholders/banner_picture.png",
+
+            UserLanguages = new List<UserLanguage>
+            {
+                new UserLanguage { IdLanguage = 1 }
+            },
+
+            UserInterests = new List<UserInterest>
+            {
+                new UserInterest { IdInterest = 2 },
+                new UserInterest { IdInterest = 4 }
+            },
+
+            UserTravelStyles = new List<UserTravelStyle>
+            {
+                new UserTravelStyle { IdTravelStyle = 3 }
+            },
+
+            UserTransportModes = new List<UserTransportMode>
+            {
+                new UserTransportMode { IdTransportMode = 3 }
+            }
+        };
+
+        db.Users.AddRange(user1, user2);
         db.SaveChanges();
-        Console.WriteLine("Seed user added to database.");
+        Console.WriteLine("2 seed users added to database.");
     }
     else
     {
@@ -232,5 +285,5 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
+Console.WriteLine("Application started successfully. The server is up and running.");
 app.Run();

@@ -239,4 +239,11 @@ public class UsersController : ControllerBase
         var currencies = await _userService.GetAvailableCurrenciesAsync();
         return Ok(currencies);
     }
+    
+    [HttpGet("search")]
+    public async Task<IActionResult> Search([FromQuery] string q, [FromQuery] int limit = 10)
+    {
+        var users = await _userService.SearchAsync(q, limit);
+        return Ok(users);
+    }
 }

@@ -10,8 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.User;
 
-[Index(nameof(Email), IsUnique = true)]
-[Index(nameof(Username), IsUnique = true)]
 [Table("user")]
 public class User
 {

@@ -217,5 +217,27 @@ public class DataContext : DbContext
             new TravelStyle.TravelStyle { IdTravelStyle = 9, TravelStyleName = "Slow travel" },
             new TravelStyle.TravelStyle { IdTravelStyle = 10, TravelStyleName = "Backpacking" }
         );
+        
+        modelBuilder.HasPostgresExtension("pg_trgm");
+        
+        modelBuilder.Entity<User.User>(entity =>
+        {
+            entity.HasIndex(u => u.Email).IsUnique();
+
+            entity.HasIndex(u => u.Username)
+                .IsUnique()
+                .HasDatabaseName("ix_user_username_unique");
+
+            entity.HasIndex(u => u.Username)
+                .HasMethod("gin")
+                .HasOperators("gin_trgm_ops")
+                .HasDatabaseName("ix_user_username_trgm")
+                .IsUnique(false);
+
+            entity.HasIndex(u => u.DisplayName)
+                .HasMethod("gin")
+                .HasOperators("gin_trgm_ops")
+                .HasDatabaseName("ix_user_displayname_trgm");
+        });
     }
 }
