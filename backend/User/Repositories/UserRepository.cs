@@ -1,4 +1,5 @@
 ﻿using backend.Infrastructure.Data;
+using backend.User.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.User.Repositories;
@@ -14,32 +15,32 @@ public class UserRepository : IUserRepository
 
 
     // get all users
-    Task<IEnumerable<User>> IUserRepository.GetAllAsync()
+    Task<IEnumerable<Models.User>> IUserRepository.GetAllAsync()
     {
         return GetAllAsync();
     }
 
-    public async Task<IEnumerable<User>> GetAllAsync() =>
+    public async Task<IEnumerable<Models.User>> GetAllAsync() =>
         await _context.Users.AsNoTracking().ToListAsync();
 
 
     // get user by id
-    Task<User?> IUserRepository.GetByIdUserAsync(int idUser)
+    Task<Models.User?> IUserRepository.GetByIdUserAsync(int idUser)
     {
         return GetByIdUserAsync(idUser);
     }
 
-    public async Task<User?> GetByIdUserAsync(int idUser) =>
+    public async Task<Models.User?> GetByIdUserAsync(int idUser) =>
         await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUser);
 
 
     // add new user
-    Task IUserRepository.AddAsync(User user)
+    Task IUserRepository.AddAsync(Models.User user)
     {
         return AddAsync(user);
     }
 
-    public async Task AddAsync(User user)
+    public async Task AddAsync(Models.User user)
     {
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -47,12 +48,12 @@ public class UserRepository : IUserRepository
 
 
     // update user
-    Task IUserRepository.UpdateAsync(User user)
+    Task IUserRepository.UpdateAsync(Models.User user)
     {
         return UpdateAsync(user);
     }
 
-    public async Task UpdateAsync(User user)
+    public async Task UpdateAsync(Models.User user)
     {
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
@@ -60,12 +61,12 @@ public class UserRepository : IUserRepository
 
 
     // delete user
-    Task IUserRepository.DeleteAsync(User user)
+    Task IUserRepository.DeleteAsync(Models.User user)
     {
         return DeleteAsync(user);
     }
 
-    public async Task DeleteAsync(User user)
+    public async Task DeleteAsync(Models.User user)
     {
         //TODO
     }
@@ -80,13 +81,13 @@ public class UserRepository : IUserRepository
         await _context.Users.AnyAsync(u => u.Username == username);
 
 
-    public async Task<User?> GetByEmailOrUsernameAsync(string login)
+    public async Task<Models.User?> GetByEmailOrUsernameAsync(string login)
     {
         return await _context.Users
             .FirstOrDefaultAsync(u => u.Email == login || u.Username == login);
     }
 
-    public async Task<User?> GetUserWithLanguagesAsync(int idUser)
+    public async Task<Models.User?> GetUserWithLanguagesAsync(int idUser)
     {
         return await _context.Users
             .Include(u => u.UserLanguages)!
@@ -97,7 +98,7 @@ public class UserRepository : IUserRepository
     public async Task<bool> ValidateGender(int dtoGenderId) =>
         await _context.GenderOptions.AnyAsync(g => g.IdGender == dtoGenderId);
 
-    public async Task<User?> GetUserWithRelationsAsync(int id)
+    public async Task<Models.User?> GetUserWithRelationsAsync(int id)
     {
         return await _context.Users
             .Include(u => u.Gender)
@@ -172,7 +173,7 @@ public class UserRepository : IUserRepository
         return true;
     }
 
-    public async Task<List<User>> SearchAsync(string query, int limit)
+    public async Task<List<Models.User>> SearchAsync(string query, int limit)
     {
         query = query.Trim().ToLower();
         
@@ -201,5 +202,48 @@ public class UserRepository : IUserRepository
             ", query, limit)
             .AsNoTracking()
             .ToListAsync();
+    }
+    
+    public async Task<bool> FavouriteExists(int userId, int targetUserId)
+    {
+        return await _context.Favourites
+            .AnyAsync(f => f.IdUser == userId && f.IdUserFavourite == targetUserId);
+    }
+
+    public async Task AddFavouriteAsync(int userId, int targetUserId)
+    {
+        var fav = new Favourite
+        {
+            IdUser = userId,
+            IdUserFavourite = targetUserId
+        };
+
+        _context.Favourites.Add(fav);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task RemoveFavouriteAsync(int userId, int targetUserId)
+    {
+        var fav = await _context.Favourites
+            .FirstOrDefaultAsync(f => f.IdUser == userId && f.IdUserFavourite == targetUserId);
+
+        if (fav != null)
+        {
+            _context.Favourites.Remove(fav);
+            await _context.SaveChangesAsync();
+        }
+    }
+    
+    public async Task<List<Models.User>> GetFavouritesAsync(int userId)
+    {
+        return await _context.Favourites
+            .Where(f => f.IdUser == userId)
+            .Select(f => f.FavouriteUser)
+            .ToListAsync();
+    }
+    
+    public async Task<bool> UserExists(int id)
+    {
+        return await _context.Users.AnyAsync(u => u.IdUser == id);
     }
 }

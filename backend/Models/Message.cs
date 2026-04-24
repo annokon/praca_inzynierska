@@ -20,7 +20,7 @@ public class Message
     [Column("id_user_sender")]
     [ForeignKey(nameof(Sender))]
     public int? IdUserSender { get; set; }
-    public User.User Sender { get; set; } = null!;
+    public User.Models.User Sender { get; set; } = null!;
 
     [Column("text")]
     [MaxLength(1000)]

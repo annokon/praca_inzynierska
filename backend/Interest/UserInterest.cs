@@ -16,5 +16,5 @@ public class UserInterest
     [Required]
     [ForeignKey(nameof(User))]
     public int IdUser { get; set; }
-    public User.User User { get; set; } = null!;
+    public User.Models.User User { get; set; } = null!;
 }

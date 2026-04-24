@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace backend.Models;
+namespace backend.User.Models;
 
 [Table("favourite")]
 public class Favourite
@@ -13,15 +13,15 @@ public class Favourite
     // user adding to favourites
     [Column("id_user")]
     [ForeignKey(nameof(User))]
-    public int? IdUser { get; set; }
+    public int IdUser { get; set; }
     
     [InverseProperty(nameof(User.FavouritesGiven))]
-    public User.User User { get; set; } = null!;
+    public User User { get; set; } = null!;
 
     // user added to favourites
     [Column("id_user_favourite")]
     [ForeignKey(nameof(FavouriteUser))]
-    public int? IdUserFavourite { get; set; }
+    public int IdUserFavourite { get; set; }
     [InverseProperty(nameof(User.FavouritesReceived))]
-    public User.User FavouriteUser { get; set; } = null!;
+    public User FavouriteUser { get; set; } = null!;
 }

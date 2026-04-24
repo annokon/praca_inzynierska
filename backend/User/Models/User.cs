@@ -6,9 +6,8 @@ using backend.Language;
 using backend.Models;
 using backend.TransportMode;
 using backend.TravelStyle;
-using Microsoft.EntityFrameworkCore;
 
-namespace backend.User;
+namespace backend.User.Models;
 
 [Table("user")]
 public class User

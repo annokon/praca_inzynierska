@@ -4,6 +4,7 @@ using backend.Interest;
 using backend.Language;
 using backend.TransportMode;
 using backend.TravelStyle;
+using backend.User.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Infrastructure.Data;
@@ -14,7 +15,7 @@ public class DataContext : DbContext
     {
     }
 
-    public DbSet<User.User> Users => Set<User.User>();
+    public DbSet<User.Models.User> Users => Set<User.Models.User>();
     public DbSet<Language.Language> Languages => Set<Language.Language>();
     public DbSet<UserLanguage> UserLanguages => Set<UserLanguage>();
     public DbSet<Interest.Interest> Interests => Set<Interest.Interest>();
@@ -27,6 +28,7 @@ public class DataContext : DbContext
     public DbSet<SmokingPreferenceOption> SmokingPreferenceOptions => Set<SmokingPreferenceOption>();
     public DbSet<DrivingLicenseOption> DrivingLicenseOptions => Set<DrivingLicenseOption>();
     public DbSet<TravelExperienceOption> TravelExperienceOptions => Set<TravelExperienceOption>();
+    public DbSet<Favourite> Favourites => Set<Favourite>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -220,7 +222,7 @@ public class DataContext : DbContext
         
         modelBuilder.HasPostgresExtension("pg_trgm");
         
-        modelBuilder.Entity<User.User>(entity =>
+        modelBuilder.Entity<User.Models.User>(entity =>
         {
             entity.HasIndex(u => u.Email).IsUnique();
 

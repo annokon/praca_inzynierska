@@ -4,7 +4,7 @@ public class RegisterResult
 {
     public bool Success { get; private set; }
     public string? Error { get; private set; }
-    public User? User { get; private set; }
+    public Models.User? User { get; private set; }
 
     public static RegisterResult Fail(string e) =>
         new RegisterResult
@@ -13,7 +13,7 @@ public class RegisterResult
             Error = e
         };
 
-    public static RegisterResult SuccessResult(User u) =>
+    public static RegisterResult SuccessResult(Models.User u) =>
         new RegisterResult
         {
             Success = true,

@@ -21,7 +21,7 @@ public class TripPhoto
     [Required]
     [ForeignKey(nameof(UploadedByUser))]
     public int UploadedBy { get; set; }
-    public User.User UploadedByUser { get; set; } = null!;
+    public User.Models.User UploadedByUser { get; set; } = null!;
 
     [Column("photo_path")]
     [Required]

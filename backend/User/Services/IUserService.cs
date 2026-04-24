@@ -22,4 +22,8 @@ public interface IUserService
     Task<(bool Success, string? Error)> UpdateCurrencyAsync(int userId, string currency);
     Task<List<string>> GetAvailableCurrenciesAsync();
     Task<List<UserSearchDTO>> SearchAsync(string query, int limit);
+    Task<(bool Success, string? Error)> AddFavouriteAsync(int userId, int targetUserId);
+    Task<(bool Success, string? Error)> RemoveFavouriteAsync(int userId, int targetUserId);
+    Task<List<UserSearchDTO>> GetFavouritesAsync(int userId);
+
 }

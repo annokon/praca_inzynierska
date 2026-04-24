@@ -19,6 +19,7 @@ using backend.TransportMode.Services;
 using backend.TravelStyle;
 using backend.TravelStyle.Repositories;
 using backend.TravelStyle.Services;
+using backend.User.Models;
 using backend.User.Repositories;
 using backend.User.Services;
 

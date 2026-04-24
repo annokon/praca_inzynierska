@@ -171,6 +171,59 @@ public class UsersController : ControllerBase
 
         return Ok(new { message = "Waluta zaktualizowana" });
     }
+    
+    /// <summary>
+    /// Retrieves a list of users favourited by the current user.
+    /// </summary>
+    /// <returns>List of favourited users.</returns>
+    [Authorize]
+    [HttpGet("me/favourites")]
+    public async Task<IActionResult> GetMyFavourites()
+    {
+        var userId = GetUserId();
+
+        var users = await _userService.GetFavouritesAsync(userId);
+
+        return Ok(users);
+    }
+
+    /// <summary>
+    /// Adds a user to the current user's favourites.
+    /// </summary>
+    /// <param name="id">ID of the user to favourite.</param>
+    /// <returns>Operation result.</returns>
+    [Authorize]
+    [HttpPost("{id}/favourite")]
+    public async Task<IActionResult> AddFavourite(int id)
+    {
+        var userId = GetUserId();
+
+        var result = await _userService.AddFavouriteAsync(userId, id);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok(new { message = "User added to favourites" });
+    }
+
+    /// <summary>
+    /// Removes a user from the current user's favourites.
+    /// </summary>
+    /// <param name="id">ID of the user to remove from favourites.</param>
+    /// <returns>Operation result.</returns>
+    [Authorize]
+    [HttpDelete("{id}/favourite")]
+    public async Task<IActionResult> RemoveFavourite(int id)
+    {
+        var userId = GetUserId();
+
+        var result = await _userService.RemoveFavouriteAsync(userId, id);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok(new { message = "User removed from favourites" });
+    }
 
     /// <summary>
     /// Retrieves all users.

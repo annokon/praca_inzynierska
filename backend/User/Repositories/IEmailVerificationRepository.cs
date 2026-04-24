@@ -2,6 +2,6 @@
 
 public interface IEmailVerificationRepository
 {
-    Task<User?> GetByEmailAsync(string email);
-    Task UpdateAsync(User user);
+    Task<Models.User?> GetByEmailAsync(string email);
+    Task UpdateAsync(Models.User user);
 }
