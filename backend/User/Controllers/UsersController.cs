@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using System.Text.RegularExpressions;
 using backend.Security;
 using backend.User.DTOs;
 using backend.User.Services;
@@ -8,17 +7,32 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend.User.Controllers;
 
+/// <summary>
+/// Controller responsible for managing users, authentication,
+/// profile data, and administrative operations.
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UsersController"/> class.
+    /// </summary>
+    /// <param name="userService">Service handling user-related operations.</param>
     public UsersController(IUserService userService)
     {
         _userService = userService;
     }
-    
+
+    /// <summary>
+    /// Retrieves the currently authenticated user's ID from claims.
+    /// </summary>
+    /// <returns>The user ID.</returns>
+    /// <exception cref="UnauthorizedAccessException">
+    /// Thrown when the user ID claim is missing or invalid.
+    /// </exception>
     private int GetUserId()
     {
         var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -28,8 +42,11 @@ public class UsersController : ControllerBase
 
         return int.Parse(claim);
     }
-    
-    // get all users
+
+    /// <summary>
+    /// Retrieves all users.
+    /// </summary>
+    /// <returns>A list of users.</returns>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -37,8 +54,11 @@ public class UsersController : ControllerBase
         return Ok(users);
     }
 
-
-    // get user by id
+    /// <summary>
+    /// Retrieves a user by their ID.
+    /// </summary>
+    /// <param name="id">User ID.</param>
+    /// <returns>The user if found; otherwise, NotFound.</returns>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdUser(int id)
     {
@@ -49,8 +69,11 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-
-    // add new user
+    /// <summary>
+    /// Creates a new user.
+    /// </summary>
+    /// <param name="dto">User creation data transfer object.</param>
+    /// <returns>The created user.</returns>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserDTO dto)
     {
@@ -68,8 +91,12 @@ public class UsersController : ControllerBase
         }
     }
 
-
-    // update user
+    /// <summary>
+    /// Updates an existing user.
+    /// </summary>
+    /// <param name="id">User ID.</param>
+    /// <param name="dto">User update data.</param>
+    /// <returns>NoContent if successful; otherwise, NotFound.</returns>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDTO dto)
     {
@@ -83,8 +110,12 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 
-
-    // adding optional data to user during registration
+    /// <summary>
+    /// Adds additional optional data to a user.
+    /// </summary>
+    /// <param name="id">User ID.</param>
+    /// <param name="dto">Additional user data.</param>
+    /// <returns>Ok if successful; otherwise, NotFound.</returns>
     [HttpPut("{id}/additional")]
     public async Task<IActionResult> AddAdditionalData(int id, AdditionalDataUserDTO dto)
     {
@@ -96,8 +127,11 @@ public class UsersController : ControllerBase
         return Ok();
     }
 
-
-    // delete user
+    /// <summary>
+    /// Deletes a user.
+    /// </summary>
+    /// <param name="id">User ID.</param>
+    /// <returns>NoContent if deleted; otherwise, NotFound.</returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -108,7 +142,11 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Registers a new user account.
+    /// </summary>
+    /// <param name="dto">Registration data.</param>
+    /// <returns>Created user information or error message.</returns>
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterUserDTO dto)
     {
@@ -125,7 +163,11 @@ public class UsersController : ControllerBase
         });
     }
 
-    
+    /// <summary>
+    /// Authenticates a user and sets authentication cookies.
+    /// </summary>
+    /// <param name="dto">Login credentials.</param>
+    /// <returns>Authentication result.</returns>
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginUserDTO dto)
     {
@@ -140,7 +182,10 @@ public class UsersController : ControllerBase
         return Ok(new { message = "Logged in", role = result.Role });
     }
 
-    
+    /// <summary>
+    /// Logs out the current user by clearing authentication cookies.
+    /// </summary>
+    /// <returns>Logout confirmation.</returns>
     [Authorize]
     [HttpPost("logout")]
     public IActionResult Logout()
@@ -149,8 +194,10 @@ public class UsersController : ControllerBase
         return Ok(new { message = "Logged out" });
     }
 
-
-    // my data
+    /// <summary>
+    /// Retrieves the profile of the currently authenticated user.
+    /// </summary>
+    /// <returns>User profile data.</returns>
     [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> GetMe()
@@ -164,20 +211,28 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    
-    // admin
+
+    /// <summary>
+    /// Endpoint accessible only to users with admin role.
+    /// </summary>
+    /// <returns>Confirmation message.</returns>
     [Authorize(Roles = "admin")]
     [HttpGet("admin-only")]
     public IActionResult Admin() => Ok("You are an admin only");
 
-    
-    // mod
+    /// <summary>
+    /// Endpoint accessible to admin and moderator roles.
+    /// </summary>
+    /// <returns>Confirmation message.</returns>
     [Authorize(Roles = "admin,mod")]
     [HttpGet("staff")]
     public IActionResult Staff() => Ok("You are an admin or moderator");
-    
-    
-    // PATCH /api/users/me
+
+    /// <summary>
+    /// Updates the profile of the currently authenticated user.
+    /// </summary>
+    /// <param name="dto">Profile update data.</param>
+    /// <returns>Updated user profile.</returns>
     [HttpPatch("me")]
     public async Task<IActionResult> UpdateMe([FromBody] UpdateUserProfileDTO dto)
     {
@@ -190,7 +245,13 @@ public class UsersController : ControllerBase
 
         return Ok(result.User);
     }
-    
+
+    /// <summary>
+    /// Uploads profile and banner images for the current user.
+    /// </summary>
+    /// <param name="profileImage">Profile image file.</param>
+    /// <param name="bannerImage">Banner image file.</param>
+    /// <returns>Operation result.</returns>
     [Authorize]
     [HttpPost("me/images")]
     public async Task<IActionResult> UploadImages(IFormFile? profileImage, IFormFile? bannerImage)
@@ -204,7 +265,12 @@ public class UsersController : ControllerBase
 
         return Ok(result);
     }
-    
+
+    /// <summary>
+    /// Retrieves images associated with a user.
+    /// </summary>
+    /// <param name="id">User ID.</param>
+    /// <returns>User images or NotFound.</returns>
     [HttpGet("{id}/images")]
     public async Task<IActionResult> GetUserImages(int id)
     {
@@ -215,7 +281,12 @@ public class UsersController : ControllerBase
 
         return Ok(user);
     }
-    
+
+    /// <summary>
+    /// Updates the currency preference for the current user.
+    /// </summary>
+    /// <param name="dto">Currency update data.</param>
+    /// <returns>Operation result.</returns>
     [Authorize]
     [HttpPatch("me/currency")]
     public async Task<IActionResult> UpdateCurrency([FromBody] UpdateCurrencyDTO dto)
@@ -232,14 +303,24 @@ public class UsersController : ControllerBase
 
         return Ok(new { message = "Waluta zaktualizowana" });
     }
-    
+
+    /// <summary>
+    /// Retrieves a list of available currencies.
+    /// </summary>
+    /// <returns>List of currencies.</returns>
     [HttpGet("currencies")]
     public async Task<IActionResult> GetCurrencies()
     {
         var currencies = await _userService.GetAvailableCurrenciesAsync();
         return Ok(currencies);
     }
-    
+
+    /// <summary>
+    /// Searches users by query string.
+    /// </summary>
+    /// <param name="q">Search query.</param>
+    /// <param name="limit">Maximum number of results.</param>
+    /// <returns>List of matching users.</returns>
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] string q, [FromQuery] int limit = 10)
     {
