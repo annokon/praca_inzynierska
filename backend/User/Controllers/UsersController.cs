@@ -44,6 +44,135 @@ public class UsersController : ControllerBase
     }
 
     /// <summary>
+    /// Registers a new user account.
+    /// </summary>
+    /// <param name="dto">Registration data.</param>
+    /// <returns>Created user information or error message.</returns>
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(RegisterUserDTO dto)
+    {
+        var result = await _userService.RegisterAsync(dto);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok(new
+        {
+            message = "New user created",
+            id = result.User!.IdUser,
+            username = result.User.Username
+        });
+    }
+
+    /// <summary>
+    /// Authenticates a user and sets authentication cookies.
+    /// </summary>
+    /// <param name="dto">Login credentials.</param>
+    /// <returns>Authentication result.</returns>
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginUserDTO dto)
+    {
+        var result = await _userService.LoginAsync(dto);
+
+        if (!result.Success)
+            return Unauthorized(new { message = result.Error });
+
+        CookieHelper.SetAccessToken(Response, result.AccessToken!);
+        CookieHelper.SetRefreshToken(Response, result.RefreshToken!);
+
+        return Ok(new { message = "Logged in", role = result.Role });
+    }
+
+    /// <summary>
+    /// Logs out the current user by clearing authentication cookies.
+    /// </summary>
+    /// <returns>Logout confirmation.</returns>
+    [Authorize]
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        CookieHelper.ClearTokens(Response);
+        return Ok(new { message = "Logged out" });
+    }
+
+    /// <summary>
+    /// Retrieves the profile of the currently authenticated user.
+    /// </summary>
+    /// <returns>User profile data.</returns>
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMe()
+    {
+        var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var user = await _userService.GetProfileAsync(id);
+
+        if (user == null)
+            return NotFound();
+
+        return Ok(user);
+    }
+
+    /// <summary>
+    /// Updates the profile of the currently authenticated user.
+    /// </summary>
+    /// <param name="dto">Profile update data.</param>
+    /// <returns>Updated user profile.</returns>
+    [HttpPatch("me")]
+    public async Task<IActionResult> UpdateMe([FromBody] UpdateUserProfileDTO dto)
+    {
+        var userId = GetUserId();
+
+        var result = await _userService.UpdateProfileAsync(userId, dto);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok(result.User);
+    }
+
+    /// <summary>
+    /// Uploads profile and banner images for the current user.
+    /// </summary>
+    /// <param name="profileImage">Profile image file.</param>
+    /// <param name="bannerImage">Banner image file.</param>
+    /// <returns>Operation result.</returns>
+    [Authorize]
+    [HttpPost("me/images")]
+    public async Task<IActionResult> UploadImages(IFormFile? profileImage, IFormFile? bannerImage)
+    {
+        var userId = GetUserId();
+
+        var result = await _userService.UpdateImagesAsync(userId, profileImage, bannerImage);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Updates the currency preference for the current user.
+    /// </summary>
+    /// <param name="dto">Currency update data.</param>
+    /// <returns>Operation result.</returns>
+    [Authorize]
+    [HttpPatch("me/currency")]
+    public async Task<IActionResult> UpdateCurrency([FromBody] UpdateCurrencyDTO dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var userId = GetUserId();
+
+        var result = await _userService.UpdateCurrencyAsync(userId, dto.Currency);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok(new { message = "Waluta zaktualizowana" });
+    }
+
+    /// <summary>
     /// Retrieves all users.
     /// </summary>
     /// <returns>A list of users.</returns>
@@ -67,6 +196,52 @@ public class UsersController : ControllerBase
             return NotFound(new { message = "User not found." });
 
         return Ok(user);
+    }
+
+    /// <summary>
+    /// Retrieves the profile of another user using the same structure as the current user's profile.
+    /// </summary>
+    /// <param name="id">ID of the user whose profile is being retrieved.</param>
+    /// <returns>User profile data or NotFound if the user does not exist.</returns>
+    [Authorize]
+    [HttpGet("{id}/profile")]
+    public async Task<IActionResult> GetUserProfile(int id)
+    {
+        var user = await _userService.GetProfileAsync(id);
+
+        if (user == null)
+            return NotFound(new { message = "User not found." });
+
+        return Ok(user);
+    }
+
+    /// <summary>
+    /// Retrieves images associated with a user.
+    /// </summary>
+    /// <param name="id">User ID.</param>
+    /// <returns>User images or NotFound.</returns>
+    [HttpGet("{id}/images")]
+    public async Task<IActionResult> GetUserImages(int id)
+    {
+        var user = await _userService.GetUserImagesAsync(id);
+
+        if (user == null)
+            return NotFound(new { message = "User not found" });
+
+        return Ok(user);
+    }
+
+    /// <summary>
+    /// Searches users by query string.
+    /// </summary>
+    /// <param name="q">Search query.</param>
+    /// <param name="limit">Maximum number of results.</param>
+    /// <returns>List of matching users.</returns>
+    [HttpGet("search")]
+    public async Task<IActionResult> Search([FromQuery] string q, [FromQuery] int limit = 10)
+    {
+        var users = await _userService.SearchAsync(q, limit);
+        return Ok(users);
     }
 
     /// <summary>
@@ -143,76 +318,6 @@ public class UsersController : ControllerBase
     }
 
     /// <summary>
-    /// Registers a new user account.
-    /// </summary>
-    /// <param name="dto">Registration data.</param>
-    /// <returns>Created user information or error message.</returns>
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterUserDTO dto)
-    {
-        var result = await _userService.RegisterAsync(dto);
-
-        if (!result.Success)
-            return BadRequest(new { message = result.Error });
-
-        return Ok(new
-        {
-            message = "New user created",
-            id = result.User!.IdUser,
-            username = result.User.Username
-        });
-    }
-
-    /// <summary>
-    /// Authenticates a user and sets authentication cookies.
-    /// </summary>
-    /// <param name="dto">Login credentials.</param>
-    /// <returns>Authentication result.</returns>
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginUserDTO dto)
-    {
-        var result = await _userService.LoginAsync(dto);
-
-        if (!result.Success)
-            return Unauthorized(new { message = result.Error });
-
-        CookieHelper.SetAccessToken(Response, result.AccessToken!);
-        CookieHelper.SetRefreshToken(Response, result.RefreshToken!);
-
-        return Ok(new { message = "Logged in", role = result.Role });
-    }
-
-    /// <summary>
-    /// Logs out the current user by clearing authentication cookies.
-    /// </summary>
-    /// <returns>Logout confirmation.</returns>
-    [Authorize]
-    [HttpPost("logout")]
-    public IActionResult Logout()
-    {
-        CookieHelper.ClearTokens(Response);
-        return Ok(new { message = "Logged out" });
-    }
-
-    /// <summary>
-    /// Retrieves the profile of the currently authenticated user.
-    /// </summary>
-    /// <returns>User profile data.</returns>
-    [Authorize]
-    [HttpGet("me")]
-    public async Task<IActionResult> GetMe()
-    {
-        var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var user = await _userService.GetProfileAsync(id);
-
-        if (user == null)
-            return NotFound();
-
-        return Ok(user);
-    }
-
-
-    /// <summary>
     /// Endpoint accessible only to users with admin role.
     /// </summary>
     /// <returns>Confirmation message.</returns>
@@ -229,82 +334,6 @@ public class UsersController : ControllerBase
     public IActionResult Staff() => Ok("You are an admin or moderator");
 
     /// <summary>
-    /// Updates the profile of the currently authenticated user.
-    /// </summary>
-    /// <param name="dto">Profile update data.</param>
-    /// <returns>Updated user profile.</returns>
-    [HttpPatch("me")]
-    public async Task<IActionResult> UpdateMe([FromBody] UpdateUserProfileDTO dto)
-    {
-        var userId = GetUserId();
-
-        var result = await _userService.UpdateProfileAsync(userId, dto);
-
-        if (!result.Success)
-            return BadRequest(new { message = result.Error });
-
-        return Ok(result.User);
-    }
-
-    /// <summary>
-    /// Uploads profile and banner images for the current user.
-    /// </summary>
-    /// <param name="profileImage">Profile image file.</param>
-    /// <param name="bannerImage">Banner image file.</param>
-    /// <returns>Operation result.</returns>
-    [Authorize]
-    [HttpPost("me/images")]
-    public async Task<IActionResult> UploadImages(IFormFile? profileImage, IFormFile? bannerImage)
-    {
-        var userId = GetUserId();
-
-        var result = await _userService.UpdateImagesAsync(userId, profileImage, bannerImage);
-
-        if (!result.Success)
-            return BadRequest(new { message = result.Error });
-
-        return Ok(result);
-    }
-
-    /// <summary>
-    /// Retrieves images associated with a user.
-    /// </summary>
-    /// <param name="id">User ID.</param>
-    /// <returns>User images or NotFound.</returns>
-    [HttpGet("{id}/images")]
-    public async Task<IActionResult> GetUserImages(int id)
-    {
-        var user = await _userService.GetUserImagesAsync(id);
-
-        if (user == null)
-            return NotFound(new { message = "User not found" });
-
-        return Ok(user);
-    }
-
-    /// <summary>
-    /// Updates the currency preference for the current user.
-    /// </summary>
-    /// <param name="dto">Currency update data.</param>
-    /// <returns>Operation result.</returns>
-    [Authorize]
-    [HttpPatch("me/currency")]
-    public async Task<IActionResult> UpdateCurrency([FromBody] UpdateCurrencyDTO dto)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var userId = GetUserId();
-
-        var result = await _userService.UpdateCurrencyAsync(userId, dto.Currency);
-
-        if (!result.Success)
-            return BadRequest(new { message = result.Error });
-
-        return Ok(new { message = "Waluta zaktualizowana" });
-    }
-
-    /// <summary>
     /// Retrieves a list of available currencies.
     /// </summary>
     /// <returns>List of currencies.</returns>
@@ -313,18 +342,5 @@ public class UsersController : ControllerBase
     {
         var currencies = await _userService.GetAvailableCurrenciesAsync();
         return Ok(currencies);
-    }
-
-    /// <summary>
-    /// Searches users by query string.
-    /// </summary>
-    /// <param name="q">Search query.</param>
-    /// <param name="limit">Maximum number of results.</param>
-    /// <returns>List of matching users.</returns>
-    [HttpGet("search")]
-    public async Task<IActionResult> Search([FromQuery] string q, [FromQuery] int limit = 10)
-    {
-        var users = await _userService.SearchAsync(q, limit);
-        return Ok(users);
     }
 }
