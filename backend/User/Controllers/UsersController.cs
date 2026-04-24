@@ -203,7 +203,6 @@ public class UsersController : ControllerBase
     /// </summary>
     /// <param name="id">ID of the user whose profile is being retrieved.</param>
     /// <returns>User profile data or NotFound if the user does not exist.</returns>
-    [Authorize]
     [HttpGet("{id}/profile")]
     public async Task<IActionResult> GetUserProfile(int id)
     {
