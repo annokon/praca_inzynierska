@@ -1,0 +1,183 @@
+.page-shell {
+    min-height: calc(100vh - 64px);
+    background: #f3f3f3;
+    padding: 3rem 1rem 4rem;
+    font-family: "Poppins", sans-serif;
+}
+
+.page-container {
+    width: 100%;
+    max-width: 34rem;
+    margin: 0 auto;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 0 0 2.5rem;
+    color: #111;
+}
+
+.page-subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: #555;
+    margin: -1.2rem 0 2rem;
+}
+
+.page-info {
+    text-align: center;
+    font-size: 1rem;
+    color: #333;
+    padding: 2rem 1rem;
+}
+
+.page-error {
+    color: #b42318;
+}
+
+.result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.result-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.45);
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s ease;
+}
+
+.result-card:hover {
+    opacity: 0.75;
+}
+
+.result-card-left {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.result-card-media {
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+    border-radius: 50%;
+    border: 2px solid #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: #111;
+    background: #fff;
+    overflow: hidden;
+}
+
+.result-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.result-card-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.result-card-title {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #111;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.result-card-text {
+    font-size: 0.72rem;
+    color: #444;
+    margin-top: 0.2rem;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.result-card-meta {
+    font-size: 0.72rem;
+    color: #666;
+    margin-top: 0.2rem;
+    line-height: 1.2;
+}
+
+.result-card-action {
+    font-size: 1.4rem;
+    color: #111;
+    flex-shrink: 0;
+    padding-left: 0.5rem;
+}
+
+.pagination {
+    margin-top: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    min-width: 2rem;
+    height: 2rem;
+    border: none;
+    background: transparent;
+    color: #111;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border-radius: 0.35rem;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.pagination-btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.pagination-btn.active {
+    background: #111;
+    color: #fff;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+    background: transparent;
+}
+
+.pagination-dots {
+    min-width: 2rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: #111;
+}
+
+@media (max-width: 640px) {
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .result-card-title {
+        font-size: 0.98rem;
+    }
+
+    .result-card-text,
+    .result-card-meta {
+        font-size: 0.7rem;
+    }
+}
