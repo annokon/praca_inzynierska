@@ -33,7 +33,7 @@ export default function Navbar() {
 
             try {
                 const res = await fetch(
-                    `http://localhost:5292/api/users/search?query=${encodeURIComponent(trimmed)}&limit=10`,
+                    `http://localhost:5292/api/users/search?q=${encodeURIComponent(trimmed)}`,
                     {
                         method: "GET",
                         credentials: "include"
@@ -84,17 +84,8 @@ export default function Navbar() {
         const trimmed = searchValue.trim();
         if (!trimmed) return;
 
-        const exactMatch = searchResults.find(
-            (searchedUser) =>
-                searchedUser.username.toLowerCase() === trimmed.toLowerCase()
-        );
-
-        if (exactMatch) {
-            setShowResults(false);
-            navigate(`/profile/${exactMatch.username}/about-user`);
-        } else {
-            setShowResults(true);
-        }
+        setShowResults(false);
+        navigate(`/search-users?q=${encodeURIComponent(trimmed)}`);
     };
 
     const handleClear = () => {
