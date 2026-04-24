@@ -969,45 +969,4 @@ public class UserService : IUserService
             ProfilePhotoPath = u.ProfilePhotoPath
         }).ToList();
     }
-    
-    public async Task<(bool Success, string? Error)> AddFavouriteAsync(int userId, int targetUserId)
-    {
-        if (userId == targetUserId)
-            return (false, "You cannot favourite yourself.");
-
-        if (!await _repo.UserExists(targetUserId))
-            return (false, "User does not exist.");
-
-        if (await _repo.FavouriteExists(userId, targetUserId))
-            return (false, "Already in favourites.");
-
-        await _repo.AddFavouriteAsync(userId, targetUserId);
-
-        return (true, null);
-    }
-
-    public async Task<(bool Success, string? Error)> RemoveFavouriteAsync(int userId, int targetUserId)
-    {
-        if (!await _repo.FavouriteExists(userId, targetUserId))
-            return (false, "Favourite does not exist.");
-
-        await _repo.RemoveFavouriteAsync(userId, targetUserId);
-
-        return (true, null);
-    }
-
-    public async Task<List<UserSearchDTO>> GetFavouritesAsync(int userId)
-    {
-        var users = await _repo.GetFavouritesAsync(userId);
-
-        return users.Select(u => new UserSearchDTO
-        {
-            Id = u.IdUser,
-            Username = u.Username,
-            DisplayName = u.DisplayName,
-            ProfilePhotoPath = u.ProfilePhotoPath
-        }).ToList();
-    }
-
-    
 }

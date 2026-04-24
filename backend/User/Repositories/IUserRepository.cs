@@ -29,8 +29,4 @@ public interface IUserRepository
     Task<bool> UpdateCurrencyAsync(int userId, string currency);
     Task<List<Models.User>> SearchAsync(string query, int limit);
     Task<bool> UserExists(int id);
-    Task<bool> FavouriteExists(int userId, int targetUserId);
-    Task AddFavouriteAsync(int userId, int targetUserId);
-    Task RemoveFavouriteAsync(int userId, int targetUserId);
-    Task<List<Models.User>> GetFavouritesAsync(int userId);
 }

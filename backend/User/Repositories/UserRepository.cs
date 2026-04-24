@@ -204,44 +204,6 @@ public class UserRepository : IUserRepository
             .ToListAsync();
     }
     
-    public async Task<bool> FavouriteExists(int userId, int targetUserId)
-    {
-        return await _context.Favourites
-            .AnyAsync(f => f.IdUser == userId && f.IdUserFavourite == targetUserId);
-    }
-
-    public async Task AddFavouriteAsync(int userId, int targetUserId)
-    {
-        var fav = new Favourite
-        {
-            IdUser = userId,
-            IdUserFavourite = targetUserId
-        };
-
-        _context.Favourites.Add(fav);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task RemoveFavouriteAsync(int userId, int targetUserId)
-    {
-        var fav = await _context.Favourites
-            .FirstOrDefaultAsync(f => f.IdUser == userId && f.IdUserFavourite == targetUserId);
-
-        if (fav != null)
-        {
-            _context.Favourites.Remove(fav);
-            await _context.SaveChangesAsync();
-        }
-    }
-    
-    public async Task<List<Models.User>> GetFavouritesAsync(int userId)
-    {
-        return await _context.Favourites
-            .Where(f => f.IdUser == userId)
-            .Select(f => f.FavouriteUser)
-            .ToListAsync();
-    }
-    
     public async Task<bool> UserExists(int id)
     {
         return await _context.Users.AnyAsync(u => u.IdUser == id);
