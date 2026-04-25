@@ -1,0 +1,95 @@
+.notifications-tabs-bar {
+    margin-bottom: 2rem;
+    box-shadow: none;
+    border-bottom: none;
+}
+
+.notifications-tabs {
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.notification-tab {
+    appearance: none;
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.notification-tab.is-active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.notification-card {
+    cursor: default;
+}
+
+.notification-card:hover {
+    opacity: 1;
+}
+
+.notification-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    min-width: 0.4rem;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.notification-card-unread {
+    opacity: 1;
+}
+
+.notification-card-unread .notification-dot {
+    background: #111;
+}
+
+.notification-card-unread .result-card-title {
+    font-weight: 700;
+    color: #111;
+}
+
+.notification-card-unread .result-card-text,
+.notification-card-unread .notification-time {
+    color: #111;
+}
+
+.notification-card-read {
+    opacity: 0.5;
+}
+
+.notification-card-read .result-card-title {
+    font-weight: 400;
+}
+
+.notification-time {
+    white-space: nowrap;
+    text-align: right;
+    align-self: flex-start;
+    margin-top: 0.1rem;
+}
+
+@media (max-width: 640px) {
+    .notification-card {
+        align-items: flex-start;
+    }
+
+    .notification-time {
+        font-size: 0.7rem;
+    }
+
+    .notifications-tabs {
+        flex-wrap: wrap;
+        gap: 0.8rem;
+    }
+}
+
+.notifications-tabs-bar {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}

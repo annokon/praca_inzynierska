@@ -39,6 +39,7 @@ import SettingsEditTravelExperience from "./views/Settings/SettingsChangeAdditio
 import SearchUsersPage from "./views/ListPage/SearchUsersPage";
 import FavouriteUsersPage from "./views/ListPage/FavouriteUsersPage";
 import BlockedUsersPage from "./views/ListPage/BlockedUsersPage";
+import NotificationsPage from "./views/ListPage/NotificationsPage";
 
 function App() {
     return (
@@ -88,6 +89,7 @@ function App() {
                     <Route path="/search-users" element={<SearchUsersPage />} />
                     <Route path="/fav-users" element={<FavouriteUsersPage />} />
                     <Route path="/blocked-users" element={<BlockedUsersPage />} />
+                    <Route path="/notifications" element={<NotificationsPage />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>
