@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import "../../css/login_register.css";
 import SuccessPopup from "../../components/Popup/SuccessPopup";
 import AsyncSelect from 'react-select/async';
@@ -206,18 +206,32 @@ export default function AdditionalInfo() {
     }, []);
 
 
-    const filteredLanguages = allLanguages.filter((lang) =>
-        lang.name.toLowerCase().includes(languageSearch.toLowerCase())
-    );
+    const selectedLanguageObjects = useMemo(() => {
+        return allLanguages.filter((lang) => selectedLanguages.includes(lang.id));
+    }, [allLanguages, selectedLanguages]);
+
+    const filteredLanguages = useMemo(() => {
+        return allLanguages
+            .filter((lang) =>
+                lang.name.toLowerCase().includes(languageSearch.toLowerCase())
+            )
+            .filter((lang) => !selectedLanguages.includes(lang.id));
+    }, [allLanguages, languageSearch, selectedLanguages]);
 
     const visibleLanguages = filteredLanguages.slice(0, 6);
 
-    function toggleLanguage(id) {
-        setSelectedLanguages((prev) =>
-            prev.includes(id)
-                ? prev.filter((l) => l !== id)
-                : [...prev, id]
-        );
+    function handleAddLanguage(id) {
+        setSelectedLanguages((prev) => {
+            if (prev.includes(id)) return prev;
+            return [...prev, id];
+        });
+
+        setSkipLanguages(false);
+        setLanguageSearch("");
+    }
+
+    function handleRemoveLanguage(id) {
+        setSelectedLanguages((prev) => prev.filter((langId) => langId !== id));
     }
 
     useEffect(() => {
@@ -240,18 +254,32 @@ export default function AdditionalInfo() {
         loadInterests();
     }, []);
 
-    const filteredInterests = allInterests.filter((interest) =>
-        interest.name.toLowerCase().includes(interestsSearch.toLowerCase())
-    );
+    const selectedInterestObjects = useMemo(() => {
+        return allInterests.filter((interest) => selectedInterests.includes(interest.id));
+    }, [allInterests, selectedInterests]);
+
+    const filteredInterests = useMemo(() => {
+        return allInterests
+            .filter((interest) =>
+                interest.name.toLowerCase().includes(interestsSearch.toLowerCase())
+            )
+            .filter((interest) => !selectedInterests.includes(interest.id));
+    }, [allInterests, interestsSearch, selectedInterests]);
 
     const visibleInterests = filteredInterests.slice(0, 6);
 
-    function toggleInterest(id) {
-        setSelectedInterests((prev) =>
-            prev.includes(id)
-                ? prev.filter((i) => i !== id)
-                : [...prev, id]
-        );
+    function handleAddInterest(id) {
+        setSelectedInterests((prev) => {
+            if (prev.includes(id)) return prev;
+            return [...prev, id];
+        });
+
+        setSkipInterests(false);
+        setInterestsSearch("");
+    }
+
+    function handleRemoveInterest(id) {
+        setSelectedInterests((prev) => prev.filter((interestId) => interestId !== id));
     }
 
     function handleNextFromLanguages() {
@@ -482,23 +510,42 @@ export default function AdditionalInfo() {
                                 <button
                                     key={lang.id}
                                     type="button"
-                                    className={
-                                        "pill pill--selectable" +
-                                        (selectedLanguages.includes(lang.id)
-                                            ? " pill--selected"
-                                            : "")
-                                    }
-                                    onClick={() => toggleLanguage(lang.id)}
+                                    className="pill pill--selectable"
+                                    onClick={() => handleAddLanguage(lang.id)}
                                 >
                                     {lang.name}
                                 </button>
                             ))}
+
                             {filteredLanguages.length === 0 && (
                                 <p className="text-center">
                                     Brak wyników dla podanego wyszukiwania.
                                 </p>
                             )}
                         </div>
+
+                        {selectedLanguageObjects.length > 0 && (
+                            <div className="form-field">
+                                <label className="form-label">
+                                    Wybrane języki
+                                </label>
+
+                                <div className="pill-group">
+                                    {selectedLanguageObjects.map((lang) => (
+                                        <button
+                                            key={lang.id}
+                                            type="button"
+                                            className="pill pill--selectable pill--removable"
+                                            onClick={() => handleRemoveLanguage(lang.id)}
+                                            aria-label={`Usuń język ${lang.name}`}
+                                        >
+                                            <span>{lang.name}</span>
+                                            <span className="pill__close" aria-hidden="true">×</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         <div className="form-footer">
                             <button
@@ -923,13 +970,8 @@ export default function AdditionalInfo() {
                                 <button
                                     key={interest.id}
                                     type="button"
-                                    className={
-                                        "pill pill--selectable" +
-                                        (selectedInterests.includes(interest.id)
-                                            ? " pill--selected"
-                                            : "")
-                                    }
-                                    onClick={() => toggleInterest(interest.id)}
+                                    className="pill pill--selectable"
+                                    onClick={() => handleAddInterest(interest.id)}
                                 >
                                     {interest.name}
                                 </button>
@@ -941,6 +983,29 @@ export default function AdditionalInfo() {
                                 </p>
                             )}
                         </div>
+
+                        {selectedInterestObjects.length > 0 && (
+                            <div className="form-field">
+                                <label className="form-label">
+                                    Wybrane zainteresowania
+                                </label>
+
+                                <div className="pill-group">
+                                    {selectedInterestObjects.map((interest) => (
+                                        <button
+                                            key={interest.id}
+                                            type="button"
+                                            className="pill pill--selectable pill--removable"
+                                            onClick={() => handleRemoveInterest(interest.id)}
+                                            aria-label={`Usuń zainteresowanie ${interest.name}`}
+                                        >
+                                            <span>{interest.name}</span>
+                                            <span className="pill__close" aria-hidden="true">×</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         <div className="form-footer">
                             <div className="button-row">
