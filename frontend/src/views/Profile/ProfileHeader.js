@@ -6,25 +6,6 @@ import {
     Star,
 } from "lucide-react";
 
-function Pill({ children, colorClass = "" }) {
-    return <span className={`pill ${colorClass}`}>{children}</span>;
-}
-
-function InfoLine({ icon, title, value, colorClass }) {
-    if (!value) return null;
-    return (
-        <div className="info-line">
-            <div className="info-line__left">
-                {icon}
-                <span className="info-line__title">{title}</span>
-            </div>
-            <div className="info-line__value">
-                <Pill colorClass={colorClass}>{value}</Pill>
-            </div>
-        </div>
-    );
-}
-
 export default function ProfileHeader({
                                           name,
                                           age,
