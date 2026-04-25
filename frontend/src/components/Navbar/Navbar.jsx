@@ -4,6 +4,82 @@ import logo from "../../assets/logo.png";
 import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 
+const API_BASE_URL = "http://localhost:5292";
+
+function getProfileImageFromResponse(data) {
+    if (!data) return "";
+
+    if (typeof data === "string") {
+        return data;
+    }
+
+    if (data.profile) return data.profile;
+    if (data.profileImage) return data.profileImage;
+    if (data.profileImageUrl) return data.profileImageUrl;
+
+    if (data.image) return data.image;
+    if (data.imageUrl) return data.imageUrl;
+    if (data.path) return data.path;
+    if (data.filePath) return data.filePath;
+
+    if (Array.isArray(data.images)) {
+        const profileImage =
+            data.images.find((image) => image.isProfile) ||
+            data.images.find((image) => image.isMain) ||
+            data.images[0];
+
+        return getProfileImageFromResponse(profileImage);
+    }
+
+    if (Array.isArray(data.userImages)) {
+        const profileImage =
+            data.userImages.find((image) => image.isProfile) ||
+            data.userImages.find((image) => image.isMain) ||
+            data.userImages[0];
+
+        return getProfileImageFromResponse(profileImage);
+    }
+
+    return "";
+}
+
+function getImageSrc(imagePath) {
+    if (!imagePath) return "";
+
+    if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+        return encodeURI(imagePath);
+    }
+
+    if (imagePath.startsWith("/")) {
+        return encodeURI(`${API_BASE_URL}${imagePath}`);
+    }
+
+    return encodeURI(`${API_BASE_URL}/${imagePath}`);
+}
+
+function UserPlaceholderIcon() {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5Z"
+                fill="currentColor"
+            />
+            <path
+                d="M4 22c0-4.418 3.582-8 8-8s8 3.582 8 8"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+            />
+        </svg>
+    );
+}
+
 export default function Navbar() {
     const { user, loading } = useAuth();
     const navigate = useNavigate();
@@ -14,10 +90,11 @@ export default function Navbar() {
     const searchRef = useRef(null);
 
     const handleLogout = async () => {
-        await fetch("http://localhost:5292/api/users/logout", {
+        await fetch(`${API_BASE_URL}/api/users/logout`, {
             method: "POST",
             credentials: "include"
         });
+
         window.location.reload();
     };
 
@@ -33,7 +110,7 @@ export default function Navbar() {
 
             try {
                 const res = await fetch(
-                    `http://localhost:5292/api/users/search?q=${encodeURIComponent(trimmed)}`,
+                    `${API_BASE_URL}/api/users/search?q=${encodeURIComponent(trimmed)}&limit=5`,
                     {
                         method: "GET",
                         credentials: "include"
@@ -47,9 +124,55 @@ export default function Navbar() {
                 }
 
                 const data = await res.json();
+                const users = Array.isArray(data) ? data.slice(0, 10) : [];
 
-                const users = Array.isArray(data) ? data : [];
-                setSearchResults(users.slice(0, 10));
+                const usersWithImages = await Promise.all(
+                    users.map(async (searchedUser) => {
+                        if (searchedUser.id == null) {
+                            return {
+                                ...searchedUser,
+                                profileImage: ""
+                            };
+                        }
+
+                        try {
+                            const imageRes = await fetch(
+                                `${API_BASE_URL}/api/users/${searchedUser.id}/images`,
+                                {
+                                    method: "GET",
+                                    credentials: "include"
+                                }
+                            );
+
+                            if (!imageRes.ok) {
+                                return {
+                                    ...searchedUser,
+                                    profileImage: ""
+                                };
+                            }
+
+                            const imageData = await imageRes.json();
+                            const profileImage = getProfileImageFromResponse(imageData);
+
+                            return {
+                                ...searchedUser,
+                                profileImage
+                            };
+                        } catch (err) {
+                            console.error(
+                                `Błąd pobierania zdjęcia użytkownika ${searchedUser.id}:`,
+                                err
+                            );
+
+                            return {
+                                ...searchedUser,
+                                profileImage: ""
+                            };
+                        }
+                    })
+                );
+
+                setSearchResults(usersWithImages);
                 setShowResults(true);
             } catch (err) {
                 console.error("Błąd wyszukiwania użytkowników:", err);
@@ -69,6 +192,7 @@ export default function Navbar() {
         }
 
         document.addEventListener("mousedown", handleClickOutside);
+
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
@@ -76,6 +200,14 @@ export default function Navbar() {
         setSearchValue(username);
         setShowResults(false);
         navigate(`/profile/${username}/about-user`);
+    };
+
+    const handleMoreResults = () => {
+        const trimmed = searchValue.trim();
+        if (!trimmed) return;
+
+        setShowResults(false);
+        navigate(`/search-users?q=${encodeURIComponent(trimmed)}`);
     };
 
     const handleSubmit = (e) => {
@@ -124,6 +256,7 @@ export default function Navbar() {
                                 }
                             }}
                         />
+
                         <button type="button" onClick={handleClear}>
                             &times;
                         </button>
@@ -132,15 +265,46 @@ export default function Navbar() {
                     {showResults && (
                         <div className="search-results">
                             {searchResults.length > 0 ? (
-                                searchResults.map((searchedUser) => (
-                                    <div
-                                        key={searchedUser.id || searchedUser.username}
-                                        className="search-result-item"
-                                        onClick={() => handleSelectUser(searchedUser.username)}
+                                <>
+                                    {searchResults.map((searchedUser) => (
+                                        <div
+                                            key={searchedUser.id || searchedUser.username}
+                                            className="search-result-item"
+                                            onClick={() => handleSelectUser(searchedUser.username)}
+                                        >
+                                            <div className="search-result-avatar">
+                                                {searchedUser.profileImage ? (
+                                                    <img
+                                                        src={getImageSrc(searchedUser.profileImage)}
+                                                        alt="avatar"
+                                                    />
+                                                ) : (
+                                                    <UserPlaceholderIcon />
+                                                )}
+                                            </div>
+
+                                            <div className="search-result-user-info">
+                                                <div className="search-result-display-name">
+                                                    {searchedUser.displayName ||
+                                                        searchedUser.name ||
+                                                        "Imię i Nazwisko"}
+                                                </div>
+
+                                                <div className="search-result-username">
+                                                    @{searchedUser.username}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                    <button
+                                        type="button"
+                                        className="search-more-results-btn"
+                                        onClick={handleMoreResults}
                                     >
-                                        {searchedUser.username}
-                                    </div>
-                                ))
+                                        Więcej wyników
+                                    </button>
+                                </>
                             ) : (
                                 <div className="search-result-empty">
                                     Brak użytkowników o podanej nazwie
