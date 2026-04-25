@@ -4,6 +4,7 @@ import {
     MessageCircleMore,
     HeartPlus,
     Star,
+    EllipsisVertical,
 } from "lucide-react";
 
 export default function ProfileHeader({
@@ -92,11 +93,7 @@ export default function ProfileHeader({
                             <button className="btn-primary">Edytuj profil</button>
                         )}
                         <button className="btn-icon" onClick={onOptionsClick}>
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <circle cx="12" cy="5" r="2"/>
-                                <circle cx="12" cy="12" r="2"/>
-                                <circle cx="12" cy="19" r="2"/>
-                            </svg>
+                            {<EllipsisVertical size={19} strokeWidth={2} className="icon-muted" />}
                         </button>
                     </div>
 
