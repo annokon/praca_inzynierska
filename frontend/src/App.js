@@ -37,6 +37,7 @@ import SettingsEditInterests from "./views/Settings/SettingsChangeAdditionalInfo
 import SettingsEditTransportMode from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditTransportMode";
 import SettingsEditTravelExperience from "./views/Settings/SettingsChangeAdditionalInfo/SettingsEditTravelExperience";
 import SearchUsersPage from "./views/ListPage/SearchUsersPage";
+import FavouriteUsersPage from "./views/ListPage/FavouriteUsersPage";
 
 function App() {
     return (
@@ -84,6 +85,7 @@ function App() {
                         <Route path="/settings-experience" element={<SettingsEditTravelExperience />} />
                     </Route>
                     <Route path="/search-users" element={<SearchUsersPage />} />
+                    <Route path="/fav-users" element={<FavouriteUsersPage />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>
