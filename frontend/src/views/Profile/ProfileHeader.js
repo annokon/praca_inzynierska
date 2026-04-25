@@ -1,5 +1,29 @@
 import React from "react";
 import "../../css/profile.css";
+import {
+    MessageCircleMore,
+    HeartPlus,
+    Star,
+} from "lucide-react";
+
+function Pill({ children, colorClass = "" }) {
+    return <span className={`pill ${colorClass}`}>{children}</span>;
+}
+
+function InfoLine({ icon, title, value, colorClass }) {
+    if (!value) return null;
+    return (
+        <div className="info-line">
+            <div className="info-line__left">
+                {icon}
+                <span className="info-line__title">{title}</span>
+            </div>
+            <div className="info-line__value">
+                <Pill colorClass={colorClass}>{value}</Pill>
+            </div>
+        </div>
+    );
+}
 
 export default function ProfileHeader({
                                           name,
@@ -51,9 +75,7 @@ export default function ProfileHeader({
 
                     <div className="ph-stats">
                         <div className="ph-stat-item">
-                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
+                            {<Star size={24} strokeWidth={2} className="icon-muted" color={"#F59E0B"} />}
                             <div className="ph-stat-text">
                                 <strong>{rating}</strong>
                                 <span>Ocena</span>
@@ -77,19 +99,12 @@ export default function ProfileHeader({
                         {!isMe ? (
                             <>
                                 <button className="btn-primary" onClick={onMessageClick}>
-                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path>
-                                    </svg>
+                                    {<MessageCircleMore size={18} strokeWidth={2} className="icon-muted" />}
                                     Wyślij wiadomość
                                 </button>
                                 <button className="btn-secondary" onClick={onFollowClick}>
-                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="8.5" cy="7" r="4"></circle>
-                                        <line x1="20" y1="8" x2="20" y2="14"></line>
-                                        <line x1="23" y1="11" x2="17" y2="11"></line>
-                                    </svg>
-                                    Obserwuj
+                                    {<HeartPlus size={18} strokeWidth={2} className="icon-muted" />}
+                                    Polub
                                 </button>
                             </>
                         ) : (
