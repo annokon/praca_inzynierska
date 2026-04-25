@@ -346,3 +346,36 @@
     color: #16a34a;
 }
 
+.settings-action-column {
+    display: grid;
+    gap: var(--settings-gap-2);
+    justify-content: start;
+    justify-items: start;
+}
+
+.settings-action-row {
+    display: flex;
+    align-items: center;
+    gap: var(--settings-gap-2);
+    flex-wrap: wrap;
+}
+
+.settings-action-column .settings-btn,
+.settings-action-row .settings-btn {
+    width: max-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 640px) {
+    .settings-action-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .settings-action-column {
+        justify-content: start;
+        justify-items: start;
+    }
+}
