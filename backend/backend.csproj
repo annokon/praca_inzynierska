@@ -22,11 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="wwwroot\images\placeholders\banner_picture.png" />
-      <None Include="wwwroot\images\placeholders\profile_picture.png" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Content Update="Resources\placeholders\banner_picture.png">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -38,7 +33,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\images\placeholders\" />
+      <Folder Include="wwwroot\images\" />
       <Folder Include="wwwroot\uploads\users\" />
     </ItemGroup>
 
