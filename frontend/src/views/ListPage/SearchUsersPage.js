@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import "../../css/list_page.css";
 
 const USERS_PER_PAGE = 10;
+const MAX_PAGES = 10;
 
 export default function SearchUsersPage() {
     const [searchParams] = useSearchParams();
@@ -31,12 +32,16 @@ export default function SearchUsersPage() {
 
             try {
                 const res = await fetch(
-                    `http://localhost:5292/api/users/search?q=${encodeURIComponent(query)}&limit=100`,
+                    `http://localhost:5292/api/users/search?q=${encodeURIComponent(query)}&limit=${USERS_PER_PAGE * MAX_PAGES}`,
                     {
                         method: "GET",
                         credentials: "include"
                     }
                 );
+
+                if (!res.ok) {
+                    throw new Error("Błąd odpowiedzi z serwera");
+                }
 
                 const data = await res.json();
                 setUsers(Array.isArray(data) ? data : []);
@@ -52,13 +57,20 @@ export default function SearchUsersPage() {
         loadUsers();
     }, [query]);
 
-    const totalPages = Math.max(1, Math.ceil(users.length / USERS_PER_PAGE));
+    const visibleUsers = useMemo(() => {
+        return users.slice(0, USERS_PER_PAGE * MAX_PAGES);
+    }, [users]);
+
+    const totalPages = Math.max(
+        1,
+        Math.min(MAX_PAGES, Math.ceil(visibleUsers.length / USERS_PER_PAGE))
+    );
 
     const paginatedUsers = useMemo(() => {
         const startIndex = (currentPage - 1) * USERS_PER_PAGE;
         const endIndex = startIndex + USERS_PER_PAGE;
-        return users.slice(startIndex, endIndex);
-    }, [users, currentPage]);
+        return visibleUsers.slice(startIndex, endIndex);
+    }, [visibleUsers, currentPage]);
 
     const goToPage = (page) => {
         if (page < 1 || page > totalPages) return;
