@@ -1,15 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../context/AuthContext";
 import "../../../css/settings.css";
+
+const API_BASE_URL = "http://localhost:5292";
+
+function getImageUrl(imagePath) {
+    if (!imagePath) return "";
+
+    if (imagePath.startsWith("http") || imagePath.startsWith("blob:")) {
+        return imagePath;
+    }
+
+    return `${API_BASE_URL}/${imagePath.replace(/^\/+/, "")}`;
+}
 
 export default function SettingsAppearance() {
     const navigate = useNavigate();
+    const { user, setUser } = useContext(AuthContext);
+
+    const [status, setStatus] = useState("");
 
     const [profileFile, setProfileFile] = useState(null);
     const [bannerFile, setBannerFile] = useState(null);
 
     const [profilePreview, setProfilePreview] = useState("");
     const [bannerPreview, setBannerPreview] = useState("");
+
+    const [removeProfileImage, setRemoveProfileImage] = useState(false);
+    const [removeBannerImage, setRemoveBannerImage] = useState(false);
 
     useEffect(() => {
         if (!profileFile) {
@@ -35,29 +54,124 @@ export default function SettingsAppearance() {
         return () => URL.revokeObjectURL(objectUrl);
     }, [bannerFile]);
 
+    const profileImageToShow = useMemo(() => {
+        if (removeProfileImage) return "";
+        return profilePreview || getImageUrl(user?.profileImage);
+    }, [removeProfileImage, profilePreview, user?.profileImage]);
+
+    const bannerImageToShow = useMemo(() => {
+        if (removeBannerImage) return "";
+        return bannerPreview || getImageUrl(user?.bannerImage);
+    }, [removeBannerImage, bannerPreview, user?.bannerImage]);
+
+    const handleProfileChange = (e) => {
+        const file = e.target.files?.[0] || null;
+
+        setProfileFile(file);
+        setRemoveProfileImage(false);
+        setStatus("");
+    };
+
+    const handleBannerChange = (e) => {
+        const file = e.target.files?.[0] || null;
+
+        setBannerFile(file);
+        setRemoveBannerImage(false);
+        setStatus("");
+    };
+
+    const handleRemoveProfileImage = () => {
+        setProfileFile(null);
+        setProfilePreview("");
+        setRemoveProfileImage(true);
+        setStatus("Zdjęcie profilowe zostanie usunięte po kliknięciu Zatwierdź.");
+    };
+
+    const handleRemoveBannerImage = () => {
+        setBannerFile(null);
+        setBannerPreview("");
+        setRemoveBannerImage(true);
+        setStatus("Banner zostanie usunięty po kliknięciu Zatwierdź.");
+    };
+
+    const refreshUserAfterSave = async () => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/users/me`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (!res.ok) return;
+
+            const updatedUser = await res.json();
+
+            if (typeof setUser === "function") {
+                setUser(updatedUser);
+            }
+        } catch (err) {
+            console.error("Nie udało się odświeżyć danych użytkownika:", err);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setStatus("");
 
         const formData = new FormData();
 
-        if (profileFile) formData.append("profileImage", profileFile);
-        if (bannerFile) formData.append("bannerImage", bannerFile);
+        if (profileFile) {
+            formData.append("profileImage", profileFile);
+        } else if (removeProfileImage) {
+            formData.append("profileImage", "-1");
+        }
+
+        if (bannerFile) {
+            formData.append("bannerImage", bannerFile);
+        } else if (removeBannerImage) {
+            formData.append("bannerImage", "-1");
+        }
+
+        if (
+            !profileFile &&
+            !bannerFile &&
+            !removeProfileImage &&
+            !removeBannerImage
+        ) {
+            setStatus("Nie wybrano żadnych zmian.");
+            return;
+        }
 
         try {
-            const res = await fetch("http://localhost:5292/api/users/me/images", {
+            setStatus("Zapisywanie zmian...");
+
+            const res = await fetch(`${API_BASE_URL}/api/users/me/images`, {
                 method: "POST",
                 body: formData,
                 credentials: "include",
             });
 
-            if (!res.ok) throw new Error("Upload failed");
+            const data = await res.json().catch(() => ({}));
 
-            const data = await res.json();
-            console.log(data);
+            if (!res.ok) {
+                console.error("Błąd zapisu zdjęć:", res.status, data);
+                setStatus(data.message || "Nie udało się zapisać zmian.");
+                return;
+            }
+
+            if (typeof setUser === "function") {
+                setUser((prev) => ({
+                    ...prev,
+                    profileImage: removeProfileImage ? null : prev?.profileImage,
+                    bannerImage: removeBannerImage ? null : prev?.bannerImage,
+                }));
+            }
+
+            await refreshUserAfterSave();
 
             navigate(-1);
         } catch (err) {
             console.error(err);
+            setStatus("Wystąpił błąd połączenia z serwerem.");
         }
     };
 
@@ -74,20 +188,35 @@ export default function SettingsAppearance() {
                         <h2 className="settings-section-title">Zmień profilowe</h2>
 
                         <div className="settings-row settings-row--split">
-                            <label className="settings-btn settings-btn--ghost settings-input-trigger">
-                                Wybierz nowe zdjęcie
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => setProfileFile(e.target.files?.[0] || null)}
-                                />
-                            </label>
+                            <div className="settings-action-column">
+                                <label className="settings-btn settings-btn--ghost settings-input-trigger">
+                                    Wybierz nowe zdjęcie
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleProfileChange}
+                                    />
+                                </label>
+
+                                <button
+                                    type="button"
+                                    className="settings-btn settings-btn--ghost"
+                                    onClick={handleRemoveProfileImage}
+                                >
+                                    Usuń zdjęcie
+                                </button>
+                            </div>
 
                             <div className="settings-preview settings-preview--square">
-                                {profilePreview ? (
-                                    <img src={profilePreview} alt="Podgląd zdjęcia profilowego" />
+                                {profileImageToShow ? (
+                                    <img
+                                        src={profileImageToShow}
+                                        alt="Podgląd zdjęcia profilowego"
+                                    />
                                 ) : (
-                                    <span className="settings-preview-placeholder">Podgląd</span>
+                                    <span className="settings-preview-placeholder">
+                                        Podgląd
+                                    </span>
                                 )}
                             </div>
                         </div>
@@ -97,24 +226,45 @@ export default function SettingsAppearance() {
                         <h2 className="settings-section-title">Zmień banner w tle</h2>
 
                         <div className="settings-stack">
-                            <label className="settings-btn settings-btn--ghost settings-input-trigger">
-                                Wybierz nowe zdjęcie
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => setBannerFile(e.target.files?.[0] || null)}
-                                />
-                            </label>
+                            <div className="settings-action-row">
+                                <label className="settings-btn settings-btn--ghost settings-input-trigger">
+                                    Wybierz nowe zdjęcie
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleBannerChange}
+                                    />
+                                </label>
+
+                                <button
+                                    type="button"
+                                    className="settings-btn settings-btn--ghost"
+                                    onClick={handleRemoveBannerImage}
+                                >
+                                    Usuń zdjęcie
+                                </button>
+                            </div>
 
                             <div className="settings-preview settings-preview--wide">
-                                {bannerPreview ? (
-                                    <img src={bannerPreview} alt="Podgląd bannera" />
+                                {bannerImageToShow ? (
+                                    <img
+                                        src={bannerImageToShow}
+                                        alt="Podgląd bannera"
+                                    />
                                 ) : (
-                                    <span className="settings-preview-placeholder">Podgląd</span>
+                                    <span className="settings-preview-placeholder">
+                                        Podgląd
+                                    </span>
                                 )}
                             </div>
                         </div>
                     </section>
+
+                    {status && (
+                        <p className="settings-status">
+                            {status}
+                        </p>
+                    )}
 
                     <div className="settings-actions">
                         <button
