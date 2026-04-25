@@ -322,13 +322,21 @@ export default function Navbar() {
 
                         {user && (
                             <>
-                                <Link to="/settings-profile" className="nav-link settings-btn">
-                                    Ustawienia
-                                </Link>
+                                {user && (
+                                    <>
+                                        <Link to="/settings-profile" className="nav-link settings-btn">
+                                            Ustawienia
+                                        </Link>
 
-                                <button className="nav-link logout-btn" onClick={handleLogout}>
-                                    Wyloguj się
-                                </button>
+                                        <Link to="/fav-users" className="nav-link">
+                                            Ulubieni użytkownicy
+                                        </Link>
+
+                                        <button className="nav-link logout-btn" onClick={handleLogout}>
+                                            Wyloguj się
+                                        </button>
+                                    </>
+                                )}
                             </>
                         )}
                     </>
