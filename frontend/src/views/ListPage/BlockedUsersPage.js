@@ -1,100 +1,135 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../../css/list_page.css";
-import {
-    getProfileImageFromResponse,
-    getImageSrc
-} from "../../components/utils/imageHelper";
+import { getProfileImageFromResponse, getImageSrc } from "../../components/utils/imageHelper";
 
 const API_BASE_URL = "http://localhost:5292";
 
+const BLOCKED_USERS_ENDPOINT = `${API_BASE_URL}/api/blocked-users`;
 const USERS_PER_PAGE = 10;
-const MAX_PAGES = 10;
 
-export default function SearchUsersPage() {
-    const [searchParams] = useSearchParams();
-    const query = (searchParams.get("q") || "").trim();
+function getUserId(user) {
+    return user?.id ?? user?.idUser ?? user?.userId ?? null;
+}
 
+function getUserProfilePath(user) {
+    const username = user?.username;
+
+    if (username) {
+        return `/profile/${username}/about-user`;
+    }
+
+    const id = getUserId(user);
+
+    return `/profile/${id}/about-user`;
+}
+
+function BlockIcon({ isUnblocked }) {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            width="26"
+            height="26"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <circle
+                cx="12"
+                cy="12"
+                r="8.5"
+                stroke={isUnblocked ? "#9ca3af" : "#111827"}
+                strokeWidth="1.8"
+            />
+            <path
+                d="M6.5 17.5L17.5 6.5"
+                stroke={isUnblocked ? "#9ca3af" : "#111827"}
+                strokeWidth="1.8"
+                strokeLinecap="round"
+            />
+        </svg>
+    );
+}
+
+export default function BlockedUsersPage() {
     const [users, setUsers] = useState([]);
     const [profileImages, setProfileImages] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [actionError, setActionError] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [changingBlockedUserIds, setChangingBlockedUserIds] = useState([]);
+    const [unblockedUserIds, setUnblockedUserIds] = useState([]);
 
     useEffect(() => {
-        setCurrentPage(1);
-        setProfileImages({});
-    }, [query]);
-
-    useEffect(() => {
-        const loadUsers = async () => {
-            if (!query) {
-                setUsers([]);
-                setLoading(false);
-                setError("");
-                return;
-            }
-
+        const loadBlockedUsers = async () => {
             setLoading(true);
             setError("");
+            setActionError("");
 
             try {
-                const res = await fetch(
-                    `${API_BASE_URL}/api/users/search?q=${encodeURIComponent(query)}&limit=${USERS_PER_PAGE * MAX_PAGES}`,
-                    {
-                        method: "GET",
-                        credentials: "include"
-                    }
-                );
+                const res = await fetch(BLOCKED_USERS_ENDPOINT, {
+                    method: "GET",
+                    credentials: "include"
+                });
 
                 if (!res.ok) {
+                    const errorText = await res.text();
+                    console.error("Odpowiedź backendu:", errorText);
                     throw new Error("Błąd odpowiedzi z serwera");
                 }
 
                 const data = await res.json();
 
                 setUsers(Array.isArray(data) ? data : []);
+                setCurrentPage(1);
+                setProfileImages({});
+                setUnblockedUserIds([]);
             } catch (err) {
-                console.error("Błąd pobierania wyników wyszukiwania:", err);
+                console.error("Błąd pobierania zablokowanych użytkowników:", err);
                 setUsers([]);
-                setError("Wystąpił błąd podczas pobierania wyników wyszukiwania.");
+                setError("Wystąpił błąd podczas pobierania zablokowanych użytkowników.");
             } finally {
                 setLoading(false);
             }
         };
 
-        loadUsers();
-    }, [query]);
+        loadBlockedUsers();
+    }, []);
 
-    const visibleUsers = useMemo(() => {
-        return users.slice(0, USERS_PER_PAGE * MAX_PAGES);
-    }, [users]);
+    const totalPages = Math.max(1, Math.ceil(users.length / USERS_PER_PAGE));
 
-    const totalPages = Math.max(
-        1,
-        Math.min(MAX_PAGES, Math.ceil(visibleUsers.length / USERS_PER_PAGE))
-    );
+    useEffect(() => {
+        if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, totalPages]);
 
     const paginatedUsers = useMemo(() => {
         const startIndex = (currentPage - 1) * USERS_PER_PAGE;
         const endIndex = startIndex + USERS_PER_PAGE;
 
-        return visibleUsers.slice(startIndex, endIndex);
-    }, [visibleUsers, currentPage]);
+        return users.slice(startIndex, endIndex);
+    }, [users, currentPage]);
 
     useEffect(() => {
         const loadProfileImages = async () => {
             if (paginatedUsers.length === 0) return;
 
-            const usersToLoad = paginatedUsers.filter((user) => user.id != null);
+            const usersToLoad = paginatedUsers.filter((user) => {
+                const userId = getUserId(user);
+
+                return userId != null;
+            });
 
             if (usersToLoad.length === 0) return;
 
             const results = await Promise.all(
                 usersToLoad.map(async (user) => {
+                    const userId = getUserId(user);
+
                     try {
                         const res = await fetch(
-                            `${API_BASE_URL}/api/users/${user.id}/images`,
+                            `${API_BASE_URL}/api/users/${userId}/images`,
                             {
                                 method: "GET",
                                 credentials: "include"
@@ -102,17 +137,16 @@ export default function SearchUsersPage() {
                         );
 
                         if (!res.ok) {
-                            return [user.id, ""];
+                            return [userId, ""];
                         }
 
                         const data = await res.json();
-
                         const profileImage = getProfileImageFromResponse(data);
 
-                        return [user.id, profileImage || ""];
+                        return [userId, profileImage || ""];
                     } catch (err) {
-                        console.error(`Błąd pobierania zdjęcia użytkownika ${user.id}:`, err);
-                        return [user.id, ""];
+                        console.error(`Błąd pobierania zdjęcia użytkownika ${userId}:`, err);
+                        return [userId, ""];
                     }
                 })
             );
@@ -138,6 +172,52 @@ export default function SearchUsersPage() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    const handleToggleBlock = async (userId) => {
+        if (userId == null) return;
+
+        if (changingBlockedUserIds.includes(userId)) return;
+
+        const isUnblocked = unblockedUserIds.includes(userId);
+        const method = isUnblocked ? "POST" : "DELETE";
+
+        setActionError("");
+        setChangingBlockedUserIds((prev) => [...prev, userId]);
+
+        try {
+            const res = await fetch(`${BLOCKED_USERS_ENDPOINT}/${userId}`, {
+                method,
+                credentials: "include"
+            });
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error("Odpowiedź backendu:", errorText);
+                throw new Error(
+                    isUnblocked
+                        ? "Błąd ponownego blokowania użytkownika"
+                        : "Błąd odblokowywania użytkownika"
+                );
+            }
+
+            if (isUnblocked) {
+                setUnblockedUserIds((prev) =>
+                    prev.filter((id) => id !== userId)
+                );
+            } else {
+                setUnblockedUserIds((prev) =>
+                    prev.includes(userId) ? prev : [...prev, userId]
+                );
+            }
+        } catch (err) {
+            console.error("Błąd zmiany statusu zablokowanego użytkownika:", err);
+            setActionError("Wystąpił błąd podczas zmiany statusu zablokowanego użytkownika.");
+        } finally {
+            setChangingBlockedUserIds((prev) =>
+                prev.filter((id) => id !== userId)
+            );
+        }
+    };
+
     const paginationItems = useMemo(() => {
         if (totalPages <= 5) {
             return Array.from({ length: totalPages }, (_, index) => index + 1);
@@ -158,12 +238,12 @@ export default function SearchUsersPage() {
         <div className="page-shell">
             <div className="page-container">
                 <h1 className="page-title">
-                    Wyniki wyszukiwania {query}
+                    Zablokowani użytkownicy
                 </h1>
 
                 {loading && (
                     <div className="page-info">
-                        Ładowanie wyników...
+                        Ładowanie zablokowanych użytkowników...
                     </div>
                 )}
 
@@ -175,23 +255,34 @@ export default function SearchUsersPage() {
 
                 {!loading && !error && users.length === 0 && (
                     <div className="page-info">
-                        Brak użytkowników dla frazy: <strong>{query}</strong>
+                        Nie masz jeszcze zablokowanych użytkowników.
                     </div>
                 )}
 
                 {!loading && !error && users.length > 0 && (
                     <>
+                        {actionError && (
+                            <div className="page-info page-error">
+                                {actionError}
+                            </div>
+                        )}
+
                         <div className="result-list">
                             {paginatedUsers.map((user) => {
-                                const profileImage = profileImages[user.id];
+                                const userId = getUserId(user);
+                                const profileImage = profileImages[userId];
+                                const isChanging = changingBlockedUserIds.includes(userId);
+                                const isUnblocked = unblockedUserIds.includes(userId);
 
                                 return (
-                                    <Link
-                                        key={user.id || user.username}
-                                        to={`/profile/${user.username}/about-user`}
+                                    <div
+                                        key={userId || user.username}
                                         className="result-card"
                                     >
-                                        <div className="result-card-left">
+                                        <Link
+                                            to={getUserProfilePath(user)}
+                                            className="result-card-left result-card-link"
+                                        >
                                             <div className="result-card-media">
                                                 {profileImage ? (
                                                     <img
@@ -226,15 +317,22 @@ export default function SearchUsersPage() {
                                                 </div>
 
                                                 <div className="result-card-text">
-                                                    {user.username}
+                                                    {user.username || "pseudonim"}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </Link>
 
-                                        <div className="result-card-action">
-                                            &gt;
-                                        </div>
-                                    </Link>
+                                        <button
+                                            type="button"
+                                            className="result-card-action"
+                                            onClick={() => handleToggleBlock(userId)}
+                                            disabled={isChanging}
+                                            aria-label={isUnblocked ? "Zablokuj ponownie" : "Odblokuj użytkownika"}
+                                            title={isUnblocked ? "Zablokuj ponownie" : "Odblokuj użytkownika"}
+                                        >
+                                            <BlockIcon isUnblocked={isUnblocked} />
+                                        </button>
+                                    </div>
                                 );
                             })}
                         </div>
