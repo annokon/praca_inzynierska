@@ -2,7 +2,7 @@
     width: 100%;
     box-sizing: border-box;
     height: 64px;
-    background: white;
+    background: #fefefe;
     display: flex;
     align-items: center;
     justify-content: space-between;
