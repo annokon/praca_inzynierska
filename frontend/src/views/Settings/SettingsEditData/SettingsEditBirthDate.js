@@ -8,10 +8,17 @@ export default function SettingsEditBirthDate() {
     const { user, setUser, loading } = useContext(AuthContext);
 
     const [newBirthDate, setNewBirthDate] = useState("");
+    const [hideAge, setHideAge] = useState(false);
     const [status, setStatus] = useState("");
     const [initialized, setInitialized] = useState(false);
 
     const currentBirthDate = user?.birthDate || "";
+
+    const currentHideAge =
+        user?.hideAge ??
+        user?.isAgeHidden ??
+        user?.hideAgeOnProfile ??
+        false;
 
     const formatBirthDate = (value, mode = "display") => {
         if (!value) return "";
@@ -51,8 +58,9 @@ export default function SettingsEditBirthDate() {
         if (loading) return;
 
         setNewBirthDate(initialBirthDate);
+        setHideAge(Boolean(currentHideAge));
         setInitialized(true);
-    }, [initialBirthDate, initialized, loading]);
+    }, [initialBirthDate, currentHideAge, initialized, loading]);
 
     const refreshUser = async () => {
         const meRes = await fetch("http://localhost:5292/api/users/me", {
@@ -84,7 +92,8 @@ export default function SettingsEditBirthDate() {
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    birthDate: newBirthDate
+                    birthDate: newBirthDate,
+                    hideAge: hideAge
                 })
             });
 
@@ -136,6 +145,29 @@ export default function SettingsEditBirthDate() {
                                 onChange={(e) => setNewBirthDate(e.target.value)}
                                 required
                             />
+                        </div>
+
+                        <div className="settings-field">
+                            <label className="settings-label">Widoczność wieku</label>
+
+                            <label className="settings-switch-row" htmlFor="hideAge">
+                                <span className="settings-switch-text">
+                                    Ukryj wiek na profilu
+                                </span>
+
+                                <input
+                                    id="hideAge"
+                                    name="hideAge"
+                                    type="checkbox"
+                                    className="settings-switch-input"
+                                    checked={hideAge}
+                                    onChange={(e) => setHideAge(e.target.checked)}
+                                />
+
+                                <span className="settings-switch" aria-hidden="true">
+                                    <span className="settings-switch-thumb" />
+                                </span>
+                            </label>
                         </div>
                     </section>
 

@@ -340,9 +340,9 @@ public class UserService : IUserService
     }
 
     // get user
-    public async Task<UserProfileDTO?> GetProfileAsync(int id)
+    public async Task<UserProfileDTO?> GetProfileAsync(int targetUserId, int? currentUserId)
     {
-        var user = await _repo.GetUserWithRelationsAsync(id);
+        var user = await _repo.GetUserWithRelationsAsync(targetUserId);
         if (user == null) return null;
 
         return new UserProfileDTO
@@ -380,12 +380,14 @@ public class UserService : IUserService
             Alcohol = user.AlcoholPreference?.AlcoholPreferenceName,
             Smoking = user.SmokingPreference?.SmokingPreferenceName,
 
-            Currency = user.Currency
+            Currency = user.Currency,
+            
+            IsMe = targetUserId == currentUserId
         };
     }
 
     // update user
-    public async Task<(bool Success, string? Error, UserDTO? User)> UpdateProfileAsync(int userId,
+    public async Task<(bool Success, string? Error, UserDTO? User)> UpdateProfileAsync(int? userId,
         UpdateUserProfileDTO dto)
     {
         var user = await _repo.GetUserWithRelationsAsync(userId);
@@ -810,8 +812,8 @@ public class UserService : IUserService
             File.Delete(fullPath);
     }
 
-    public async Task<(bool Success, string? Error, string? ProfilePath, string? BannerPath)>
-        UpdateImagesAsync(int userId, IFormFile? profileImage, IFormFile? bannerImage)
+    public async Task<(bool Success, string? Error, string? ProfilePath, string? BannerPath)> UpdateImagesAsync(
+        int? userId, IFormFile? profileImage, IFormFile? bannerImage)
     {
         var user = await _repo.GetByIdUserAsync(userId);
         if (user == null)
@@ -922,7 +924,7 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<(bool Success, string? Error)> UpdateCurrencyAsync(int userId, string currency)
+    public async Task<(bool Success, string? Error)> UpdateCurrencyAsync(int? userId, string currency)
     {
         if (string.IsNullOrWhiteSpace(currency) || currency.Length != 3)
             return (false, "Nieprawidłowy kod waluty.");
@@ -968,5 +970,31 @@ public class UserService : IUserService
             DisplayName = u.DisplayName,
             ProfilePhotoPath = u.ProfilePhotoPath
         }).ToList();
+    }
+    
+    public async Task<UserDTO?> GetByUsernameAsync(string username)
+    {
+        var u = await _repo.GetByUsernameAsync(username);
+        if (u == null) return null;
+
+        return new UserDTO
+        {
+            IdUser = u.IdUser,
+            Username = u.Username,
+            DisplayName = u.DisplayName,
+            Email = u.Email,
+            Gender = u.Gender.GenderName,
+            Location = u.Location,
+            ProfilePhotoPath = u.ProfilePhotoPath,
+            Role = u.Role
+        };
+    }
+    
+    public async Task<UserProfileDTO?> GetProfileByUsernameAsync(string username, int? currentUserId)
+    {
+        var user = await _repo.GetByUsernameAsync(username);
+        if (user == null) return null;
+        
+        return await GetProfileAsync(user.IdUser, currentUserId ?? 0);
     }
 }

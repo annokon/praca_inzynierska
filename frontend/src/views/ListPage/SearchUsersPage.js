@@ -1,20 +1,29 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import "../../css/list_page.css";
+import {
+    getProfileImageFromResponse,
+    getImageSrc
+} from "../../components/utils/imageHelper";
+
+const API_BASE_URL = "http://localhost:5292";
 
 const USERS_PER_PAGE = 10;
+const MAX_PAGES = 10;
 
 export default function SearchUsersPage() {
     const [searchParams] = useSearchParams();
     const query = (searchParams.get("q") || "").trim();
 
     const [users, setUsers] = useState([]);
+    const [profileImages, setProfileImages] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         setCurrentPage(1);
+        setProfileImages({});
     }, [query]);
 
     useEffect(() => {
@@ -31,14 +40,19 @@ export default function SearchUsersPage() {
 
             try {
                 const res = await fetch(
-                    `http://localhost:5292/api/users/search?q=${encodeURIComponent(query)}&limit=100`,
+                    `${API_BASE_URL}/api/users/search?q=${encodeURIComponent(query)}&limit=${USERS_PER_PAGE * MAX_PAGES}`,
                     {
                         method: "GET",
                         credentials: "include"
                     }
                 );
 
+                if (!res.ok) {
+                    throw new Error("Błąd odpowiedzi z serwera");
+                }
+
                 const data = await res.json();
+
                 setUsers(Array.isArray(data) ? data : []);
             } catch (err) {
                 console.error("Błąd pobierania wyników wyszukiwania:", err);
@@ -52,16 +66,74 @@ export default function SearchUsersPage() {
         loadUsers();
     }, [query]);
 
-    const totalPages = Math.max(1, Math.ceil(users.length / USERS_PER_PAGE));
+    const visibleUsers = useMemo(() => {
+        return users.slice(0, USERS_PER_PAGE * MAX_PAGES);
+    }, [users]);
+
+    const totalPages = Math.max(
+        1,
+        Math.min(MAX_PAGES, Math.ceil(visibleUsers.length / USERS_PER_PAGE))
+    );
 
     const paginatedUsers = useMemo(() => {
         const startIndex = (currentPage - 1) * USERS_PER_PAGE;
         const endIndex = startIndex + USERS_PER_PAGE;
-        return users.slice(startIndex, endIndex);
-    }, [users, currentPage]);
+
+        return visibleUsers.slice(startIndex, endIndex);
+    }, [visibleUsers, currentPage]);
+
+    useEffect(() => {
+        const loadProfileImages = async () => {
+            if (paginatedUsers.length === 0) return;
+
+            const usersToLoad = paginatedUsers.filter((user) => user.id != null);
+
+            if (usersToLoad.length === 0) return;
+
+            const results = await Promise.all(
+                usersToLoad.map(async (user) => {
+                    try {
+                        const res = await fetch(
+                            `${API_BASE_URL}/api/users/${user.id}/images`,
+                            {
+                                method: "GET",
+                                credentials: "include"
+                            }
+                        );
+
+                        if (!res.ok) {
+                            return [user.id, ""];
+                        }
+
+                        const data = await res.json();
+
+                        const profileImage = getProfileImageFromResponse(data);
+
+                        return [user.id, profileImage || ""];
+                    } catch (err) {
+                        console.error(`Błąd pobierania zdjęcia użytkownika ${user.id}:`, err);
+                        return [user.id, ""];
+                    }
+                })
+            );
+
+            setProfileImages((prev) => {
+                const next = { ...prev };
+
+                results.forEach(([userId, profileImage]) => {
+                    next[userId] = profileImage;
+                });
+
+                return next;
+            });
+        };
+
+        loadProfileImages();
+    }, [paginatedUsers]);
 
     const goToPage = (page) => {
         if (page < 1 || page > totalPages) return;
+
         setCurrentPage(page);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
@@ -110,33 +182,61 @@ export default function SearchUsersPage() {
                 {!loading && !error && users.length > 0 && (
                     <>
                         <div className="result-list">
-                            {paginatedUsers.map((user) => (
-                                <Link
-                                    key={user.id || user.username}
-                                    to={`/profile/${user.username}/about-user`}
-                                    className="result-card"
-                                >
-                                    <div className="result-card-left">
-                                        <div className="result-card-media">
-                                            IMG
-                                        </div>
+                            {paginatedUsers.map((user) => {
+                                const profileImage = profileImages[user.id];
 
-                                        <div className="result-card-content">
-                                            <div className="result-card-title">
-                                                {user.displayName || user.name || "Imię i Nazwisko"}
+                                return (
+                                    <Link
+                                        key={user.id || user.username}
+                                        to={`/profile/${user.username}/about-user`}
+                                        className="result-card"
+                                    >
+                                        <div className="result-card-left">
+                                            <div className="result-card-media">
+                                                {profileImage ? (
+                                                    <img
+                                                        src={getImageSrc(profileImage)}
+                                                        alt="avatar"
+                                                    />
+                                                ) : (
+                                                    <svg
+                                                        viewBox="0 0 24 24"
+                                                        width="34"
+                                                        height="34"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <path
+                                                            d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5Z"
+                                                            fill="currentColor"
+                                                        />
+                                                        <path
+                                                            d="M4 22c0-4.418 3.582-8 8-8s8 3.582 8 8"
+                                                            stroke="currentColor"
+                                                            strokeWidth="2"
+                                                            strokeLinecap="round"
+                                                        />
+                                                    </svg>
+                                                )}
                                             </div>
 
-                                            <div className="result-card-text">
-                                                {user.username}
+                                            <div className="result-card-content">
+                                                <div className="result-card-title">
+                                                    {user.displayName || user.name || "Imię i Nazwisko"}
+                                                </div>
+
+                                                <div className="result-card-text">
+                                                    {user.username}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="result-card-action">
-                                        &gt;
-                                    </div>
-                                </Link>
-                            ))}
+                                        <div className="result-card-action">
+                                            &gt;
+                                        </div>
+                                    </Link>
+                                );
+                            })}
                         </div>
 
                         {totalPages > 1 && (

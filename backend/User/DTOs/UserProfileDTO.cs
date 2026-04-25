@@ -25,4 +25,6 @@ public class UserProfileDTO
     public string? Smoking { get; set; }
 
     public string Currency { get; set; } = "";
+    
+    public bool IsMe { get; set; }
 }

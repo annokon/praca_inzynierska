@@ -25,12 +25,12 @@ public class UserRepository : IUserRepository
 
 
     // get user by id
-    Task<Models.User?> IUserRepository.GetByIdUserAsync(int idUser)
+    Task<Models.User?> IUserRepository.GetByIdUserAsync(int? idUser)
     {
         return GetByIdUserAsync(idUser);
     }
 
-    public async Task<Models.User?> GetByIdUserAsync(int idUser) =>
+    public async Task<Models.User?> GetByIdUserAsync(int? idUser) =>
         await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUser);
 
 
@@ -98,7 +98,7 @@ public class UserRepository : IUserRepository
     public async Task<bool> ValidateGender(int dtoGenderId) =>
         await _context.GenderOptions.AnyAsync(g => g.IdGender == dtoGenderId);
 
-    public async Task<Models.User?> GetUserWithRelationsAsync(int id)
+    public async Task<Models.User?> GetUserWithRelationsAsync(int? id)
     {
         return await _context.Users
             .Include(u => u.Gender)
@@ -161,7 +161,7 @@ public class UserRepository : IUserRepository
         return count == distinct.Count;
     }
 
-    public async Task<bool> UpdateCurrencyAsync(int userId, string currency)
+    public async Task<bool> UpdateCurrencyAsync(int? userId, string currency)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == userId);
         if (user == null) return false;
@@ -208,4 +208,9 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users.AnyAsync(u => u.IdUser == id);
     }
+    
+    public async Task<Models.User?> GetByUsernameAsync(string username) =>
+        await _context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Username.ToLower() == username.ToLower()); 
 }
