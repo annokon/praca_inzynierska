@@ -15,6 +15,6 @@ public class UserTravelStyle
     [Column("id_user")]
     [Required]
     [ForeignKey(nameof(User))]
-    public int IdUser { get; set; }
+    public int? IdUser { get; set; }
     public User.Models.User User { get; set; } = null!;
 }

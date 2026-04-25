@@ -1,43 +1,19 @@
 import React from "react";
-import "../../css/profile_header.css";
-
-const IconButton = ({ title, children, onClick, className = "ph-iconBtn" }) => (
-    <button
-        type="button"
-        className={className}
-        aria-label={title}
-        title={title}
-        onClick={onClick}
-    >
-        {children}
-    </button>
-);
+import "../../css/profile.css";
 
 export default function ProfileHeader({
                                           name,
                                           age,
                                           username,
                                           isMe,
-
                                           profileImage,
                                           bannerImage,
-
-                                          liked = false,
-                                          onLikeClick,
-
                                           rating,
-                                          onGalleryClick,
-                                          onRatingClick,
-                                          onTrophyClick,
-
-                                          onReportClick,
-                                          onMailClick,
-                                          onBlockClick,
-
-                                          onPlaceholder1Click,
-                                          onPlaceholder2Click,
+                                          trips,
+                                          onMessageClick,
+                                          onFollowClick,
+                                          onOptionsClick
                                       }) {
-
     return (
         <header className="ph-wrap">
             <div
@@ -45,127 +21,88 @@ export default function ProfileHeader({
                 style={{
                     backgroundImage: bannerImage
                         ? `url(http://localhost:5292/${bannerImage})`
-                        : "none"
+                        : "url('https://via.placeholder.com/1200x300?text=Banner')"
                 }}
             />
-            <div className="ph-inner">
-                <div className="ph-left">
-                    <div className="ph-avatar" aria-hidden="true">
-                        {profileImage ? (
-                            <img
-                                src={`http://localhost:5292/${profileImage}`}
-                                alt="avatar"
-                            />
-                        ) : (
-                            <svg
-                                viewBox="0 0 24 24"
-                                width="34"
-                                height="34"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5Z"
-                                    fill="currentColor"
-                                />
-                                <path
-                                    d="M4 22c0-4.418 3.582-8 8-8s8 3.582 8 8"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                            </svg>
-                        )}
-                    </div>
+            <div className="ph-content-wrapper">
+                <div className="ph-inner">
 
-                    <div className="ph-meta">
-                        <div className="ph-nameRow">
-                            <h1 className="ph-name">
-                                {name}
-                                {age !== null && <> , {age} lat</>}
-                            </h1>
-                            {!isMe && (
-                                <IconButton title="Polub profil" onClick={onLikeClick}>
-                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M12 21s-7-4.35-9.5-8.5C.9 9.3 2.6 6 6 6c1.8 0 3.2 1 4 2
-             .8-1 2.2-2 4-2 3.4 0 5.1 3.3 3.5 6.5C19 16.65 12 21 12 21Z"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            fill={liked ? "currentColor" : "none"}
-                                        />
+                    <div className="ph-user-info">
+                        <div className="ph-avatar-container">
+                            <div className="ph-avatar">
+                                {profileImage ? (
+                                    <img src={`http://localhost:5292/${profileImage}`} alt="avatar" />
+                                ) : (
+                                    <svg viewBox="0 0 24 24" width="48" height="48" fill="#cbd5e1" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="8" r="4" fill="currentColor"/>
+                                        <path d="M4 22c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                                     </svg>
-                                </IconButton>
-                            )}
-                        </div>
-
-                        <div className="ph-username">@{username}</div>
-                    </div>
-                </div>
-
-                <div className="ph-right">
-                    {!isMe && (
-                        <div className="ph-actionsTop">
-                            <IconButton title="Zablokuj" onClick={onBlockClick} className="ph-actionMini">
-                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z" stroke="currentColor" strokeWidth="2"/>
-                                </svg>
-                            </IconButton>
-
-                            <IconButton title="Zgłoś użytkownika" onClick={onReportClick} className="ph-actionMini">
-                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 9v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                                    <path d="M12 17h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                                    <path d="M10.3 4.2 2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-                                </svg>
-                            </IconButton>
-
-                            <IconButton title="Wiadomość" onClick={onMailClick} className="ph-actionMini">
-                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 6h16v12H4V6Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-                                    <path d="m4 7 8 6 8-6" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-                                </svg>
-                            </IconButton>
-                        </div>
-                    )}
-
-                    <div className="ph-actionsBottom">
-                        <IconButton title="Średnia ocen" onClick={onRatingClick} className="ph-actionBox">
-                            <div className="ph-rating">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27Z"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>
-                                <span className="ph-rating__text">{rating}</span>
+                                )}
                             </div>
-                        </IconButton>
+                        </div>
 
-                        <IconButton title="Osiągnięcia" onClick={onTrophyClick} className="ph-actionBox">
-                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                                <path d="M7 6H4v2a4 4 0 0 0 4 4M17 6h3v2a4 4 0 0 1-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                            </svg>
-                        </IconButton>
-
-                        <IconButton title="Placeholder 1" onClick={onPlaceholder1Click} className="ph-actionBox">
-                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                                <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                            </svg>
-                        </IconButton>
-
-                        <IconButton title="Placeholder 2" onClick={onPlaceholder2Click} className="ph-actionBox">
-                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                                <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                            </svg>
-                        </IconButton>
+                        <div className="ph-meta">
+                            <h1 className="ph-name">
+                                {name} <span className="ph-age">{age !== null ? `${age} lat` : ""}</span>
+                            </h1>
+                            <div className="ph-username">@{username}</div>
+                        </div>
                     </div>
+
+                    <div className="ph-stats">
+                        <div className="ph-stat-item">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <div className="ph-stat-text">
+                                <strong>{rating}</strong>
+                                <span>Ocena</span>
+                            </div>
+                        </div>
+                        <div className="ph-stat-divider"></div>
+                        <div className="ph-stat-item">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            </svg>
+                            <div className="ph-stat-text">
+                                <strong>{trips}</strong>
+                                <span>Podróże</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="ph-actions">
+                        {!isMe ? (
+                            <>
+                                <button className="btn-primary" onClick={onMessageClick}>
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path>
+                                    </svg>
+                                    Wyślij wiadomość
+                                </button>
+                                <button className="btn-secondary" onClick={onFollowClick}>
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="8.5" cy="7" r="4"></circle>
+                                        <line x1="20" y1="8" x2="20" y2="14"></line>
+                                        <line x1="23" y1="11" x2="17" y2="11"></line>
+                                    </svg>
+                                    Obserwuj
+                                </button>
+                            </>
+                        ) : (
+                            <button className="btn-secondary">Edytuj profil</button>
+                        )}
+                        <button className="btn-icon" onClick={onOptionsClick}>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <circle cx="12" cy="5" r="2"/>
+                                <circle cx="12" cy="12" r="2"/>
+                                <circle cx="12" cy="19" r="2"/>
+                            </svg>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </header>
