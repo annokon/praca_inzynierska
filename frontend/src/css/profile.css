@@ -243,7 +243,7 @@ button {
 .tabs {
     width: 100%;
     display: flex;
-    gap: 1.875rem;
+    gap: 5rem;
     padding: 0 1.25rem;
     justify-content: center;
     align-items: center;
