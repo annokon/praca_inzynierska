@@ -147,7 +147,8 @@ export default function Navbar() {
     }, []);
 
     const handleSelectUser = (username) => {
-        setSearchValue(username);
+        setSearchValue("");
+        setSearchResults([]);
         setShowResults(false);
         navigate(`/profile/${username}/about-user`);
     };
