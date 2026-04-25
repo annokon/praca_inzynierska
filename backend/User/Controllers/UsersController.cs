@@ -33,7 +33,7 @@ public class UsersController : ControllerBase
     /// <exception cref="UnauthorizedAccessException">
     /// Thrown when the user ID claim is missing or invalid.
     /// </exception>
-    private int GetUserId()
+    private int? GetUserId()
     {
         var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -104,7 +104,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetMe()
     {
         var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var user = await _userService.GetProfileAsync(id);
+        var user = await _userService.GetProfileAsync(id, GetUserId());
 
         if (user == null)
             return NotFound();
@@ -206,7 +206,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}/profile")]
     public async Task<IActionResult> GetUserProfile(int id)
     {
-        var user = await _userService.GetProfileAsync(id);
+        var user = await _userService.GetProfileAsync(id, GetUserId());
 
         if (user == null)
             return NotFound(new { message = "User not found." });
@@ -341,5 +341,23 @@ public class UsersController : ControllerBase
     {
         var currencies = await _userService.GetAvailableCurrenciesAsync();
         return Ok(currencies);
+    }
+    
+    [HttpGet("by-username/{username}/profile")]
+    public async Task<IActionResult> GetProfileByUsername(string username)
+    {
+        int? currentUserId = null;
+        try 
+        {
+            currentUserId = GetUserId();
+        }
+        catch (UnauthorizedAccessException) {}
+        
+        var profile = await _userService.GetProfileByUsernameAsync(username, currentUserId);
+
+        if (profile == null)
+            return NotFound(new { message = "Użytkownik o podanej nazwie nie istnieje." });
+
+        return Ok(profile);
     }
 }
