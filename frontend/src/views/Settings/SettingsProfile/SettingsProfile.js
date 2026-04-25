@@ -17,7 +17,7 @@ export default function SettingsProfile() {
         {
             key: "blocked",
             items: [
-                { key: "blockedUsers", label: "Zablokowani użytkownicy", onClick: () => navigate("/settings-blocked") },
+                { key: "blockedUsers", label: "Zablokowani użytkownicy", onClick: () => navigate("/blocked-users") },
             ],
         },
         {
