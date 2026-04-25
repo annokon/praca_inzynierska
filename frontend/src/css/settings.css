@@ -379,3 +379,63 @@
         justify-items: start;
     }
 }
+
+.settings-switch-row {
+    min-height: var(--settings-btn-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--settings-gap-2);
+    cursor: pointer;
+}
+
+.settings-switch-text {
+    font-size: var(--settings-font-item);
+    color: var(--settings-text);
+    line-height: 1.25;
+}
+
+.settings-switch-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.settings-switch {
+    position: relative;
+    width: clamp(2.8rem, 5vw, 3.2rem);
+    height: clamp(1.45rem, 2.6vw, 1.65rem);
+    border-radius: 999rem;
+    background: rgba(0, 0, 0, 0.22);
+    transition: background 0.2s ease;
+    flex-shrink: 0;
+}
+
+.settings-switch-thumb {
+    position: absolute;
+    top: 50%;
+    left: clamp(0.16rem, 0.35vw, 0.22rem);
+    width: clamp(1.1rem, 2vw, 1.25rem);
+    height: clamp(1.1rem, 2vw, 1.25rem);
+    border-radius: 50%;
+    background: #fff;
+    transform: translateY(-50%);
+    transition: transform 0.2s ease;
+    box-shadow: 0 0.12rem 0.35rem rgba(0, 0, 0, 0.25);
+}
+
+.settings-switch-input:checked + .settings-switch {
+    background: #111;
+}
+
+.settings-switch-input:checked + .settings-switch .settings-switch-thumb {
+    transform: translate(
+            clamp(1.3rem, 2.4vw, 1.5rem),
+            -50%
+    );
+}
+
+.settings-switch-input:focus-visible + .settings-switch {
+    outline: 0.12rem solid rgba(0, 0, 0, 0.6);
+    outline-offset: 0.15rem;
+}
