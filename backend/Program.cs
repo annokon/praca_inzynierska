@@ -52,6 +52,8 @@ builder.Services.AddScoped<ITravelStyleRepository, TravelStyleRepository>();
 builder.Services.AddScoped<ITravelStyleService, TravelStyleService>();
 builder.Services.AddScoped<IOptionsService, OptionsService>();
 builder.Services.AddScoped<IOptionsRepository, OptionsRepository>();
+builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
+builder.Services.AddScoped<IFavouriteService, FavouriteService>();
 
 builder.Services.AddHttpClient();
 
