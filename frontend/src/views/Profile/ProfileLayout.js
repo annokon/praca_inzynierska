@@ -56,6 +56,13 @@ export default function ProfileLayout() {
                     location: data.location,
                     description: data.bio,
                     languages: data.languages ?? [],
+                    interests : data.interests,
+                    transport : data.transports,
+                    travelStyles : data.travelStyles,
+                    travelExperience : data.travelExperience,
+                    drivingLicense : data.drivingLicense,
+                    alcohol : data.alcohol,
+                    smoking : data.smoking,
                 });
 
                 const imgRes = await fetch(`http://localhost:5292/api/users/${data.id}/images`, {

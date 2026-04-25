@@ -1,9 +1,10 @@
 /* GŁÓWNY LAYOUT */
 :root {
-    --primary: #5E48E8;
-    --primary-hover: #4e3bd9;
-    --bg-color: #F8F9FE;
-    --card-bg: #FFFFFF;
+    --primary: #5d42e7;
+    --primary-hover: #4a35c1;
+    --bg-color: #f5f7fe;
+    --card-bg-primary: #fefefe;
+    --card-bg-secondary: #f9fafe;
     --text-main: #1F2937;
     --text-muted: #6B7280;
     --border-color: #E5E7EB;
@@ -26,8 +27,12 @@ body {
 /* HEADER */
 .ph-wrap {
     position: relative;
-    background: var(--card-bg);
+    background: var(--card-bg-primary);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    max-width: 1200px;
+    margin: 20px auto 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
 }
 
 .ph-banner {
@@ -40,18 +45,19 @@ body {
 .ph-content-wrapper {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 30px;
 }
 
 .ph-inner {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     margin-top: -50px;
     padding-bottom: 20px;
 }
 
 .ph-user-info {
+    flex: 1;
     display: flex;
     align-items: flex-end;
     gap: 20px;
@@ -65,7 +71,7 @@ body {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    border: 4px solid var(--card-bg);
+    border: 4px solid var(--card-bg-primary);
     background: #E2E8F0;
     overflow: hidden;
     display: flex;
@@ -78,17 +84,6 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.ph-status-dot {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    width: 16px;
-    height: 16px;
-    background-color: #10B981;
-    border: 3px solid var(--card-bg);
-    border-radius: 50%;
 }
 
 .ph-meta {
@@ -122,9 +117,8 @@ body {
     display: flex;
     align-items: center;
     gap: 30px;
-    margin-left: auto;
-    margin-right: 40px;
-    padding-bottom: 10px;
+    margin: 0 auto;
+    padding-bottom: 15px;
 }
 
 .ph-stat-item {
@@ -158,7 +152,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 }
 
 button {
@@ -208,17 +202,25 @@ button {
 
 /* TABS */
 .profile-tabs-bar {
-    background: var(--card-bg);
+    background: var(--card-bg-secondary);
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    display: flex;
+    align-items: center;
+
+    max-width: 1200px;
+    margin: 0 auto;
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
 }
 
 .tabs {
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
     display: flex;
     gap: 30px;
     padding: 0 20px;
+    justify-content: center;
+    align-items: center;
 }
 
 .tab {
@@ -244,18 +246,18 @@ button {
     margin: 30px auto;
     padding: 0 20px;
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: minmax(18rem, 22rem) 1fr;
     gap: 30px;
 }
 
 .profile-sidebar {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.5rem;
 }
 
 .profile-menu {
-    background: var(--card-bg);
+    background: var(--card-bg-primary);
     border-radius: var(--radius-lg);
     padding: 10px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -285,10 +287,13 @@ button {
     background: linear-gradient(135deg, #5E48E8 0%, #30218A 100%);
     border-radius: var(--radius-lg);
     color: white;
-    padding: 24px;
+    padding: 2rem;
+    min-height: 10rem;
+    display: flex;
+    align-items: flex-end;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 15px -3px rgba(94,72,232,0.3);
+    box-shadow: 0 0.625rem 0.9375rem -0.1875rem rgba(94,72,232,0.3);
 }
 
 .promo-box-content h3 { margin: 0 0 10px 0; font-size: 18px; }
@@ -314,7 +319,7 @@ button {
 }
 
 .content-card {
-    background: var(--card-bg);
+    background: var(--card-bg-primary);
     border-radius: var(--radius-lg);
     padding: 24px 30px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -372,6 +377,24 @@ button {
     color: var(--text-muted);
     font-size: 14px;
     font-weight: 500;
+}
+
+.additional-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 10px;
+}
+
+.tag-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tag-group strong {
+    font-size: 14px;
+    color: var(--text-main);
 }
 
 /* PILLS */

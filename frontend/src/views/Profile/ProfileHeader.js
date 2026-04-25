@@ -70,6 +70,7 @@ export default function ProfileHeader({
                                 <span>Podróże</span>
                             </div>
                         </div>
+                        <div className="ph-stat-divider"></div>
                     </div>
 
                     <div className="ph-actions">
@@ -92,7 +93,7 @@ export default function ProfileHeader({
                                 </button>
                             </>
                         ) : (
-                            <button className="btn-secondary">Edytuj profil</button>
+                            <button className="btn-primary">Edytuj profil</button>
                         )}
                         <button className="btn-icon" onClick={onOptionsClick}>
                             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
