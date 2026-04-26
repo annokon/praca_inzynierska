@@ -309,8 +309,7 @@ button {
     font-size: 0.875rem;
 }
 
-.profile-menu__item:hover,
-.profile-menu__item:first-child {
+.profile-menu__item:hover {
     background: #F5F3FF;
     color: var(--primary);
 }
