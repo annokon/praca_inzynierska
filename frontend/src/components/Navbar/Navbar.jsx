@@ -250,7 +250,7 @@ export default function Navbar() {
                             <>
                                 <div className="nav-icon-action">
                                     <Bell size={24} strokeWidth={1.5} color="#374151" />
-                                    <span className="notification-badge"></span>
+                                    <span className="notification-badge">2</span>
                                 </div>
 
                                 <Link to="/fav-users" className="nav-icon-action" title="Polubieni użytkownicy">

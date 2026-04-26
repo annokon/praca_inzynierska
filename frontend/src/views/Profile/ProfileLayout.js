@@ -22,6 +22,7 @@ export default function ProfileLayout() {
     const [images, setImages] = useState({ profile: null, banner: null });
     const [loading, setLoading] = useState(true);
     const [isMe, setIsMe] = useState(false);
+    const [isFavourite, setIsFavourite] = useState(false);
 
     const topRef = useRef(null);
 
@@ -73,6 +74,17 @@ export default function ProfileLayout() {
                     const imgData = await imgRes.json();
                     setImages({ profile: imgData.profile, banner: imgData.banner });
                 }
+
+                const favRes = await fetch("http://localhost:5292/api/favourites", {
+                    credentials: "include",
+                });
+
+                if (favRes.ok) {
+                    const favData = await favRes.json();
+
+                    const isFav = favData.some(u => u.id === data.id);
+                    setIsFavourite(isFav);
+                }
             } catch (e) {
                 console.error("Błąd pobierania profilu", e);
             } finally {
@@ -96,6 +108,23 @@ export default function ProfileLayout() {
         return () => ro.disconnect();
     }, [profile]);
 
+    const handleFavouriteToggle = async () => {
+        try {
+            const url = `http://localhost:5292/api/favourites/${profile.id}`;
+
+            const res = await fetch(url, {
+                method: isFavourite ? "DELETE" : "POST",
+                credentials: "include",
+            });
+
+            if (!res.ok) return;
+
+            setIsFavourite(prev => !prev);
+        } catch (e) {
+            console.error("Favourite error", e);
+        }
+    };
+
     if (loading) return <div className="profile-loading-screen">Ładowanie profilu...</div>;
     if (!profile) return <div className="profile-error-screen">Nie znaleziono użytkownika.</div>;
 
@@ -111,6 +140,10 @@ export default function ProfileLayout() {
                     trips={12}  //TODO
                     profileImage={images.profile}
                     bannerImage={images.banner}
+                    isFavourite={isFavourite}
+                    onFavouriteToggle={handleFavouriteToggle}
+                    onMessageClick={() => console.log("message")}
+                    onOptionsClick={() => console.log("options")}
                 />
                 <ProfileTabs isMe={isMe} />
             </div>

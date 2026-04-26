@@ -5,7 +5,9 @@ import {
     HeartPlus,
     Star,
     EllipsisVertical,
+    Heart,
 } from "lucide-react";
+
 
 export default function ProfileHeader({
                                           name,
@@ -16,9 +18,10 @@ export default function ProfileHeader({
                                           bannerImage,
                                           rating,
                                           trips,
+                                          isFavourite,
                                           onMessageClick,
-                                          onFollowClick,
-                                          onOptionsClick
+                                          onOptionsClick,
+                                          onFavouriteToggle
                                       }) {
     return (
         <header className="ph-wrap">
@@ -84,9 +87,13 @@ export default function ProfileHeader({
                                     {<MessageCircleMore size={18} strokeWidth={2} className="icon-muted" />}
                                     Wyślij wiadomość
                                 </button>
-                                <button className="btn-secondary" onClick={onFollowClick}>
-                                    {<HeartPlus size={18} strokeWidth={2} className="icon-muted" />}
-                                    Polub
+                                <button className="btn-secondary" onClick={onFavouriteToggle}>
+                                    {isFavourite ? (
+                                        <Heart size={18} fill="red" color="red" />
+                                    ) : (
+                                        <HeartPlus size={18} />
+                                    )}
+                                    {isFavourite ? "Usuń z ulubionych" : "Polub"}
                                 </button>
                             </>
                         ) : (
