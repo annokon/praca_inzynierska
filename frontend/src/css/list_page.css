@@ -1,6 +1,6 @@
 .page-shell {
     min-height: calc(100vh - 64px);
-    background: #f3f3f3;
+    background: #f5f7fe;
     padding: 3rem 1rem 4rem;
     font-family: "Poppins", sans-serif;
 }
