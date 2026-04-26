@@ -191,7 +191,14 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdUser(int id)
     {
-        var user = await _userService.GetByIdUserAsync(id);
+        int? currentUserId = null;
+        try 
+        {
+            currentUserId = GetUserId();
+        }
+        catch (UnauthorizedAccessException) {}
+        
+        var user = await _userService.GetByIdAsync(id, currentUserId);
         if (user == null)
             return NotFound(new { message = "User not found." });
 
@@ -239,7 +246,14 @@ public class UsersController : ControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] string q, [FromQuery] int limit = 10)
     {
-        var users = await _userService.SearchAsync(q, limit);
+        int? currentUserId = null;
+        try 
+        {
+            currentUserId = GetUserId();
+        }
+        catch (UnauthorizedAccessException) {}
+        
+        var users = await _userService.SearchAsync(q, limit, currentUserId);
         return Ok(users);
     }
 

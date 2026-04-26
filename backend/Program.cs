@@ -54,6 +54,8 @@ builder.Services.AddScoped<IOptionsService, OptionsService>();
 builder.Services.AddScoped<IOptionsRepository, OptionsRepository>();
 builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
 builder.Services.AddScoped<IFavouriteService, FavouriteService>();
+builder.Services.AddScoped<IBlockedUserRepository, BlockedUserRepository>();
+builder.Services.AddScoped<IBlockedUserService, BlockedUserService>();
 
 builder.Services.AddHttpClient();
 

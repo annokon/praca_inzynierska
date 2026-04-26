@@ -8,11 +8,13 @@ public class FavouriteService : IFavouriteService
 {
     private readonly IFavouriteRepository _repo;
     private readonly IUserRepository _userRepo;
+    private readonly IBlockedUserRepository _blockedRepo;
 
-    public FavouriteService(IFavouriteRepository repo, IUserRepository userRepo)
+    public FavouriteService(IFavouriteRepository repo, IUserRepository userRepo, IBlockedUserRepository blockedRepo)
     {
         _repo = repo;
         _userRepo = userRepo;
+        _blockedRepo = blockedRepo;
     }
     
     public async Task<(bool Success, string? Error)> AddAsync(int userId, int favouriteUserId)
@@ -27,6 +29,10 @@ public class FavouriteService : IFavouriteService
         var exists = await _repo.ExistsAsync(userId, favouriteUserId);
         if (exists)
             return (false, "Already in favourites.");
+        
+        var isBlocked = await _blockedRepo.ExistsEitherWay(userId, favouriteUserId);
+        if (isBlocked)
+            return (false, "User is blocked.");
         
         var fav = new Favourite
         {

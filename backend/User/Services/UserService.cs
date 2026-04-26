@@ -13,6 +13,7 @@ namespace backend.User.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _repo;
+    private readonly IBlockedUserRepository _blockedRepo;
     private readonly PasswordHasher _passwordHasher;
     private readonly JwtService _jwt;
     private readonly IWebHostEnvironment _env;
@@ -21,10 +22,15 @@ public class UserService : IUserService
     private readonly string _placeholderBannerPath = "/images/placeholders/banner_picture.png";
 
     public UserService(
-        IUserRepository userRepository, PasswordHasher passwordHasher, JwtService jwt, IWebHostEnvironment env
+        IUserRepository userRepository,
+        PasswordHasher passwordHasher,
+        JwtService jwt,
+        IWebHostEnvironment env,
+        IBlockedUserRepository blockedRepo
     )
     {
         _repo = userRepository;
+        _blockedRepo = blockedRepo;
         _passwordHasher = passwordHasher;
         _jwt = jwt;
         _env = env;
@@ -57,11 +63,19 @@ public class UserService : IUserService
         });
     }
 
-    // get user by username
-    public async Task<UserDTO?> GetByIdUserAsync(int idUser)
+    // get user by id
+    public async Task<UserDTO?> GetByIdAsync(int idUser, int? currentUserId)
     {
         var u = await _repo.GetByIdUserAsync(idUser);
         if (u == null) return null;
+        
+        if (currentUserId != null)
+        {
+            var isBlocked = await _blockedRepo.ExistsEitherWay(currentUserId.Value, idUser);
+
+            if (isBlocked)
+                return null;
+        }
 
         return new UserDTO
         {
@@ -104,7 +118,7 @@ public class UserService : IUserService
         };
 
         await _repo.AddAsync(user);
-        
+
         return new UserDTO
         {
             IdUser = user.IdUser,
@@ -114,7 +128,7 @@ public class UserService : IUserService
             Gender = user.Gender.GenderName,
             IsActive = user.IsActive,
             Role = user.Role,
-            
+
             ProfilePhotoPath = _placeholderProfilePath,
             BackgroundPhotoPath = _placeholderBannerPath
         };
@@ -345,6 +359,14 @@ public class UserService : IUserService
         var user = await _repo.GetUserWithRelationsAsync(targetUserId);
         if (user == null) return null;
 
+        if (currentUserId != null)
+        {
+            var isBlocked = await _blockedRepo.ExistsEitherWay(currentUserId.Value, targetUserId);
+
+            if (isBlocked)
+                return null;
+        }
+
         return new UserProfileDTO
         {
             Id = user.IdUser,
@@ -381,7 +403,7 @@ public class UserService : IUserService
             Smoking = user.SmokingPreference?.SmokingPreferenceName,
 
             Currency = user.Currency,
-            
+
             IsMe = targetUserId == currentUserId
         };
     }
@@ -958,24 +980,42 @@ public class UserService : IUserService
             .OrderBy(l => l)
             .ToList();
     }
-    
-    public async Task<List<UserSearchDTO>> SearchAsync(string query, int limit)
+
+    public async Task<List<UserSearchDTO>> SearchAsync(string query, int limit, int? currentUserId)
     {
         var users = await _repo.SearchAsync(query, limit);
 
-        return users.Select(u => new UserSearchDTO
+        HashSet<int> blockedIds = new();
+
+        if (currentUserId.HasValue)
         {
-            Id = u.IdUser,
-            Username = u.Username,
-            DisplayName = u.DisplayName,
-            ProfilePhotoPath = u.ProfilePhotoPath
-        }).ToList();
+            blockedIds = await _blockedRepo.GetBlockedUserIdsAsync(currentUserId.Value);
+        }
+
+        return users
+            .Where(u => !blockedIds.Contains(u.IdUser))
+            .Select(u => new UserSearchDTO
+            {
+                Id = u.IdUser,
+                Username = u.Username,
+                DisplayName = u.DisplayName,
+                ProfilePhotoPath = u.ProfilePhotoPath
+            })
+            .ToList();
     }
-    
-    public async Task<UserDTO?> GetByUsernameAsync(string username)
+
+    public async Task<UserDTO?> GetByUsernameAsync(string username, int? currentUserId)
     {
         var u = await _repo.GetByUsernameAsync(username);
         if (u == null) return null;
+        
+        if (currentUserId != null)
+        {
+            var isBlocked = await _blockedRepo.ExistsEitherWay(currentUserId.Value, u.IdUser);
+
+            if (isBlocked)
+                return null;
+        }
 
         return new UserDTO
         {
@@ -989,12 +1029,12 @@ public class UserService : IUserService
             Role = u.Role
         };
     }
-    
+
     public async Task<UserProfileDTO?> GetProfileByUsernameAsync(string username, int? currentUserId)
     {
         var user = await _repo.GetByUsernameAsync(username);
         if (user == null) return null;
-        
+
         return await GetProfileAsync(user.IdUser, currentUserId ?? 0);
     }
 }

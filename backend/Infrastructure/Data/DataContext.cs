@@ -29,6 +29,7 @@ public class DataContext : DbContext
     public DbSet<DrivingLicenseOption> DrivingLicenseOptions => Set<DrivingLicenseOption>();
     public DbSet<TravelExperienceOption> TravelExperienceOptions => Set<TravelExperienceOption>();
     public DbSet<Favourite> Favourites => Set<Favourite>();
+    public DbSet<BlockedUser> BlockedUsers => Set<BlockedUser>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
