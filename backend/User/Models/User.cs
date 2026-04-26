@@ -165,7 +165,7 @@ public class User
     public ICollection<UserChat>? UserChats { get; set; }
     
     //for Notification
-    public ICollection<Notification>? Notifications { get; set; }
+    public ICollection<Notification.Notification>? Notifications { get; set; }
     
     //for interest
     public ICollection<UserInterest>? UserInterests { get; set; }

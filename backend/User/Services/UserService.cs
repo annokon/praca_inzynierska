@@ -334,25 +334,6 @@ public class UserService : IUserService
         );
     }
 
-    // get user by id
-    public async Task<UserDTO?> GetByIdAsync(int id)
-    {
-        var u = await _repo.GetByIdUserAsync(id);
-        if (u == null) return null;
-
-        return new UserDTO
-        {
-            IdUser = u.IdUser,
-            Username = u.Username,
-            DisplayName = u.DisplayName,
-            Email = u.Email,
-            Gender = u.Gender.GenderName,
-            Location = u.Location,
-            ProfilePhotoPath = u.ProfilePhotoPath,
-            Role = u.Role
-        };
-    }
-
     // get user
     public async Task<UserProfileDTO?> GetProfileByIdAsync(int targetUserId, int? currentUserId)
     {

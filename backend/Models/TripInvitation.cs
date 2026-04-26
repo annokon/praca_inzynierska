@@ -39,6 +39,6 @@ public class TripInvitation
     [Column("sent_at")]
     public DateTime SentAt { get; set; } = DateTime.UtcNow;
 
-    public Notification? Notification { get; set; }
+    public Notification.Notification? Notification { get; set; }
 
 }

@@ -30,14 +30,15 @@ public class DataContext : DbContext
     public DbSet<TravelExperienceOption> TravelExperienceOptions => Set<TravelExperienceOption>();
     public DbSet<Favourite> Favourites => Set<Favourite>();
     public DbSet<BlockedUser> BlockedUsers => Set<BlockedUser>();
+    public DbSet<Notification.Notification> Notifications => Set<Notification.Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Notification>(entity =>
+        modelBuilder.Entity<Notification.Notification>(entity =>
         {
             entity.HasOne(n => n.TripInvitation)
                 .WithOne(ti => ti.Notification)
-                .HasForeignKey<Notification>(n => n.IdTripInvitation);
+                .HasForeignKey<Notification.Notification>(n => n.IdTripInvitation);
 
             entity.HasOne(n => n.Message)
                 .WithMany(m => m.Notifications)

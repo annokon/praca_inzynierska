@@ -33,5 +33,5 @@ public class Message
     [Column("timestamp")]
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     
-    public ICollection<Notification>? Notifications { get; set; }
+    public ICollection<Notification.Notification>? Notifications { get; set; }
 }

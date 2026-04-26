@@ -32,7 +32,6 @@ public class FavouritesController : ControllerBase
     /// </summary>
     /// <param name="id">ID of the user to favourite.</param>
     /// <returns>Operation result.</returns>
-    [Authorize]
     [HttpPost("{id}")]
     public async Task<IActionResult> Add(int id)
     {
@@ -51,7 +50,6 @@ public class FavouritesController : ControllerBase
     /// </summary>
     /// <param name="id">ID of the user to remove from favourites.</param>
     /// <returns>Operation result.</returns>
-    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Remove(int id)
     {
@@ -69,7 +67,6 @@ public class FavouritesController : ControllerBase
     /// Retrieves a list of users favourited by the current user.
     /// </summary>
     /// <returns>List of favourited users.</returns>
-    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetMyFavourites()
     {
