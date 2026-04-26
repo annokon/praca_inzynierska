@@ -104,7 +104,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetMe()
     {
         var id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var user = await _userService.GetProfileAsync(id, GetUserId());
+        var user = await _userService.GetProfileByIdAsync(id, GetUserId());
 
         if (user == null)
             return NotFound();
@@ -213,7 +213,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}/profile")]
     public async Task<IActionResult> GetUserProfile(int id)
     {
-        var user = await _userService.GetProfileAsync(id, GetUserId());
+        var user = await _userService.GetProfileByIdAsync(id, GetUserId());
 
         if (user == null)
             return NotFound(new { message = "User not found." });

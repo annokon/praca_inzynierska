@@ -354,7 +354,7 @@ public class UserService : IUserService
     }
 
     // get user
-    public async Task<UserProfileDTO?> GetProfileAsync(int targetUserId, int? currentUserId)
+    public async Task<UserProfileDTO?> GetProfileByIdAsync(int targetUserId, int? currentUserId)
     {
         var user = await _repo.GetUserWithRelationsAsync(targetUserId);
         if (user == null) return null;
@@ -1035,6 +1035,6 @@ public class UserService : IUserService
         var user = await _repo.GetByUsernameAsync(username);
         if (user == null) return null;
 
-        return await GetProfileAsync(user.IdUser, currentUserId ?? 0);
+        return await GetProfileByIdAsync(user.IdUser, currentUserId ?? 0);
     }
 }
