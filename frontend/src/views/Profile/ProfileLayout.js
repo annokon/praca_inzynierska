@@ -23,6 +23,9 @@ export default function ProfileLayout() {
     const [loading, setLoading] = useState(true);
     const [isMe, setIsMe] = useState(false);
     const [isFavourite, setIsFavourite] = useState(false);
+    const [optionsOpen, setOptionsOpen] = useState(false);
+    const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
+    const optionsBtnRef = useRef(null);
 
     const topRef = useRef(null);
 
@@ -125,6 +128,66 @@ export default function ProfileLayout() {
         }
     };
 
+    const handleBlockUser = async () => {
+        try {
+            const url = `http://localhost:5292/api/blocked-users/${profile.id}`;
+
+            const res = await fetch(url, {
+                method: "POST",
+                credentials: "include",
+            });
+
+            if (!res.ok) return;
+
+            setOptionsOpen(false);
+        } catch (e) {
+            console.error("Block error", e);
+        }
+    };
+
+    const handleReportUser = async () => {
+        try {
+            const res = await fetch("http://localhost:5292/api/reports/user", { //TODO
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    reportedUserId: profile.id,
+                    reason: "placeholder"
+                })
+            });
+
+            if (!res.ok) return;
+
+            setOptionsOpen(false);
+        } catch (e) {
+            console.error("Report error", e);
+        }
+    };
+
+    const handleOptionsClick = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+
+        setMenuPos({
+            top: rect.bottom + 8,
+            left: rect.right - 200
+        });
+
+        setOptionsOpen(prev => !prev);
+    };
+
+    useEffect(() => {
+        if (!optionsOpen) return;
+
+        const handleScroll = () => setOptionsOpen(false);
+
+        window.addEventListener("scroll", handleScroll, true);
+
+        return () => window.removeEventListener("scroll", handleScroll, true);
+    }, [optionsOpen]);
+
     if (loading) return <div className="profile-loading-screen">Ładowanie profilu...</div>;
     if (!profile) return <div className="profile-error-screen">Nie znaleziono użytkownika.</div>;
 
@@ -143,8 +206,30 @@ export default function ProfileLayout() {
                     isFavourite={isFavourite}
                     onFavouriteToggle={handleFavouriteToggle}
                     onMessageClick={() => console.log("message")}
-                    onOptionsClick={() => console.log("options")}
+                    onOptionsClick={handleOptionsClick}
                 />
+                {optionsOpen && (
+                    <div className="profile-options-menu"
+                         style={{
+                             top: menuPos.top,
+                             left: menuPos.left
+                         }}
+                         onClick={(e) => e.stopPropagation()}>
+                        <button
+                            className="profile-option-item danger"
+                            onClick={handleBlockUser}
+                        >
+                            Zablokuj użytkownika
+                        </button>
+
+                        <button
+                            className="profile-option-item"
+                            onClick={handleReportUser}
+                        >
+                            Zgłoś użytkownika
+                        </button>
+                    </div>
+                )}
                 <ProfileTabs isMe={isMe} />
             </div>
 

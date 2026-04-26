@@ -21,7 +21,8 @@ export default function ProfileHeader({
                                           isFavourite,
                                           onMessageClick,
                                           onOptionsClick,
-                                          onFavouriteToggle
+                                          onFavouriteToggle,
+                                          optionsBtnRef
                                       }) {
     return (
         <header className="ph-wrap">
@@ -99,8 +100,12 @@ export default function ProfileHeader({
                         ) : (
                             <button className="btn-primary">Edytuj profil</button>
                         )}
-                        <button className="btn-icon" onClick={onOptionsClick}>
-                            {<EllipsisVertical size={19} strokeWidth={2} className="icon-muted" />}
+                        <button
+                            ref={optionsBtnRef}
+                            className="btn-icon"
+                            onClick={onOptionsClick}
+                        >
+                        {<EllipsisVertical size={19} strokeWidth={2} className="icon-muted" />}
                         </button>
                     </div>
 

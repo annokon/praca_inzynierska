@@ -46,20 +46,20 @@ public class DataContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<BlockedUser>(entity =>
-        {
-            entity.HasKey(b => new { b.IdUserBlocker, b.IdUserBlocked });
-
-            entity.HasOne(b => b.Blocker)
-                .WithMany(u => u.BlockedUsers)
-                .HasForeignKey(b => b.IdUserBlocker)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne(b => b.Blocked)
-                .WithMany(u => u.UsersBlockingThisUser)
-                .HasForeignKey(b => b.IdUserBlocked)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
+        // modelBuilder.Entity<BlockedUser>(entity =>
+        // {
+        //     entity.HasKey(b => new { b.IdUserBlocker, b.IdUserBlocked });
+        //
+        //     entity.HasOne(b => b.Blocker)
+        //         .WithMany(u => u.BlockedUsers)
+        //         .HasForeignKey(b => b.IdUserBlocker)
+        //         .OnDelete(DeleteBehavior.Cascade);
+        //
+        //     entity.HasOne(b => b.Blocked)
+        //         .WithMany(u => u.UsersBlockingThisUser)
+        //         .HasForeignKey(b => b.IdUserBlocked)
+        //         .OnDelete(DeleteBehavior.Cascade);
+        // });
 
         modelBuilder.Entity<UserLanguage>(entity =>
         {

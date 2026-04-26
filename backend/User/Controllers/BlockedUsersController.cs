@@ -22,7 +22,7 @@ public class BlockedUsersController : ControllerBase
         var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (!int.TryParse(claim, out var userId))
-            throw new UnauthorizedAccessException();
+            throw new UnauthorizedAccessException("Missing or invalid user id claim");
 
         return userId;
     }
