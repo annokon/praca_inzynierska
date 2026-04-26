@@ -96,17 +96,17 @@ export default function ProfileHeader({
                                     )}
                                     {isFavourite ? "Usuń z ulubionych" : "Polub"}
                                 </button>
+                                <button
+                                    ref={optionsBtnRef}
+                                    className="btn-icon"
+                                    onClick={onOptionsClick}
+                                >
+                                    {<EllipsisVertical size={19} strokeWidth={2} className="icon-muted" />}
+                                </button>
                             </>
                         ) : (
                             <button className="btn-primary">Edytuj profil</button>
                         )}
-                        <button
-                            ref={optionsBtnRef}
-                            className="btn-icon"
-                            onClick={onOptionsClick}
-                        >
-                        {<EllipsisVertical size={19} strokeWidth={2} className="icon-muted" />}
-                        </button>
                     </div>
 
                 </div>
