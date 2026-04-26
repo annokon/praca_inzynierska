@@ -149,6 +149,34 @@ public class UsersController : ControllerBase
 
         return Ok(result);
     }
+    
+    [Authorize]
+    [HttpDelete("me/images/profile")]
+    public async Task<IActionResult> DeleteProfileImage()
+    {
+        var userId = GetUserId();
+
+        var result = await _userService.ResetProfileImageAsync(userId);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok();
+    }
+    
+    [Authorize]
+    [HttpDelete("me/images/banner")]
+    public async Task<IActionResult> DeleteBannerImage()
+    {
+        var userId = GetUserId();
+
+        var result = await _userService.ResetBannerImageAsync(userId);
+
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok();
+    }
 
     /// <summary>
     /// Updates the currency preference for the current user.

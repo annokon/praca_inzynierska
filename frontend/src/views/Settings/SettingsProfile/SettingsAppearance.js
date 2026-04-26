@@ -30,6 +30,30 @@ export default function SettingsAppearance() {
     const [removeProfileImage, setRemoveProfileImage] = useState(false);
     const [removeBannerImage, setRemoveBannerImage] = useState(false);
 
+    const deleteProfileImage = async () => {
+        const res = await fetch(`${API_BASE_URL}/api/users/me/images/profile`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.message || "Błąd usuwania zdjęcia profilowego");
+        }
+    };
+
+    const deleteBannerImage = async () => {
+        const res = await fetch(`${API_BASE_URL}/api/users/me/images/banner`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.message || "Błąd usuwania bannera");
+        }
+    };
+
     useEffect(() => {
         if (!profileFile) {
             setProfilePreview("");
@@ -117,53 +141,47 @@ export default function SettingsAppearance() {
         e.preventDefault();
         setStatus("");
 
-        const formData = new FormData();
+        const hasUpload = profileFile || bannerFile;
+        const hasDelete = removeProfileImage || removeBannerImage;
 
-        if (profileFile) {
-            formData.append("profileImage", profileFile);
-        } else if (removeProfileImage) {
-            formData.append("profileImage", "-1");
-        }
-
-        if (bannerFile) {
-            formData.append("bannerImage", bannerFile);
-        } else if (removeBannerImage) {
-            formData.append("bannerImage", "-1");
-        }
-
-        if (
-            !profileFile &&
-            !bannerFile &&
-            !removeProfileImage &&
-            !removeBannerImage
-        ) {
+        if (!hasUpload && !hasDelete) {
             setStatus("Nie wybrano żadnych zmian.");
             return;
         }
 
         try {
             setStatus("Zapisywanie zmian...");
-
-            const res = await fetch(`${API_BASE_URL}/api/users/me/images`, {
-                method: "POST",
-                body: formData,
-                credentials: "include",
-            });
-
-            const data = await res.json().catch(() => ({}));
-
-            if (!res.ok) {
-                console.error("Błąd zapisu zdjęć:", res.status, data);
-                setStatus(data.message || "Nie udało się zapisać zmian.");
-                return;
+            if (removeProfileImage) {
+                await deleteProfileImage();
             }
 
-            if (typeof setUser === "function") {
-                setUser((prev) => ({
-                    ...prev,
-                    profileImage: removeProfileImage ? null : prev?.profileImage,
-                    bannerImage: removeBannerImage ? null : prev?.bannerImage,
-                }));
+            if (removeBannerImage) {
+                await deleteBannerImage();
+            }
+
+            if (profileFile || bannerFile) {
+                const formData = new FormData();
+
+                if (profileFile) {
+                    formData.append("profileImage", profileFile);
+                }
+
+                if (bannerFile) {
+                    formData.append("bannerImage", bannerFile);
+                }
+
+                const res = await fetch(`${API_BASE_URL}/api/users/me/images`, {
+                    method: "POST",
+                    body: formData,
+                    credentials: "include",
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (!res.ok) {
+                    setStatus(data.message || "Nie udało się zapisać zmian.");
+                    return;
+                }
             }
 
             await refreshUserAfterSave();
@@ -171,7 +189,7 @@ export default function SettingsAppearance() {
             navigate(-1);
         } catch (err) {
             console.error(err);
-            setStatus("Wystąpił błąd połączenia z serwerem.");
+            setStatus(err.message || "Wystąpił błąd połączenia z serwerem.");
         }
     };
 

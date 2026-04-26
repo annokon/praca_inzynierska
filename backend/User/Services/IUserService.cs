@@ -16,6 +16,8 @@ public interface IUserService
     Task<UserProfileDTO?> GetProfileByUsernameAsync(string username, int? currentUserId);
     
     Task<UserImagesDTO?> GetUserImagesAsync(int userId);
+    Task<(bool Success, string? Error)> ResetProfileImageAsync(int? userId);
+    Task<(bool Success, string? Error)> ResetBannerImageAsync(int? userId);
     
     Task<List<UserSearchDTO>> SearchAsync(string query, int limit, int? currentUserId);
     

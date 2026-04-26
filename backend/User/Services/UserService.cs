@@ -68,7 +68,7 @@ public class UserService : IUserService
     {
         var u = await _repo.GetByIdUserAsync(idUser);
         if (u == null) return null;
-        
+
         if (currentUserId != null)
         {
             var isBlocked = await _blockedRepo.ExistsEitherWay(currentUserId.Value, idUser);
@@ -844,34 +844,24 @@ public class UserService : IUserService
         // =====================
         if (profileImage != null)
         {
-            if (profileImage.FileName == "-1")
+            if (!profileImage.ContentType.StartsWith("image/"))
+                return (false, "Invalid profile image", null, null);
+
+            DeleteFileIfExists(user.ProfilePhotoPath);
+
+            var originalName = Path.GetFileName(profileImage.FileName);
+            var safeName = $"{Guid.NewGuid()}_{originalName}";
+            var finalName = EnsureUniqueFileName(profileDir, safeName);
+
+            var fullPath = Path.Combine(profileDir, finalName);
+
+            using (var stream = new FileStream(fullPath, FileMode.Create))
             {
-                DeleteFileIfExists(user.ProfilePhotoPath);
-
-                user.ProfilePhotoPath = _placeholderProfilePath;
-                profilePath = user.ProfilePhotoPath;
+                await profileImage.CopyToAsync(stream);
             }
-            else
-            {
-                if (!profileImage.ContentType.StartsWith("image/"))
-                    return (false, "Invalid profile image", null, null);
 
-                DeleteFileIfExists(user.ProfilePhotoPath);
-
-                var originalName = Path.GetFileName(profileImage.FileName);
-                var safeName = $"{Guid.NewGuid()}_{originalName}";
-                var finalName = EnsureUniqueFileName(profileDir, safeName);
-
-                var fullPath = Path.Combine(profileDir, finalName);
-
-                using (var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await profileImage.CopyToAsync(stream);
-                }
-
-                profilePath = $"/uploads/users/{userId}/profile/{finalName}";
-                user.ProfilePhotoPath = profilePath;
-            }
+            profilePath = $"/uploads/users/{userId}/profile/{finalName}";
+            user.ProfilePhotoPath = profilePath;
         }
 
         // =====================
@@ -879,40 +869,60 @@ public class UserService : IUserService
         // =====================
         if (bannerImage != null)
         {
-            if (bannerImage.FileName == "-1")
+            if (!bannerImage.ContentType.StartsWith("image/"))
+                return (false, "Invalid banner image", null, null);
+
+            DeleteFileIfExists(user.BackgroundPhotoPath);
+
+            var originalName = Path.GetFileName(bannerImage.FileName);
+            var safeName = $"{Guid.NewGuid()}_{originalName}";
+            var finalName = EnsureUniqueFileName(bannerDir, safeName);
+
+            var fullPath = Path.Combine(bannerDir, finalName);
+
+            using (var stream = new FileStream(fullPath, FileMode.Create))
             {
-                DeleteFileIfExists(user.BackgroundPhotoPath);
-
-                user.BackgroundPhotoPath = _placeholderBannerPath;
-                bannerPath = user.BackgroundPhotoPath;
+                await bannerImage.CopyToAsync(stream);
             }
-            else
-            {
-                if (!bannerImage.ContentType.StartsWith("image/"))
-                    return (false, "Invalid banner image", null, null);
 
-                DeleteFileIfExists(user.BackgroundPhotoPath);
-
-                var originalName = Path.GetFileName(bannerImage.FileName);
-                var safeName = $"{Guid.NewGuid()}_{originalName}";
-                var finalName = EnsureUniqueFileName(bannerDir, safeName);
-
-                var fullPath = Path.Combine(bannerDir, finalName);
-
-                using (var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await bannerImage.CopyToAsync(stream);
-                }
-
-                bannerPath = $"/uploads/users/{userId}/banner/{finalName}";
-                user.BackgroundPhotoPath = bannerPath;
-            }
+            bannerPath = $"/uploads/users/{userId}/banner/{finalName}";
+            user.BackgroundPhotoPath = bannerPath;
         }
 
         user.UpdatedAt = DateTime.UtcNow;
         await _repo.SaveChangesAsync();
 
         return (true, null, profilePath, bannerPath);
+    }
+
+    public async Task<(bool Success, string? Error)> ResetProfileImageAsync(int? userId)
+    {
+        var user = await _repo.GetByIdUserAsync(userId);
+        if (user == null)
+            return (false, "User not found");
+
+        DeleteFileIfExists(user.ProfilePhotoPath);
+
+        user.ProfilePhotoPath = _placeholderProfilePath;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _repo.SaveChangesAsync();
+        return (true, null);
+    }
+
+    public async Task<(bool Success, string? Error)> ResetBannerImageAsync(int? userId)
+    {
+        var user = await _repo.GetByIdUserAsync(userId);
+        if (user == null)
+            return (false, "User not found");
+
+        DeleteFileIfExists(user.BackgroundPhotoPath);
+
+        user.BackgroundPhotoPath = _placeholderBannerPath;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _repo.SaveChangesAsync();
+        return (true, null);
     }
 
     public async Task<UserImagesDTO?> GetUserImagesAsync(int userId)
@@ -989,7 +999,7 @@ public class UserService : IUserService
     {
         var u = await _repo.GetByUsernameAsync(username);
         if (u == null) return null;
-        
+
         if (currentUserId != null)
         {
             var isBlocked = await _blockedRepo.ExistsEitherWay(currentUserId.Value, u.IdUser);
